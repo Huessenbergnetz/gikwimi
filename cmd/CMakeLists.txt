@@ -1,24 +1,18 @@
 # SPDX-FileCopyrightText: (C) 2021 Matthias Fehring / www.huessenbergnetz.de
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
-# Create the application
-add_library(gikwimi SHARED
-    gikwimi.h
-    gikwimi.cpp
-    root.h
-    root.cpp)
+add_executable(gikwimictl
+    main.cpp)
 
-# Link to Cutelyst
-target_link_libraries(gikwimi
-    Cutelyst::Core
+target_compile_features(gikwimictl PUBLIC cxx_std_14)
+
+target_link_libraries(gikwimictl
     Qt5::Core
     Qt5::Network
     Qt5::Sql
 )
 
-target_compile_features(gikwimi PUBLIC cxx_std_14)
-
-target_compile_definitions(gikwimi
+target_compile_definitions(gikwimictl
     PRIVATE
         QT_NO_CAST_TO_ASCII
         QT_NO_CAST_FROM_ASCII
@@ -29,7 +23,7 @@ target_compile_definitions(gikwimi
         QT_SHA3_KECCAK_COMPAT
 )
 
-target_compile_options(gikwimi
+target_compile_options(gikwimictl
     PRIVATE
         -Wall
         -Wcast-align
@@ -40,4 +34,4 @@ target_compile_options(gikwimi
         -Winit-self
 )
 
-install(TARGETS gikwimi DESTINATION ${CMAKE_INSTALL_LIBDIR}/cutelyst${Cutelyst3Qt5_VERSION_MAJOR}-qt5-apps)
+install(TARGETS gikwimictl DESTINATION ${CMAKE_INSTALL_BINDIR})
