@@ -7,11 +7,11 @@ using namespace Cutelyst;
 
 class gikwimi : public Application
 {
-Q_OBJECT
-CUTELYST_APPLICATION(IID "gikwimi")
+    Q_OBJECT
+    CUTELYST_APPLICATION(IID "gikwimi")
 public:
     Q_INVOKABLE explicit gikwimi(QObject *parent = nullptr);
-    ~gikwimi();
+    ~gikwimi() override;
 
     bool init() override;
 };

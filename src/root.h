@@ -9,9 +9,9 @@ class Root : public Controller
 {
     Q_OBJECT
     C_NAMESPACE("")
-    public:
-        explicit Root(QObject *parent = nullptr);
-    ~Root();
+public:
+    explicit Root(QObject *parent = nullptr);
+    ~Root() override;
 
     C_ATTR(index, :Path :AutoArgs)
     void index(Context *c);
