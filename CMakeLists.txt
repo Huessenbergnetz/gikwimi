@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: (C) 2021 Matthias Fehring / www.huessenbergnetz.de
+# SPDX-FileCopyrightText: (C) 2022 Matthias Fehring / www.huessenbergnetz.de
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 cmake_minimum_required(VERSION 3.12.4 FATAL_ERROR)
@@ -15,6 +15,7 @@ endif()
 
 find_package(Qt5 COMPONENTS Core Network Sql REQUIRED)
 find_package(Cutelyst3Qt5 REQUIRED)
+find_package(FirfuoridaQt5 REQUIRED)
 
 # Auto generate moc files
 set(CMAKE_AUTOMOC ON)
@@ -26,3 +27,4 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 include(GNUInstallDirs)
 
 add_subdirectory(src)
+add_subdirectory(cmd)

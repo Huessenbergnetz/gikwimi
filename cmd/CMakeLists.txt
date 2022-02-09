@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: (C) 2021 Matthias Fehring / www.huessenbergnetz.de
+# SPDX-FileCopyrightText: (C) 2022 Matthias Fehring / www.huessenbergnetz.de
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 add_executable(gikwimictl
@@ -10,6 +10,7 @@ target_link_libraries(gikwimictl
     Qt5::Core
     Qt5::Network
     Qt5::Sql
+    FirfuoridaQt5
 )
 
 target_compile_definitions(gikwimictl
@@ -21,6 +22,7 @@ target_compile_definitions(gikwimictl
         QT_NO_CAST_FROM_BYTEARRAY
         QT_USE_QSTRINGBUILDER
         QT_SHA3_KECCAK_COMPAT
+        GIKWIMI_VERSION="${PROJECT_VERSION}"
 )
 
 target_compile_options(gikwimictl
