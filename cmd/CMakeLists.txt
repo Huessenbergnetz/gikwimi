@@ -21,7 +21,6 @@ target_compile_definitions(gikwimictl
         QT_NO_URL_CAST_FROM_STRING
         QT_NO_CAST_FROM_BYTEARRAY
         QT_USE_QSTRINGBUILDER
-        QT_SHA3_KECCAK_COMPAT
         GIKWIMI_VERSION="${PROJECT_VERSION}"
 )
 
