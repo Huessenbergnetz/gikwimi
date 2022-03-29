@@ -40,10 +40,8 @@ void CLI::printStatus(const QString &status) const
 
 void CLI::printDone() const
 {
-    if (!m_quiet) {
-        //% "Done"
-        printDone(qtTrId("gikwimictl-msg-done"));
-    }
+    //% "Done"
+    printDone(qtTrId("gikwimictl-msg-done"));
 }
 
 void CLI::printDone(const QString &done) const
@@ -55,10 +53,8 @@ void CLI::printDone(const QString &done) const
 
 void CLI::printFailed() const
 {
-    if (!m_quiet) {
-        //% "Failed"
-        printFailed(qtTrId("gikwimictl-msg-failed"));
-    }
+    //% "Failed"
+    printFailed(qtTrId("gikwimictl-msg-failed"));
 }
 
 void CLI::printFailed(const QString &failed) const
