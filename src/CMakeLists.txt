@@ -1,14 +1,16 @@
 # SPDX-FileCopyrightText: (C) 2022 Matthias Fehring / www.huessenbergnetz.de
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
-# Create the application
-add_library(gikwimi SHARED
-    gikwimi.h
-    gikwimi.cpp
-    root.h
-    root.cpp)
+add_library(gikwimi SHARED)
 
-# Link to Cutelyst
+target_sources(gikwimi
+    PRIVATE
+        gikwimi.h
+        gikwimi.cpp
+        root.h
+        root.cpp
+)
+
 target_link_libraries(gikwimi
     Cutelyst::Core
     Qt5::Core
