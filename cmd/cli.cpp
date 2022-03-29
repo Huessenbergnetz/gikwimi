@@ -15,14 +15,14 @@ CLI::CLI(bool quiet)
 
 }
 
-void CLI::printError(const QString &error)
+void CLI::printError(const QString &error) const
 {
     if (!m_quiet) {
         std::fprintf(stderr, "\x1b[33m%s\x1b[0m\n", error.toUtf8().constData());
     }
 }
 
-void CLI::printError(const QStringList &errors)
+void CLI::printError(const QStringList &errors) const
 {
     if (!m_quiet && !errors.empty()) {
         for (const QString &error : errors) {
@@ -31,14 +31,14 @@ void CLI::printError(const QStringList &errors)
     }
 }
 
-void CLI::printStatus(const QString &status)
+void CLI::printStatus(const QString &status) const
 {
     if (!m_quiet) {
         std::printf("%-100s", status.toUtf8().constData());
     }
 }
 
-void CLI::printDone()
+void CLI::printDone() const
 {
     if (!m_quiet) {
         //% "Done"
@@ -46,14 +46,14 @@ void CLI::printDone()
     }
 }
 
-void CLI::printDone(const QString &done)
+void CLI::printDone(const QString &done) const
 {
     if (!m_quiet) {
         std::printf("\x1b[32m%s\x1b[0m\n", qUtf8Printable(done));
     }
 }
 
-void CLI::printFailed()
+void CLI::printFailed() const
 {
     if (!m_quiet) {
         //% "Failed"
@@ -61,7 +61,7 @@ void CLI::printFailed()
     }
 }
 
-void CLI::printFailed(const QString &failed)
+void CLI::printFailed(const QString &failed) const
 {
     if (!m_quiet) {
         printf("\x1b[31m%s\x1b[0m\n", qUtf8Printable(failed));

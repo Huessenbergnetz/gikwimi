@@ -15,19 +15,19 @@ public:
     explicit CLI(bool quiet = false);
 
 protected:
-    void printError(const QString &error);
+    void printError(const QString &error) const;
 
-    void printError(const QStringList &errors);
+    void printError(const QStringList &errors) const;
 
-    void printStatus(const QString &status);
+    void printStatus(const QString &status) const;
 
-    void printDone();
+    void printDone() const;
 
-    void printDone(const QString &done);
+    void printDone(const QString &done) const;
 
-    void printFailed();
+    void printFailed() const;
 
-    void printFailed(const QString &failed);
+    void printFailed(const QString &failed) const;
 
 private:
     bool m_quiet;
