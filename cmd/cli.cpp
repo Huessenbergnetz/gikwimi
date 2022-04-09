@@ -74,6 +74,11 @@ int CLI::dbError(const QSqlDatabase &db) const
     return dbError(db.lastError());
 }
 
+void CLI::printWarning(const QString &warning) const
+{
+
+}
+
 void CLI::printStatus(const QString &status) const
 {
     if (!m_quiet) {
