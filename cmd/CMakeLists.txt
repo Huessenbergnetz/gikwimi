@@ -8,6 +8,8 @@ target_sources(gikwimictl
         main.cpp
         cli.cpp
         cli.h
+        configuration.cpp
+        configuration.h
 )
 
 target_compile_features(gikwimictl PUBLIC cxx_std_14)
@@ -28,6 +30,8 @@ target_compile_definitions(gikwimictl
         QT_NO_CAST_FROM_BYTEARRAY
         QT_USE_QSTRINGBUILDER
         GIKWIMI_VERSION="${PROJECT_VERSION}"
+        GIKWIMI_DISTCONFFILE="${GIKWIMI_DISTCONFDIR}/gikwimi.ini"
+        GIKWIMI_CONFFILE="${CMAKE_INSTALL_FULL_SYSCONFDIR}/gikwimi.ini"
 )
 
 target_compile_options(gikwimictl
