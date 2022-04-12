@@ -13,7 +13,7 @@ Configuration::Configuration(const QString &iniPath, bool quiet)
 
 }
 
-int Configuration::load()
+int Configuration::loadConfig()
 {
     const QString distConfPath = QStringLiteral(GIKWIMI_DISTCONFFILE);
 
@@ -73,7 +73,7 @@ int Configuration::load()
         const QStringList confGroups = conf.childGroups();
 
         for (const QString &group : confGroups) {
-            QVariantMap map = m_config.contains(group) ? m_config.value(group).toMap() : QVariantMap();
+            QVariantMap map = m_config.value(group, QVariantMap()).toMap();
             conf.beginGroup(group);
             const QStringList keys = conf.childKeys();
             for (const QString &key : keys) {

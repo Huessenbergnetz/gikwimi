@@ -16,7 +16,7 @@ class Configuration : public CLI
 public:
     explicit Configuration(const QString &iniPath, bool quiet = false);
 
-    int load();
+    int loadConfig();
 
     QVariant value(const QString &group, const QString &key, const QVariant &defaultValue = QVariant()) const;
 
