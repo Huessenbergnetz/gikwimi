@@ -20,7 +20,7 @@ CLI::CLI(bool quiet)
 void CLI::printError(const QString &error) const
 {
     if (!m_quiet) {
-        std::fprintf(stderr, "\x1b[33m%s\x1b[0m\n", error.toUtf8().constData());
+        std::fprintf(stderr, "\x1b[31m%s\x1b[0m\n", error.toUtf8().constData());
     }
 }
 
@@ -76,7 +76,9 @@ int CLI::dbError(const QSqlDatabase &db) const
 
 void CLI::printWarning(const QString &warning) const
 {
-
+    if (!m_quiet) {
+        std::printf("\x1b[33m%s\x1b[0m\n", qUtf8Printable(warning));
+    }
 }
 
 void CLI::printStatus(const QString &status) const
