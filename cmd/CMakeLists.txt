@@ -20,7 +20,7 @@ target_link_libraries(gikwimictl
     Qt5::Core
     Qt5::Network
     Qt5::Sql
-    FirfuoridaQt5
+    Firfuorida::Firfuorida
 )
 
 target_compile_definitions(gikwimictl
