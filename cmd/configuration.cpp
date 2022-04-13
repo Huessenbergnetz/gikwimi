@@ -17,7 +17,11 @@ int Configuration::loadConfig()
 {
     const QString distConfPath = QStringLiteral(GIKWIMI_DISTCONFFILE);
 
+    //% "Reading distribution configuration file"
+    printStatus(qtTrId("gikctl-status-reading-distconfig"));
+
     if (!QFileInfo::exists(distConfPath)) {
+        printFailed();
         //: Error message, %1 will be replaced by the file path
         //% "Can not find distribution configuration file at %1"
         return fileError(qtTrId("gikctl-error-distconfig-file-not-found").arg(distConfPath));
@@ -29,13 +33,19 @@ int Configuration::loadConfig()
     case QSettings::NoError:
         break;
     case QSettings::AccessError:
+    {
+        printFailed();
         //: Error message, %1 will be replaced by the file path
         //% "Can not read distribution configuration file at %1"
         return fileError(qtTrId("gikctl-error-distconfig-file-not-readable").arg(distConfPath));
+    }
     case QSettings::FormatError:
+    {
+        printFailed();
         //: Error message, %1 will be replaced by the file path
         //% "Failed to parse distribution configuration file at %1"
         return configError(qtTrId("gikctl-error-distconfig-file-malformed").arg(distConfPath));
+    }
     }
 
     const QStringList distConfGroups = distConf.childGroups();
@@ -53,7 +63,11 @@ int Configuration::loadConfig()
         }
     }
 
+    printDone();
+
     if (!m_iniPath.isEmpty()) {
+
+        printStatus(qtTrId("Reading local configuration file"));
 
         QSettings conf(m_iniPath, QSettings::IniFormat);
 
@@ -61,13 +75,19 @@ int Configuration::loadConfig()
         case QSettings::NoError:
             break;
         case QSettings::AccessError:
+        {
+            printFailed();
             //: Error message, %1 will be replaced by the file path
             //% "Can not read configuration file at %1"
             return fileError(qtTrId("gikctl-error-config-file-not-readable").arg(m_iniPath));
+        }
         case QSettings::FormatError:
+        {
+            printFailed();
             //: Error message, %1 will be replaced by the file path
             //% "Failed to parse configuration file at %1"
             return configError(qtTrId("gikctl-error-config-file-malformed").arg(m_iniPath));
+        }
         }
 
         const QStringList confGroups = conf.childGroups();
@@ -82,6 +102,8 @@ int Configuration::loadConfig()
             conf.endGroup();
             m_config.insert(group, map);
         }
+
+        printDone();
     }
 
     m_loaded = true;
