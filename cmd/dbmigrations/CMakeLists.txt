@@ -5,4 +5,6 @@ target_sources(gikwimictl
     PRIVATE
         dbmigrations.cpp
         dbmigrations.h
+        m0001_create_users_table.cpp
+        m0001_create_users_table.h
 )
