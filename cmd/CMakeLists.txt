@@ -10,11 +10,11 @@ target_sources(gikwimictl
         cli.h
         configuration.cpp
         configuration.h
-        dbmigrations.cpp
-        dbmigrations.h
 )
 
 target_compile_features(gikwimictl PUBLIC cxx_std_14)
+
+add_subdirectory(dbmigrations)
 
 target_link_libraries(gikwimictl
     Qt5::Core
