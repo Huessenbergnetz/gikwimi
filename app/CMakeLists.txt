@@ -10,7 +10,11 @@ target_sources(gikwimi
         root.h
         root.cpp
         logging.h
+        gikwimiconfig.h
+        gikwimiconfig.cpp
 )
+
+add_subdirectory(../common common)
 
 target_link_libraries(gikwimi
     Qt5::Core
