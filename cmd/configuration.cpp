@@ -7,27 +7,25 @@
 #include <QSettings>
 #include <QFileInfo>
 
-Configuration::Configuration(const QString &iniPath, bool quiet)
-    : CLI{quiet}, m_iniPath{iniPath}
+Configuration::Configuration(const QString &distIniPath, const QString &iniPath, bool quiet)
+    : CLI{quiet}, m_distIniPath{distIniPath}, m_iniPath{iniPath}
 {
 
 }
 
 int Configuration::loadConfig()
 {
-    const QString distConfPath = QStringLiteral(GIKWIMI_DISTCONFFILE);
-
     //% "Reading distribution configuration file"
     printStatus(qtTrId("gikctl-status-reading-distconfig"));
 
-    if (!QFileInfo::exists(distConfPath)) {
+    if (!QFileInfo::exists(m_distIniPath)) {
         printFailed();
         //: Error message, %1 will be replaced by the file path
         //% "Can not find distribution configuration file at %1"
-        return fileError(qtTrId("gikctl-error-distconfig-file-not-found").arg(distConfPath));
+        return fileError(qtTrId("gikctl-error-distconfig-file-not-found").arg(m_distIniPath));
     }
 
-    QSettings distConf(distConfPath, QSettings::IniFormat);
+    QSettings distConf(m_distIniPath, QSettings::IniFormat);
 
     switch(distConf.status()) {
     case QSettings::NoError:
@@ -37,14 +35,14 @@ int Configuration::loadConfig()
         printFailed();
         //: Error message, %1 will be replaced by the file path
         //% "Can not read distribution configuration file at %1"
-        return fileError(qtTrId("gikctl-error-distconfig-file-not-readable").arg(distConfPath));
+        return fileError(qtTrId("gikctl-error-distconfig-file-not-readable").arg(m_distIniPath));
     }
     case QSettings::FormatError:
     {
         printFailed();
         //: Error message, %1 will be replaced by the file path
         //% "Failed to parse distribution configuration file at %1"
-        return configError(qtTrId("gikctl-error-distconfig-file-malformed").arg(distConfPath));
+        return configError(qtTrId("gikctl-error-distconfig-file-malformed").arg(m_distIniPath));
     }
     }
 

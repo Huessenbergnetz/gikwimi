@@ -4,12 +4,17 @@
  */
 
 #include "dbmigrations.h"
+
+#include "m0001_create_users_table.h"
+
+#include <Firfuorida/Migrator>
+
 #include <QSqlDatabase>
 
 #define DBCONNAME "dbmigrations"
 
-DbMigrations::DbMigrations(const QString &iniPath, bool quiet)
-    : Configuration(iniPath, quiet)
+DbMigrations::DbMigrations(const QString &distIniPath, const QString &iniPath, bool quiet)
+    : Configuration(distIniPath, iniPath, quiet)
 {
 
 }
@@ -26,15 +31,15 @@ int DbMigrations::openDb()
     //% "Establishing database connection"
     printStatus(qtTrId("gikctl-status-open-db"));
 
-    const QString dbType = value(QStringLiteral("Database"), QStringLiteral("type"), QStringLiteral("QMYSQL")).toString().toUpper();
+    const QString dbType = value(QStringLiteral("database"), QStringLiteral("type"), QStringLiteral("QMYSQL")).toString().toUpper();
 
     if (dbType == QLatin1String("QMYSQL")) {
 
-        const QString dbHost = value(QStringLiteral("Database"), QStringLiteral("host"), QStringLiteral("localhost")).toString();
-        const QString dbUser = value(QStringLiteral("Database"), QStringLiteral("user"), QStringLiteral("gikwimi")).toString();
-        const QString dbPass = value(QStringLiteral("Database"), QStringLiteral("password")).toString();
-        const QString dbName = value(QStringLiteral("Database"), QStringLiteral("name"), QStringLiteral("gikwimidb")).toString();
-        const int     dbPort = value(QStringLiteral("Database"), QStringLiteral("port"), 3306).toInt();
+        const QString dbHost = value(QStringLiteral("database"), QStringLiteral("host"), QStringLiteral("localhost")).toString();
+        const QString dbUser = value(QStringLiteral("database"), QStringLiteral("user"), QStringLiteral("gikwimi")).toString();
+        const QString dbPass = value(QStringLiteral("database"), QStringLiteral("password")).toString();
+        const QString dbName = value(QStringLiteral("database"), QStringLiteral("name"), QStringLiteral("gikwimidb")).toString();
+        const int     dbPort = value(QStringLiteral("database"), QStringLiteral("port"), 3306).toInt();
 
         auto db = QSqlDatabase::addDatabase(dbType, QStringLiteral(DBCONNAME));
         if (Q_UNLIKELY(!db.isValid())) {
@@ -80,6 +85,13 @@ int DbMigrations::runMigrations()
     int rc = openDb();
     if (rc != 0) {
         return rc;
+    }
+
+    Firfuorida::Migrator m(QStringLiteral(DBCONNAME), QStringLiteral("migrations"));
+    new M0001_Create_Users_Table(&m);
+
+    if (!m.migrate()) {
+        rc = dbError(m.lastError().text());
     }
 
     return rc;

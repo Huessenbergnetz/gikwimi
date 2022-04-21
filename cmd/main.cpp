@@ -32,6 +32,15 @@ int main(int argc, char *argv[])
                                iniFileDefVal);
     parser.addOption(iniFile);
 
+    const QString distIniFileDefVal = QStringLiteral(GIKWIMI_DISTCONFFILE);
+    QCommandLineOption distIniFile(QStringList({QStringLiteral("dist-ini")}),
+                                   //: CLI option description, %1 will be the default value
+                                   //% "Path to distribution configuration ini file. Default: %1"
+                                   qtTrId("gikctl-cliopt-distini-desc").arg(distIniFileDefVal),
+                                   qtTrId("gikctl-cliopt-inifile-val"),
+                                   distIniFileDefVal);
+    parser.addOption(distIniFile);
+
     //: CLI option description
     //% "Be quiet and print less output."
     QCommandLineOption quiet(QStringList({QStringLiteral("q"), QStringLiteral("quiet")}), qtTrId("gikctl-cliopt-quiet-desc"));
@@ -72,22 +81,22 @@ int main(int argc, char *argv[])
     parser.process(app);
 
     if (parser.isSet(dbMigrate)) {
-        DbMigrations migs(parser.value(iniFile), parser.isSet(quiet));
+        DbMigrations migs(parser.value(distIniFile), parser.value(iniFile), parser.isSet(quiet));
         return migs.runMigrations();
     }
 
     if (parser.isSet(dbRollback)) {
-        DbMigrations migs(parser.value(iniFile), parser.isSet(quiet));
+        DbMigrations migs(parser.value(distIniFile), parser.value(iniFile), parser.isSet(quiet));
         return migs.runRollbacks(parser.value(dbRollback));
     }
 
     if (parser.isSet(dbRefresh)) {
-        DbMigrations migs(parser.value(iniFile), parser.isSet(quiet));
+        DbMigrations migs(parser.value(distIniFile), parser.value(iniFile), parser.isSet(quiet));
         return migs.runRefresh(parser.value(dbRefresh));
     }
 
     if (parser.isSet(dbReset)) {
-        DbMigrations migs(parser.value(iniFile), parser.isSet(quiet));
+        DbMigrations migs(parser.value(distIniFile), parser.value(iniFile), parser.isSet(quiet));
         return migs.runReset();
     }
 
