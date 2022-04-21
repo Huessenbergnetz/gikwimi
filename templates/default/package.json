@@ -1,0 +1,20 @@
+{
+  "private": true,
+  "scripts": {
+    "dev": "npm run development",
+    "development": "npx mix",
+    "watch": "npx mix watch",
+    "watch-poll": "npx mix watch -- --watch-options-poll=1000",
+    "hot": "npx mix --hot",
+    "prod": "npm run production",
+    "production": "npx mix --production"
+  },
+  "devDependencies": {
+    "@popperjs/core": "2.10.2",
+    "bootstrap": "5.1.3",
+    "bootstrap-icons": "1.8.1",
+    "laravel-mix": "^6.0.43",
+    "sass": "^1.50.1",
+    "sass-loader": "^12.6.0"
+  }
+}

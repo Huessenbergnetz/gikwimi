@@ -5,6 +5,7 @@
 
 #include "logging.h"
 #include "gikwimi.h"
+#include "gikwimiconfig.h"
 #include "root.h"
 #include "confignames.h"
 
@@ -16,6 +17,8 @@
 #include <Cutelyst/Plugins/StatusMessage>
 #include <Cutelyst/Plugins/Memcached/Memcached>
 #include <Cutelyst/Plugins/MemcachedSessionStore/MemcachedSessionStore>
+
+#include <cutelee/engine.h>
 
 #include <QCoreApplication>
 #include <QMutexLocker>
@@ -44,6 +47,10 @@ Gikwimi::~Gikwimi()
 bool Gikwimi::init()
 {
     if (!isInitialized) {
+        GikwimiConfig::load(engine()->config(QStringLiteral(GIKWIMI_CONF_GIK)));
+
+        qCInfo(GIK_CORE) << "Template:" << GikwimiConfig::tmplPath();
+
         // initialize DB one time to prevent https://bugreports.qt.io/browse/QTBUG-54872
         if (!initDb()) {
             return false;
@@ -54,11 +61,25 @@ bool Gikwimi::init()
         isInitialized = true;
     }
 
+    qCDebug(GIK_CORE) << "Registering Cutelee view";
+    auto view = new CuteleeView(this);
+    view->setTemplateExtension(QStringLiteral(".tmpl"));
+    view->setWrapper(QStringLiteral("wrapper.tmpl"));
+    view->setCache(false);
+    view->setIncludePaths({GikwimiConfig::tmplPath(QStringLiteral("site"))});
+    qCDebug(GIK_CORE) << "Cutelee view include paths:" << view->includePaths();
+    view->engine()->addDefaultLibrary(QStringLiteral("cutelee_i18ntags"));
+
     qCDebug(GIK_CORE) << "Registering controllers";
     new Root(this);
 
     qCDebug(GIK_CORE) << "Registering plugins";
     auto staticSimple = new StaticSimple(this);
+    staticSimple->setIncludePaths({GikwimiConfig::tmplPath(QStringLiteral("static"))});
+
+    auto sess = new Session(this);
+
+    new StatusMessage(this);
 
     return true;
 }
