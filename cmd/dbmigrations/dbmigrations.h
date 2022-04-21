@@ -16,7 +16,7 @@ class Migrator;
 class DbMigrations : public Configuration
 {
 public:
-    explicit DbMigrations(const QString &distIniPath, const QString &iniPath, bool quiet = false);
+    explicit DbMigrations(const QString &iniPath, bool quiet = false);
 
     ~DbMigrations();
 

@@ -14,14 +14,13 @@
 class Configuration : public CLI
 {
 public:
-    explicit Configuration(const QString &distIniPath, const QString &iniPath, bool quiet = false);
+    explicit Configuration(const QString &iniPath, bool quiet = false);
 
     int loadConfig();
 
     QVariant value(const QString &group, const QString &key, const QVariant &defaultValue = QVariant()) const;
 
 private:
-    QString m_distIniPath;
     QString m_iniPath;
     QVariantMap m_config;
     bool m_loaded = false;

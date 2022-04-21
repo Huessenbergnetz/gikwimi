@@ -33,7 +33,6 @@ target_compile_definitions(gikwimictl
         QT_NO_CAST_FROM_BYTEARRAY
         QT_USE_QSTRINGBUILDER
         GIKWIMI_VERSION="${PROJECT_VERSION}"
-        GIKWIMI_DISTCONFFILE="${GIKWIMI_DISTCONFDIR}/gikwimi.ini"
         GIKWIMI_CONFFILE="${CMAKE_INSTALL_FULL_SYSCONFDIR}/gikwimi.ini"
 )
 

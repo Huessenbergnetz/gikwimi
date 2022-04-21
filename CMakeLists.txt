@@ -27,7 +27,8 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 include(GNUInstallDirs)
 
-set(GIKWIMI_DISTCONFDIR "/usr/etc" CACHE PATH "Directory containing distribution provided read only configuration files")
+set(GIKWIMI_APPDIR ${CMAKE_INSTALL_DATADIR}/gikwimi CACHE PATH "Directory to install gikwimi data files into")
+set(GIKWIMI_TEMPLATEDIR ${GIKWIMI_APPDIR}/templates CACHE PATH "Directory to install gikwimi template files into")
 
 set(GIKWIMI_CONF_DB "database")
 set(GIKWIMI_CONF_DB_TYPE "type")
@@ -45,6 +46,8 @@ set(GIKWIMI_CONF_DB_PORT_DEFVAL 3306)
 set(GIKWIMI_CONF_GIK "gikwimi")
 set(GIKWIMI_CONF_GIK_TEMPLATE "template")
 set(GIKWIMI_CONF_GIK_TEMPLATE_DEFVAL "default")
+
+GNUInstallDirs_get_absolute_install_dir(GIKWIMI_FULL_TEMPLATEDIR GIKWIMI_TEMPLATEDIR)
 
 
 add_subdirectory(app)

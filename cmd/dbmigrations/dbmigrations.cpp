@@ -13,8 +13,8 @@
 
 #define DBCONNAME "dbmigrations"
 
-DbMigrations::DbMigrations(const QString &distIniPath, const QString &iniPath, bool quiet)
-    : Configuration(distIniPath, iniPath, quiet)
+DbMigrations::DbMigrations(const QString &iniPath, bool quiet)
+    : Configuration(iniPath, quiet)
 {
 
 }
