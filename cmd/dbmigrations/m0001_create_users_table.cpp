@@ -23,7 +23,7 @@ void M0001_Create_Users_Table::up()
     t->dateTime(QStringLiteral("created_at"));
     t->dateTime(QStringLiteral("updated_at"));
     t->bigInteger(QStringLiteral("locked_at"))->defaultValue(0)->nullable();
-    t->integer(QStringLiteral("locked_by"))->defaultValue(0)->nullable();
+    t->integer(QStringLiteral("locked_by"))->unSigned()->defaultValue(0)->nullable();
 
     t->setCharset(QStringLiteral("utf8"));
     switch(dbType()) {
