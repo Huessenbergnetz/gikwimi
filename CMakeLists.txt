@@ -28,5 +28,20 @@ include(GNUInstallDirs)
 
 set(GIKWIMI_DISTCONFDIR "/usr/etc" CACHE PATH "Directory containing distribution provided read only configuration files")
 
+set(GIKWIMI_CONF_DB "database")
+set(GIKWIMI_CONF_DB_TYPE "type")
+set(GIKWIMI_CONF_DB_TYPE_DEFVAL "QMYSQL")
+set(GIKWIMI_CONF_DB_HOST "host")
+set(GIKWIMI_CONF_DB_HOST_DEFVAL "localhost")
+set(GIKWIMI_CONF_DB_USER "user")
+set(GIKWIMI_CONF_DB_USER_DEFVAL "gikwimi")
+set(GIKWIMI_CONF_DB_PASS "password")
+set(GIKWIMI_CONF_DB_NAME "name")
+set(GIKWIMI_CONF_DB_NAME_DEFVAL "gikwimidb")
+set(GIKWIMI_CONF_DB_PORT "port")
+set(GIKWIMI_CONF_DB_PORT_DEFVAL 3306)
+
+
 add_subdirectory(app)
 add_subdirectory(cmd)
+add_subdirectory(supplementary)

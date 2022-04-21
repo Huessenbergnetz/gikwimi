@@ -3,10 +3,12 @@
 
 target_sources(gikwimictl
     PRIVATE
-        confignames.h
+        confignames.h.in
 )
+
+configure_file(confignames.h.in confignames.h)
 
 target_include_directories(gikwimictl
     PRIVATE
-        ${CMAKE_CURRENT_SOURCE_DIR}
+        ${CMAKE_CURRENT_BINARY_DIR}
 )
