@@ -65,7 +65,8 @@ int Configuration::loadConfig()
 
     if (!m_iniPath.isEmpty()) {
 
-        printStatus(qtTrId("Reading local configuration file"));
+        //% "Reading local configuration file"
+        printStatus(qtTrId("gikctl-status-reading-config"));
 
         QSettings conf(m_iniPath, QSettings::IniFormat);
 
