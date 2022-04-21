@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
 
+#include "confignames.h"
 #include "dbmigrations.h"
-
 #include "m0001_create_users_table.h"
 
 #include <Firfuorida/Migrator>
@@ -31,15 +31,16 @@ int DbMigrations::openDb()
     //% "Establishing database connection"
     printStatus(qtTrId("gikctl-status-open-db"));
 
-    const QString dbType = value(QStringLiteral("database"), QStringLiteral("type"), QStringLiteral("QMYSQL")).toString().toUpper();
+    const QString dbConfSection = QStringLiteral(GIKWIMI_CONF_DB);
+    const QString dbType = value(dbConfSection, QStringLiteral(GIKWIMI_CONF_DB_TYPE), QStringLiteral(GIKWIMI_CONF_DB_TYPE_DEFVAL)).toString().toUpper();
 
     if (dbType == QLatin1String("QMYSQL")) {
 
-        const QString dbHost = value(QStringLiteral("database"), QStringLiteral("host"), QStringLiteral("localhost")).toString();
-        const QString dbUser = value(QStringLiteral("database"), QStringLiteral("user"), QStringLiteral("gikwimi")).toString();
-        const QString dbPass = value(QStringLiteral("database"), QStringLiteral("password")).toString();
-        const QString dbName = value(QStringLiteral("database"), QStringLiteral("name"), QStringLiteral("gikwimidb")).toString();
-        const int     dbPort = value(QStringLiteral("database"), QStringLiteral("port"), 3306).toInt();
+        const QString dbHost = value(dbConfSection, QStringLiteral(GIKWIMI_CONF_DB_HOST), QStringLiteral(GIKWIMI_CONF_DB_HOST_DEFVAL)).toString();
+        const QString dbUser = value(dbConfSection, QStringLiteral(GIKWIMI_CONF_DB_USER), QStringLiteral(GIKWIMI_CONF_DB_USER_DEFVAL)).toString();
+        const QString dbPass = value(dbConfSection, QStringLiteral(GIKWIMI_CONF_DB_PASS)).toString();
+        const QString dbName = value(dbConfSection, QStringLiteral(GIKWIMI_CONF_DB_NAME), QStringLiteral(GIKWIMI_CONF_DB_NAME_DEFVAL)).toString();
+        const int     dbPort = value(dbConfSection, QStringLiteral(GIKWIMI_CONF_DB_PORT), GIKWIMI_CONF_DB_PORT_DEFVAL).toInt();
 
         auto db = QSqlDatabase::addDatabase(dbType, QStringLiteral(DBCONNAME));
         if (Q_UNLIKELY(!db.isValid())) {

@@ -15,6 +15,7 @@ target_sources(gikwimictl
 target_compile_features(gikwimictl PUBLIC cxx_std_14)
 
 add_subdirectory(dbmigrations)
+add_subdirectory(../common common)
 
 target_link_libraries(gikwimictl
     Qt5::Core
