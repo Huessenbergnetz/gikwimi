@@ -28,5 +28,5 @@ include(GNUInstallDirs)
 
 set(GIKWIMI_DISTCONFDIR "/usr/etc" CACHE PATH "Directory containing distribution provided read only configuration files")
 
-add_subdirectory(src)
+add_subdirectory(app)
 add_subdirectory(cmd)
