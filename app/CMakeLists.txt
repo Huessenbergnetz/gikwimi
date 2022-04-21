@@ -9,6 +9,8 @@ target_sources(gikwimi
         gikwimi.cpp
         root.h
         root.cpp
+        login.h
+        login.cpp
         logging.h
         gikwimiconfig.h
         gikwimiconfig.cpp

@@ -7,6 +7,7 @@
 #include "gikwimi.h"
 #include "gikwimiconfig.h"
 #include "root.h"
+#include "login.h"
 #include "confignames.h"
 
 #include <Cutelyst/Engine>
@@ -72,6 +73,7 @@ bool Gikwimi::init()
 
     qCDebug(GIK_CORE) << "Registering controllers";
     new Root(this);
+    new Login(this);
 
     qCDebug(GIK_CORE) << "Registering plugins";
     auto staticSimple = new StaticSimple(this);
