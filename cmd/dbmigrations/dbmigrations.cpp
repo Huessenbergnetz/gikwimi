@@ -81,6 +81,12 @@ int DbMigrations::openDb()
     return rc;
 }
 
+void DbMigrations::initMigrations()
+{
+    m_migrator = std::make_unique<Firfuorida::Migrator>(QStringLiteral(DBCONNAME), QStringLiteral("migrations"));
+    new M0001_Create_Users_Table(m_migrator.get());
+}
+
 int DbMigrations::runMigrations()
 {
     int rc = openDb();
@@ -88,11 +94,10 @@ int DbMigrations::runMigrations()
         return rc;
     }
 
-    Firfuorida::Migrator m(QStringLiteral(DBCONNAME), QStringLiteral("migrations"));
-    new M0001_Create_Users_Table(&m);
+    initMigrations();
 
-    if (!m.migrate()) {
-        rc = dbError(m.lastError().text());
+    if (!m_migrator->migrate()) {
+        rc = dbError(m_migrator->lastError().text());
     }
 
     return rc;
@@ -103,6 +108,12 @@ int DbMigrations::runRollbacks(uint steps)
     int rc = openDb();
     if (rc != 0) {
         return rc;
+    }
+
+    initMigrations();
+
+    if (!m_migrator->rollback(steps)) {
+        rc = dbError(m_migrator->lastError().text());
     }
 
     return rc;
@@ -128,6 +139,12 @@ int DbMigrations::runReset()
         return rc;
     }
 
+    initMigrations();
+
+    if (!m_migrator->reset()) {
+        rc = dbError(m_migrator->lastError().text());
+    }
+
     return rc;
 }
 
@@ -136,6 +153,12 @@ int DbMigrations::runRefresh(uint steps)
     int rc = openDb();
     if (rc != 0) {
         return rc;
+    }
+
+    initMigrations();
+
+    if (!m_migrator->refresh(steps)) {
+        rc = dbError(m_migrator->lastError().text());
     }
 
     return rc;

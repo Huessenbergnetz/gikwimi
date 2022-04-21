@@ -7,6 +7,11 @@
 #define GIKWIMICTL_DBMIGRATIONS_H
 
 #include "configuration.h"
+#include <memory>
+
+namespace Firfuorida {
+class Migrator;
+}
 
 class DbMigrations : public Configuration
 {
@@ -24,6 +29,9 @@ public:
 
 private:
     int openDb();
+    void initMigrations();
+
+    std::unique_ptr<Firfuorida::Migrator> m_migrator;
 };
 
 #endif // GIKWIMICTL_DBMIGRATIONS_H
