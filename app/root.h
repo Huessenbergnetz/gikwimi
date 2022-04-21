@@ -1,5 +1,10 @@
-#ifndef ROOT_H
-#define ROOT_H
+/*
+ * SPDX-FileCopyrightText: (C) 2022 Matthias Fehring / www.huessenbergnetz.de
+ * SPDX-License-Identifier: AGPL-3.0-or-later
+ */
+
+#ifndef GIKWIMI_ROOT_H
+#define GIKWIMI_ROOT_H
 
 #include <Cutelyst/Controller>
 
@@ -24,4 +29,4 @@ private:
     void End(Context *c) { Q_UNUSED(c); }
 };
 
-#endif //ROOT_H
+#endif //GIKWIMI_ROOT_H

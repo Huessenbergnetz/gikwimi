@@ -15,6 +15,7 @@ endif()
 
 find_package(Qt5 COMPONENTS Core Network Sql REQUIRED)
 find_package(Cutelyst3Qt5 REQUIRED)
+find_package(Cutelee6Qt5 5.2.0 REQUIRED)
 find_package(FirfuoridaQt5 REQUIRED)
 
 # Auto generate moc files
@@ -40,6 +41,10 @@ set(GIKWIMI_CONF_DB_NAME "name")
 set(GIKWIMI_CONF_DB_NAME_DEFVAL "gikwimidb")
 set(GIKWIMI_CONF_DB_PORT "port")
 set(GIKWIMI_CONF_DB_PORT_DEFVAL 3306)
+
+set(GIKWIMI_CONF_GIK "gikwimi")
+set(GIKWIMI_CONF_GIK_TEMPLATE "template")
+set(GIKWIMI_CONF_GIK_TEMPLATE_DEFVAL "default")
 
 
 add_subdirectory(app)

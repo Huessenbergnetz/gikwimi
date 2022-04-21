@@ -9,13 +9,27 @@ target_sources(gikwimi
         gikwimi.cpp
         root.h
         root.cpp
+        logging.h
 )
 
 target_link_libraries(gikwimi
-    Cutelyst::Core
     Qt5::Core
     Qt5::Network
     Qt5::Sql
+    Cutelyst::Core
+    Cutelyst::Session
+    Cutelyst::Authentication
+    Cutelyst::StatusMessage
+    Cutelyst::View::Cutelee
+    Cutelyst::StaticSimple
+    Cutelyst::Utils::Validator
+    Cutelyst::Utils::Sql
+    Cutelyst::Utils::Pagination
+    Cutelyst::Utils::LangSelect
+    Cutelyst::Memcached
+    Cutelyst::MemcachedSessionStore
+    Cutelyst::CSRFProtection
+    Cutelee::Templates
 )
 
 target_compile_features(gikwimi PUBLIC cxx_std_14)
@@ -28,7 +42,7 @@ target_compile_definitions(gikwimi
         QT_NO_URL_CAST_FROM_STRING
         QT_NO_CAST_FROM_BYTEARRAY
         QT_USE_QSTRINGBUILDER
-        QT_SHA3_KECCAK_COMPAT
+        GIKWIMI_VERSION="${PROJECT_VERSION}"
 )
 
 target_compile_options(gikwimi

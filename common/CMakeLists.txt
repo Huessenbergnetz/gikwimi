@@ -6,9 +6,19 @@ target_sources(gikwimictl
         confignames.h.in
 )
 
+target_sources(gikwimi
+    PRIVATE
+        confignames.h.in
+)
+
 configure_file(confignames.h.in confignames.h)
 
 target_include_directories(gikwimictl
+    PRIVATE
+        ${CMAKE_CURRENT_BINARY_DIR}
+)
+
+target_include_directories(gikwimi
     PRIVATE
         ${CMAKE_CURRENT_BINARY_DIR}
 )
