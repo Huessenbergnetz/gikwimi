@@ -51,26 +51,22 @@ int main(int argc, char *argv[])
     QCommandLineOption dbMigrate(QStringLiteral("db-migrate"), qtTrId("gikctl-cliopt-dbmigrate-desc"));
     parser.addOption(dbMigrate);
 
-    const QString dbRollbackDefVal = QStringLiteral("1");
     QCommandLineOption dbRollback(QStringLiteral("db-rollback"),
-                                  //: CLI option description, %1 will be the default value
-                                  //% "Rolls back given steps of already applied database migrations. Default: %1"
-                                  qtTrId("gikctl-cliopt-dbrollback-desc").arg(dbRollbackDefVal),
+                                  //: CLI option description
+                                  //% "Rolls back given steps of already applied database migrations."
+                                  qtTrId("gikctl-cliopt-dbrollback-desc"),
                                   //: CLI option value name
                                   //% "steps"
-                                  qtTrId("gikctl-cliopt-dbrollback-val"),
-                                  dbRollbackDefVal);
+                                  qtTrId("gikctl-cliopt-dbrollback-val"));
     parser.addOption(dbRollback);
 
-    const QString dbRefreshDefVal = QStringLiteral("0");
     QCommandLineOption dbRefresh(QStringLiteral("db-refresh"),
-                                 //: CLI option description, %1 will be the default value
-                                 //% Rolls back and reapplies the given number of database migrations. If steps is 0, all migrations will be rolled back and reapplied. Default: %1"
-                                 qtTrId("gikctl-cliopt-dbrefresh-desc").arg(dbRefreshDefVal),
+                                 //: CLI option description
+                                 //% Rolls back and reapplies the given number of database migrations. If steps is 0, all migrations will be rolled back and reapplied."
+                                 qtTrId("gikctl-cliopt-dbrefresh-desc"),
                                  //: CLI option value name
                                  //% "steps"
-                                 qtTrId("gikctl-cliopt-dbrefresh-val"),
-                                 dbRefreshDefVal);
+                                 qtTrId("gikctl-cliopt-dbrefresh-val"));
     parser.addOption(dbRefresh);
 
     //: CLI option description
