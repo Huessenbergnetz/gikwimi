@@ -21,6 +21,7 @@ target_link_libraries(gikwimictl
     Qt5::Core
     Qt5::Network
     Qt5::Sql
+    Cutelyst::Authentication
     FirfuoridaQt5::Core
 )
 
