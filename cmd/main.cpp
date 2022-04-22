@@ -65,6 +65,11 @@ int main(int argc, char *argv[])
     QCommandLineOption dbReset(QStringLiteral("db-reset"), qtTrId("gikctl-cliopt-dbreset-desc"));
     parser.addOption(dbReset);
 
+    //: CLI option description
+    //% "Run setup process."
+    QCommandLineOption setup(QStringLiteral("setup"), qtTrId("gikctl-cliopt-setup-desc"));
+    parser.addOption(setup);
+
     parser.process(app);
 
     if (parser.isSet(dbMigrate)) {
