@@ -9,11 +9,15 @@
 #include "root.h"
 #include "login.h"
 #include "confignames.h"
+#include "userauthstoresql.h"
 
 #include <Cutelyst/Engine>
 #include <Cutelyst/Plugins/StaticSimple/StaticSimple>
 #include <Cutelyst/Plugins/View/Cutelee/cuteleeview.h>
 #include <Cutelyst/Plugins/Session/Session>
+#include <Cutelyst/Plugins/Authentication/authentication.h>
+#include <Cutelyst/Plugins/Authentication/credentialpassword.h>
+#include <Cutelyst/Plugins/Authentication/authenticationrealm.h>
 #include <Cutelyst/Plugins/Utils/Sql>
 #include <Cutelyst/Plugins/StatusMessage>
 #include <Cutelyst/Plugins/Memcached/Memcached>
@@ -82,6 +86,12 @@ bool Gikwimi::init()
     auto sess = new Session(this);
 
     new StatusMessage(this);
+
+    auto auth = new Authentication(this);
+    auto userCred = new CredentialPassword;
+    userCred->setPasswordType(CredentialPassword::Hashed);
+    auto userStore = new UserAuthStoreSql;
+    auth->addRealm(userStore, userCred, QStringLiteral("users"));
 
     return true;
 }

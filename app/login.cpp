@@ -29,12 +29,12 @@ void Login::index(Context *c)
         const QString password = req->bodyParam(QStringLiteral("password"));
 
         if (!username.isEmpty() && !password.isEmpty()) {
-            if (Authentication::authenticate(c, req->bodyParams())) {
+            if (Authentication::authenticate(c, req->bodyParams(), QStringLiteral("users"))) {
                 qCInfo(GIK_AUTH, "User %s successfully logged in", qUtf8Printable(username));
                 c->res()->redirect(c->uriFor(QStringLiteral("/")));
                 return;
             } else {
-                qCWarning(GIK_AUTH, "Bad username or password for user %s from IP %s", qUtf8Printable(username), qUtf8Printable(req->addressString()));
+                qCWarning(GIK_AUTH, "Bad username and/or password for user %s from IP %s", qUtf8Printable(username), qUtf8Printable(req->addressString()));
                 c->setStash(QStringLiteral("error_msg"), c->translate("Login", "Arrrgh, bad username and/or password!"));
                 c->res()->setStatus(Response::Forbidden);
             }
