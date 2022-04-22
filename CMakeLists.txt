@@ -53,3 +53,4 @@ GNUInstallDirs_get_absolute_install_dir(GIKWIMI_FULL_TEMPLATEDIR GIKWIMI_TEMPLAT
 add_subdirectory(app)
 add_subdirectory(cmd)
 add_subdirectory(supplementary)
+add_subdirectory(templates)
