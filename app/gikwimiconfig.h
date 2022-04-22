@@ -19,6 +19,8 @@ public:
     static QString tmplPath();
     static QString tmplPath(const QString &path);
     static QString tmplPath(const QStringList &pathParts);
+
+    static QString siteName();
 };
 
 #endif // GIKWIMICONFIG_H

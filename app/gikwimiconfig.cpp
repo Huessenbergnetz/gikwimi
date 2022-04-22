@@ -16,6 +16,7 @@ struct ConfigValues {
 
     QString tmpl = QStringLiteral(GIKWIMI_CONF_GIK_TEMPLATE_DEFVAL);
     QString tmplDir = QStringLiteral(GIKWIMI_TEMPLATEDIR);
+    QString siteName = QStringLiteral(GIKWIMI_CONF_GIK_SITENAME_DEFVAL);
 };
 Q_GLOBAL_STATIC(ConfigValues, cfg)
 
@@ -29,6 +30,8 @@ void GikwimiConfig::load(const QVariantMap &gikwimi)
         cfg->tmpl = fullPathParts.takeLast();
         cfg->tmplDir = QLatin1Char('/') + fullPathParts.join(QLatin1Char('/'));
     }
+
+    cfg->siteName = gikwimi.value(QStringLiteral(GIKWIMI_CONF_GIK_SITENAME), QStringLiteral(GIKWIMI_CONF_GIK_SITENAME_DEFVAL)).toString();
 }
 
 QString GikwimiConfig::tmpl()
@@ -51,4 +54,10 @@ QString GikwimiConfig::tmplPath(const QString &path)
 QString GikwimiConfig::tmplPath(const QStringList &pathParts)
 {
     return tmplPath(pathParts.join(QLatin1Char('/')));
+}
+
+QString GikwimiConfig::siteName()
+{
+    QReadLocker locker(&cfg->lock);
+    return cfg->siteName;
 }
