@@ -40,10 +40,6 @@ void Login::index(Context *c)
             }
         }
     }
-
-    c->setStash(QStringLiteral("username"), username);
-    c->setStash(QStringLiteral("no_wrapper"), QStringLiteral("1"));
-    c->setStash(QStringLiteral("template"), QStringLiteral("login.tmpl"));
 }
 
 #include "moc_login.cpp"
