@@ -37,33 +37,23 @@ int main(int argc, char *argv[])
     QCommandLineOption quiet(QStringList({QStringLiteral("q"), QStringLiteral("quiet")}), qtTrId("gikctl-cliopt-quiet-desc"));
     parser.addOption(quiet);
 
-    //: CLI option description
-    //% "Runs all database migrations not already applied"
-    QCommandLineOption dbMigrate(QStringLiteral("db-migrate"), qtTrId("gikctl-cliopt-dbmigrate-desc"));
+#ifdef QT_DEBUG
+    QCommandLineOption dbMigrate(QStringLiteral("db-migrate"), QStringLiteral("Runs all database migrations not already applied"));
     parser.addOption(dbMigrate);
 
     QCommandLineOption dbRollback(QStringLiteral("db-rollback"),
-                                  //: CLI option description
-                                  //% "Rolls back given steps of already applied database migrations."
-                                  qtTrId("gikctl-cliopt-dbrollback-desc"),
-                                  //: CLI option value name
-                                  //% "steps"
-                                  qtTrId("gikctl-cliopt-dbrollback-val"));
+                                  QStringLiteral("Rolls back given steps of already applied database migrations."),
+                                  QStringLiteral("steps"));
     parser.addOption(dbRollback);
 
     QCommandLineOption dbRefresh(QStringLiteral("db-refresh"),
-                                 //: CLI option description
-                                 //% Rolls back and reapplies the given number of database migrations. If steps is 0, all migrations will be rolled back and reapplied."
-                                 qtTrId("gikctl-cliopt-dbrefresh-desc"),
-                                 //: CLI option value name
-                                 //% "steps"
-                                 qtTrId("gikctl-cliopt-dbrefresh-val"));
+                                 QStringLiteral("Rolls back and reapplies the given number of database migrations. If steps is 0, all migrations will be rolled back and reapplied."),
+                                 QStringLiteral("steps"));
     parser.addOption(dbRefresh);
 
-    //: CLI option description
-    //% "Resets the database by rolling back all migrations."
-    QCommandLineOption dbReset(QStringLiteral("db-reset"), qtTrId("gikctl-cliopt-dbreset-desc"));
+    QCommandLineOption dbReset(QStringLiteral("db-reset"), QStringLiteral("Resets the database by rolling back all migrations."));
     parser.addOption(dbReset);
+#endif
 
     //: CLI option description
     //% "Run setup process."
@@ -72,6 +62,7 @@ int main(int argc, char *argv[])
 
     parser.process(app);
 
+#ifdef QT_DEBUG
     if (parser.isSet(dbMigrate)) {
         DbMigrations migs(parser.value(iniFile), parser.isSet(quiet));
         return migs.runMigrations();
@@ -90,6 +81,11 @@ int main(int argc, char *argv[])
     if (parser.isSet(dbReset)) {
         DbMigrations migs(parser.value(iniFile), parser.isSet(quiet));
         return migs.runReset();
+    }
+#endif
+
+    if (parser.isSet(setup)) {
+
     }
 
     return 0;
