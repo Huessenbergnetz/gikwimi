@@ -36,17 +36,6 @@ void Root::defaultPage(Context *c)
 
 bool Root::Auto(Context *c)
 {
-    if (c->controllerName() == QLatin1String("Login")) {
-        return true;
-    }
-
-    const AuthenticationUser user = Authentication::user(c);
-
-    if (Q_UNLIKELY(user.isNull())) {
-        c->res()->redirect(c->uriFor(QStringLiteral("/login")));
-        return false;
-    }
-
     StatusMessage::load(c);
 
     return true;
