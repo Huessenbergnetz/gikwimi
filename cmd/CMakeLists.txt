@@ -10,6 +10,8 @@ target_sources(gikwimictl
         cli.h
         configuration.cpp
         configuration.h
+        database.cpp
+        database.h
 )
 
 target_compile_features(gikwimictl PUBLIC cxx_std_14)

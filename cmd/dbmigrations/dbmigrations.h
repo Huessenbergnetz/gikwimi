@@ -6,14 +6,14 @@
 #ifndef GIKWIMICTL_DBMIGRATIONS_H
 #define GIKWIMICTL_DBMIGRATIONS_H
 
-#include "configuration.h"
+#include "../database.h"
 #include <memory>
 
 namespace Firfuorida {
 class Migrator;
 }
 
-class DbMigrations : public Configuration
+class DbMigrations : public Database
 {
 public:
     explicit DbMigrations(const QString &iniPath, bool quiet = false);
@@ -28,7 +28,6 @@ public:
     int runRefresh(const QString &steps);
 
 private:
-    int openDb();
     void initMigrations();
 
     std::unique_ptr<Firfuorida::Migrator> m_migrator;
