@@ -17,9 +17,9 @@ void M0001_Create_Users_Table::up()
 
     t->increments();
     t->tinyInteger(QStringLiteral("type"))->unSigned()->defaultValue(0);
-    t->varChar(QStringLiteral("username"));
+    t->varChar(QStringLiteral("username"))->unique();
     t->varChar(QStringLiteral("password"))->charset(QStringLiteral("latin1"));
-    t->varChar(QStringLiteral("email"));
+    t->varChar(QStringLiteral("email"))->unique();
     t->dateTime(QStringLiteral("created_at"));
     t->dateTime(QStringLiteral("updated_at"));
     t->bigInteger(QStringLiteral("locked_at"))->defaultValue(0)->nullable();
