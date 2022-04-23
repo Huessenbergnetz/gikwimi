@@ -13,7 +13,7 @@ if (POLICY CMP0043)
   cmake_policy(SET CMP0043 NEW)
 endif()
 
-find_package(Qt5 COMPONENTS Core Network Sql REQUIRED)
+find_package(Qt5 COMPONENTS Core Network Sql LinguistTools REQUIRED)
 find_package(Cutelyst3Qt5 REQUIRED)
 find_package(Cutelee6Qt5 5.2.0 REQUIRED)
 find_package(FirfuoridaQt5 REQUIRED)
@@ -29,6 +29,7 @@ include(GNUInstallDirs)
 
 set(GIKWIMI_APPDIR ${CMAKE_INSTALL_DATADIR}/gikwimi CACHE PATH "Directory to install gikwimi data files into")
 set(GIKWIMI_TEMPLATEDIR ${GIKWIMI_APPDIR}/templates CACHE PATH "Directory to install gikwimi template files into")
+set(GIKWIMI_TRANSLATIONSDIR ${GIKWIMI_APPDIR}/translations CACHE PATH "Directory to install gikwimi translation files into")
 
 set(GIKWIMI_CONF_DB "database")
 set(GIKWIMI_CONF_DB_TYPE "type")
@@ -51,8 +52,8 @@ set(GIKWIMI_CONF_GIK_SITENAME_DEFVAL "Gikwimi")
 
 GNUInstallDirs_get_absolute_install_dir(GIKWIMI_FULL_TEMPLATEDIR GIKWIMI_TEMPLATEDIR)
 
-
 add_subdirectory(app)
 add_subdirectory(cmd)
 add_subdirectory(supplementary)
 add_subdirectory(templates)
+add_subdirectory(translations)

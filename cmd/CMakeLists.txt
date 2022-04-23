@@ -30,6 +30,8 @@ target_link_libraries(gikwimictl
     FirfuoridaQt5::Core
 )
 
+GNUInstallDirs_get_absolute_install_dir(GIKWIMI_FULL_TRANSLATIONSDIR GIKWIMI_TRANSLATIONSDIR)
+
 target_compile_definitions(gikwimictl
     PRIVATE
         QT_NO_CAST_TO_ASCII
@@ -40,6 +42,8 @@ target_compile_definitions(gikwimictl
         QT_USE_QSTRINGBUILDER
         GIKWIMI_VERSION="${PROJECT_VERSION}"
         GIKWIMI_CONFFILE="${CMAKE_INSTALL_FULL_SYSCONFDIR}/gikwimi.ini"
+        $<BUILD_INTERFACE:GIKWIMI_TRANSLATIONSDIR="${CMAKE_BINARY_DIR}/translations">
+        $<INSTALL_INTERFACE:GIKWIMI_TRANSLATIONSDIR="${GIKWIMI_FULL_TRANSLATIONSDIR}"
 )
 
 target_compile_options(gikwimictl

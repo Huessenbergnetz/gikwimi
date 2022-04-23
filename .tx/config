@@ -1,0 +1,10 @@
+[main]
+host = https://www.transifex.com
+
+[gikwimi.cmd]
+file_filter = translations/gikwimictl_<lang>.ts
+minimum_perc = 0
+source_file = translations/gikwimictl.ts
+source_lang = en
+type = QT
+

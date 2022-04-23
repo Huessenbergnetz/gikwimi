@@ -4,6 +4,8 @@
  */
 
 #include <QCoreApplication>
+#include <QTranslator>
+#include <QLocale>
 #include <QCommandLineOption>
 #include <QCommandLineParser>
 
@@ -20,6 +22,18 @@ int main(int argc, char *argv[])
     app.setApplicationName(QStringLiteral("gikwimictl"));
     app.setApplicationVersion(QStringLiteral(GIKWIMI_VERSION));
 
+    {
+        const QLocale locale;
+        auto trans = new QTranslator(&app);
+        if (Q_LIKELY(trans->load(locale, QStringLiteral("gikwimictl"), QStringLiteral("_"), QStringLiteral(GIKWIMI_TRANSLATIONSDIR)))) {
+            if (Q_UNLIKELY(!QCoreApplication::installTranslator(trans))) {
+                qWarning("Can not install translator for locale %s", qUtf8Printable(locale.name()));
+            }
+        } else {
+            qWarning("Can not load translations for locale %s from %s", qUtf8Printable(locale.name()), GIKWIMI_TRANSLATIONSDIR);
+        }
+    }
+
     QCommandLineParser parser;
     parser.addHelpOption();
     parser.addVersionOption();
@@ -35,9 +49,10 @@ int main(int argc, char *argv[])
                                iniFileDefVal);
     parser.addOption(iniFile);
 
-    //: CLI option description
-    //% "Be quiet and print less output."
-    QCommandLineOption quiet(QStringList({QStringLiteral("q"), QStringLiteral("quiet")}), qtTrId("gikctl-cliopt-quiet-desc"));
+    QCommandLineOption quiet(QStringList({QStringLiteral("q"), QStringLiteral("quiet")}),
+                             //: CLI option description
+                             //% "Be quiet and print less output."
+                             qtTrId("gikctl-cliopt-quiet-desc"));
     parser.addOption(quiet);
 
 #ifdef QT_DEBUG
@@ -58,31 +73,52 @@ int main(int argc, char *argv[])
     parser.addOption(dbReset);
 #endif
 
-    QCommandLineOption addUser(QStringLiteral("add-user"), qtTrId("gikctl-cliopt-adduser-desc"));
+    QCommandLineOption addUser(QStringLiteral("add-user"),
+                               //: CLI option description
+                               //% "Add a new user."
+                               qtTrId("gikctl-cliopt-adduser-desc"));
     parser.addOption(addUser);
 
     QCommandLineOption userName(QStringLiteral("user-name"),
+                                //: CLI option descriptin
+                                //% "Username for new user to create, has to be unique."
                                 qtTrId("gikctl-cliopt-username-desc"),
+                                //: CLI option value name
+                                //% "username"
                                 qtTrId("gikctl-cliopt-username-value"));
     parser.addOption(userName);
 
     QCommandLineOption userType(QStringLiteral("user-type"),
+                                //: CLI option description
+                                //% "Type for the user to create or edit."
                                 qtTrId("gikctl-cliopt-usertype-desc"),
+                                //: CLI option value name
+                                //% "type"
                                 qtTrId("gikctl-cliopt-usertype-value"),
                                 QStringLiteral("1"));
     parser.addOption(userType);
 
     QCommandLineOption userEmail(QStringLiteral("user-email"),
+                                 //: CLI option description
+                                 //% "Email address for the user to create or edit."
                                  qtTrId("gikctl-cliopt-useremail-desc"),
+                                 //: CLI option value name
+                                 //% "email"
                                  qtTrId("gikctl-cliopt-useremail-value"));
     parser.addOption(userEmail);
 
     QCommandLineOption userPassword(QStringLiteral("user-password"),
+                                    //: CLI option description
+                                    //% "Password for the user to create. If empty, a random password will be generated."
                                     qtTrId("gikctl-cliopt-userpass-desc"),
+                                    //: CLI option value name
+                                    //% "password"
                                     qtTrId("gikctl-cliopt-userpass-value"));
     parser.addOption(userPassword);
 
     QCommandLineOption runSetup(QStringLiteral("setup"),
+                                //: CLI option description
+                                //% "Run setup after installing or upgrading Gikwimi."
                                 qtTrId("gikctl-cliopt-runsetup-desc"));
     parser.addOption(runSetup);
 
