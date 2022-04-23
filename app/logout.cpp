@@ -27,7 +27,7 @@ void Logout::index(Context *c)
 
     qCInfo(GIK_AUTH) << "User" << username << "logged out";
 
-    Session::deleteSession(c, QStringLiteral("User logged out"));
+    Session::deleteSession(c, QStringLiteral("User %1 logged out").arg(username));
 
     c->res()->redirect(c->uriFor(QStringLiteral("/")));
 }
