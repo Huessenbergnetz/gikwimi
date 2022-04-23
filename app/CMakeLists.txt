@@ -16,6 +16,8 @@ target_sources(gikwimi
         gikwimiconfig.cpp
         userauthstoresql.h
         userauthstoresql.cpp
+        controlcenter.h
+        controlcenter.cpp
 )
 
 add_subdirectory(../common common)

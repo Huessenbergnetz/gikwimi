@@ -8,6 +8,7 @@
 #include "gikwimiconfig.h"
 #include "root.h"
 #include "login.h"
+#include "controlcenter.h"
 #include "confignames.h"
 #include "userauthstoresql.h"
 
@@ -78,12 +79,13 @@ bool Gikwimi::init()
     qCDebug(GIK_CORE) << "Registering controllers";
     new Root(this);
     new Login(this);
+    new ControlCenter(this);
 
     qCDebug(GIK_CORE) << "Registering plugins";
     auto staticSimple = new StaticSimple(this);
     staticSimple->setIncludePaths({GikwimiConfig::tmplPath(QStringLiteral("static"))});
 
-    auto sess = new Session(this);
+    new Session(this);
 
     new StatusMessage(this);
 
