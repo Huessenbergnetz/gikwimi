@@ -82,6 +82,10 @@ int main(int argc, char *argv[])
                                     qtTrId("gikctl-cliopt-userpass-value"));
     parser.addOption(userPassword);
 
+    QCommandLineOption runSetup(QStringLiteral("setup"),
+                                qtTrId("gikctl-cliopt-runsetup-desc"));
+    parser.addOption(runSetup);
+
     parser.process(app);
 
 #ifdef QT_DEBUG
@@ -109,6 +113,11 @@ int main(int argc, char *argv[])
     if (parser.isSet(addUser)) {
         Setup setup(parser.value(iniFile), parser.isSet(quiet));
         return setup.addUser(parser.value(userName).trimmed(), parser.value(userEmail).trimmed(), parser.value(userPassword).trimmed(), parser.value(userType).trimmed());
+    }
+
+    if (parser.isSet(runSetup)) {
+        Setup setup(parser.value(iniFile), parser.isSet(quiet));
+        return setup.run();
     }
 
     return 0;

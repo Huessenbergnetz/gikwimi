@@ -15,6 +15,8 @@ public:
     ~Setup();
 
     int addUser(const QString &name, const QString &email, const QString &password, const QString &type);
+
+    int run();
 };
 
 #endif // GIKWIMICTL_SETUP_H

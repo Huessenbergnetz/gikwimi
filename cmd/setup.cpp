@@ -4,14 +4,19 @@
  */
 
 #include "setup.h"
+#include "dbmigrations/m0001_create_users_table.h"
 
 #include <Cutelyst/Plugins/Utils/validatoremail.h>
 #include <Cutelyst/Plugins/Authentication/credentialpassword.h>
+
+#include <Firfuorida/Migrator>
 
 #include <QSqlDatabase>
 #include <QSqlQuery>
 #include <QDateTime>
 #include <QRandomGenerator>
+
+#include <memory>
 
 #define DBCONNAME "dbsetup"
 
@@ -136,6 +141,23 @@ int Setup::addUser(const QString &name, const QString &email, const QString &pas
     if (passwordGenerated) {
         //% "Generated password for user “%1“: %2"
         printMessage(qtTrId("gikctl-cli-status-generated-password").arg(name, _password));
+    }
+
+    return rc;
+}
+
+int Setup::run()
+{
+    int rc = openDb(QStringLiteral(DBCONNAME));
+    if (rc != 0) {
+        return rc;
+    }
+
+    auto migrator = std::make_unique<Firfuorida::Migrator>(QStringLiteral(DBCONNAME), QStringLiteral("migrations"));
+    new M0001_Create_Users_Table(migrator.get());
+
+    if (!migrator->migrate()) {
+        rc = dbError(migrator->lastError().text());
     }
 
     return rc;
