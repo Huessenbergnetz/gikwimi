@@ -9,6 +9,7 @@ add_custom_target(defaulttemplate
         assets/sass/style.scss
         site/wrapper.tmpl
         site/base.tmpl
+        site/login/index.tmpl
 )
 
 install(DIRECTORY site static

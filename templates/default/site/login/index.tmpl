@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link href="/css/style.css" rel="stylesheet">
+    <title>{{ site_title }} – {{ site_name }}</title>
+  </head>
+  <body>
+    <header></header>
+
+    <main class="container-fluid">
+
+      <div class="row justify-content-center mt-5">
+        <div class="col col-md-6 col-lg-4">
+          <div class="card">
+            <div class="card-header">{{ site_title }} – {{ site_name }}</div>
+            <div class="card-body">
+              <form method="post" autocomplete="on">
+
+                <div class="input-group mb-3">
+                  <div class="input-group-text"><i class="bi-person"></i></div>
+                  <input type="text" class="form-control" id="username" name="username" placeholder="{{ login_field_label_username }}" aria-label="{{ login_field_label_username }}" value="{{ username }}">
+                </div>
+
+                <div class="input-group mb-3">
+                  <div class="input-group-text"><i class="bi-key"></i></div>
+                  <input type="password" class="form-control" id="password" name="password" placeholder="{{ login_field_label_password }}" aria-label="{{ login_field_label_password }}">
+                </div>
+
+                <div class="d-grid">
+                  <button type="submit" value="Submit" class="btn btn-light" id="submitLoginForm"><i class="bi-box-arrow-in-right"></i> {{ login_button_label_login }}</button>
+                </div>
+
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {% if error_msg %}
+      <div class="row justify-content-center mt-3">
+        <div class="col col-md-6 col-lg-4">
+          <div class="alert alert-warning d-flex align-items-center" role="alert">
+            <i class="bi bi-exclamation-triangle flex-shrink-0 me-2"></i><div>{{ error_msg }}</div>
+          </div>
+        </div>
+      </div>
+      {% endif %}
+
+    </main>
+    <footer></footer>
+
+    <script src="/js/scripts.js"></script>
+  </body>
+</html>

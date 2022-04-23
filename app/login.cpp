@@ -31,7 +31,9 @@ void Login::index(Context *c)
         if (!username.isEmpty() && !password.isEmpty()) {
             if (Authentication::authenticate(c, req->bodyParams(), QStringLiteral("users"))) {
                 qCInfo(GIK_AUTH, "User %s successfully logged in", qUtf8Printable(username));
-                c->res()->redirect(c->uriFor(QStringLiteral("/")));
+                const QString redirectToQueryParam = req->queryParam(QStringLiteral("redirect_to"));
+                const QUrl redirectToUrl = redirectToQueryParam.isEmpty() ? c->uriFor(QStringLiteral("/controlcenter")) : QUrl::fromEncoded(redirectToQueryParam.toLatin1());
+                c->res()->redirect(redirectToUrl);
                 return;
             } else {
                 qCWarning(GIK_AUTH, "Bad username and/or password for user %s from IP %s", qUtf8Printable(username), qUtf8Printable(req->addressString()));
@@ -40,6 +42,16 @@ void Login::index(Context *c)
             }
         }
     }
+
+    c->stash({
+                 {QStringLiteral("no_wrapper"), 1},
+                 {QStringLiteral("template"), QStringLiteral("login/index.tmpl")},
+                 {QStringLiteral("site_title"), c->translate("Login", "Login", "site title")},
+                 {QStringLiteral("login_field_label_username"), c->translate("Login", "Username")},
+                 {QStringLiteral("login_field_label_password"), c->translate("Login", "Password")},
+                 {QStringLiteral("login_button_label_login"), c->translate("Login", "Login", "button text")},
+                 {QStringLiteral("username"), username}
+             });
 }
 
 #include "moc_login.cpp"
