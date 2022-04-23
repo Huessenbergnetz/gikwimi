@@ -55,11 +55,6 @@ int main(int argc, char *argv[])
     parser.addOption(dbReset);
 #endif
 
-    //: CLI option description
-    //% "Run setup process."
-    QCommandLineOption setup(QStringLiteral("setup"), qtTrId("gikctl-cliopt-setup-desc"));
-    parser.addOption(setup);
-
     parser.process(app);
 
 #ifdef QT_DEBUG
@@ -83,10 +78,6 @@ int main(int argc, char *argv[])
         return migs.runReset();
     }
 #endif
-
-    if (parser.isSet(setup)) {
-
-    }
 
     return 0;
 }
