@@ -8,6 +8,7 @@
 #include "gikwimiconfig.h"
 #include "root.h"
 #include "login.h"
+#include "logout.h"
 #include "controlcenter.h"
 #include "confignames.h"
 #include "userauthstoresql.h"
@@ -79,6 +80,7 @@ bool Gikwimi::init()
     qCDebug(GIK_CORE) << "Registering controllers";
     new Root(this);
     new Login(this);
+    new Logout(this);
     new ControlCenter(this);
 
     qCDebug(GIK_CORE) << "Registering plugins";

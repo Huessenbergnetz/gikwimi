@@ -11,6 +11,8 @@ target_sources(gikwimi
         root.cpp
         login.h
         login.cpp
+        logout.h
+        logout.cpp
         logging.h
         gikwimiconfig.h
         gikwimiconfig.cpp
