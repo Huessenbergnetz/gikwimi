@@ -39,6 +39,8 @@ protected:
 
     int dbError(const QSqlDatabase &db) const;
 
+    int internalError(const QString &error) const;
+
     void printWarning(const QString &warning) const;
 
     void printStatus(const QString &status) const;
