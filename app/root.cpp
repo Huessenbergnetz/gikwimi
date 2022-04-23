@@ -4,6 +4,8 @@
  */
 
 #include "root.h"
+#include "logging.h"
+#include "gikwimiconfig.h"
 
 #include <QCoreApplication>
 #include <Cutelyst/Application>
@@ -36,7 +38,11 @@ void Root::defaultPage(Context *c)
 
 bool Root::Auto(Context *c)
 {
+    qCDebug(GIK_CORE) << "Entering Root::Auto()";
+
     StatusMessage::load(c);
+
+    c->setStash(QStringLiteral("site_name"), GikwimiConfig::siteName());
 
     return true;
 }
