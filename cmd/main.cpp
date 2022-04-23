@@ -108,7 +108,7 @@ int main(int argc, char *argv[])
 
     if (parser.isSet(addUser)) {
         Setup setup(parser.value(iniFile), parser.isSet(quiet));
-        return setup.addUser(parser.value(userName), parser.value(userEmail), parser.value(userPassword), parser.value(userType));
+        return setup.addUser(parser.value(userName).trimmed(), parser.value(userEmail).trimmed(), parser.value(userPassword).trimmed(), parser.value(userType).trimmed());
     }
 
     return 0;

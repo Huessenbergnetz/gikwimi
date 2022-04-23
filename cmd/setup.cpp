@@ -11,8 +11,7 @@
 #include <QSqlDatabase>
 #include <QSqlQuery>
 #include <QDateTime>
-
-#include <QDebug>
+#include <QRandomGenerator>
 
 #define DBCONNAME "dbsetup"
 
@@ -53,11 +52,18 @@ int Setup::addUser(const QString &name, const QString &email, const QString &pas
         return inputError(qtTrId("gikctl-cli-adduser-invalid-email"));
     }
 
+    QString _password;
+    bool passwordGenerated = false;
     if (password.isEmpty()) {
-        printFailed();
-        //: CLI error message
-        //% "Can not add a new user without a valid password"
-        return inputError(qtTrId("gikctl-cli-adduser-empty-password"));
+        const int passwordLength = 14;
+        auto rand = QRandomGenerator::global();
+        _password.reserve(passwordLength);
+        for (int i = 0; i < passwordLength; ++i) {
+            _password.append(QChar(rand->bounded(33, 126)));
+        }
+        passwordGenerated = true;
+    } else {
+        _password = password;
     }
 
     bool ok = false;
@@ -70,7 +76,7 @@ int Setup::addUser(const QString &name, const QString &email, const QString &pas
     }
     const quint8 _type = static_cast<quint8>(_t);
 
-    const QString passwordEnc = Cutelyst::CredentialPassword::createPassword(password);
+    const QString passwordEnc = Cutelyst::CredentialPassword::createPassword(_password);
     if (passwordEnc.isEmpty()) {
         //: CLI error message
         //% "Failed to encrypt password"
@@ -126,6 +132,11 @@ int Setup::addUser(const QString &name, const QString &email, const QString &pas
     }
 
     printDone();
+
+    if (passwordGenerated) {
+        //% "Generated password for user “%1“: %2"
+        printMessage(qtTrId("gikctl-cli-status-generated-password").arg(name, _password));
+    }
 
     return rc;
 }
