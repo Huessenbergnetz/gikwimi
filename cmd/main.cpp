@@ -7,7 +7,10 @@
 #include <QCommandLineOption>
 #include <QCommandLineParser>
 
+#ifdef QT_DEBUG
 #include "dbmigrations/dbmigrations.h"
+#endif
+#include "setup.h"
 
 int main(int argc, char *argv[])
 {
@@ -55,6 +58,30 @@ int main(int argc, char *argv[])
     parser.addOption(dbReset);
 #endif
 
+    QCommandLineOption addUser(QStringLiteral("add-user"), qtTrId("gikctl-cliopt-adduser-desc"));
+    parser.addOption(addUser);
+
+    QCommandLineOption userName(QStringLiteral("user-name"),
+                                qtTrId("gikctl-cliopt-username-desc"),
+                                qtTrId("gikctl-cliopt-username-value"));
+    parser.addOption(userName);
+
+    QCommandLineOption userType(QStringLiteral("user-type"),
+                                qtTrId("gikctl-cliopt-usertype-desc"),
+                                qtTrId("gikctl-cliopt-usertype-value"),
+                                QStringLiteral("1"));
+    parser.addOption(userType);
+
+    QCommandLineOption userEmail(QStringLiteral("user-email"),
+                                 qtTrId("gikctl-cliopt-useremail-desc"),
+                                 qtTrId("gikctl-cliopt-useremail-value"));
+    parser.addOption(userEmail);
+
+    QCommandLineOption userPassword(QStringLiteral("user-password"),
+                                    qtTrId("gikctl-cliopt-userpass-desc"),
+                                    qtTrId("gikctl-cliopt-userpass-value"));
+    parser.addOption(userPassword);
+
     parser.process(app);
 
 #ifdef QT_DEBUG
@@ -78,6 +105,11 @@ int main(int argc, char *argv[])
         return migs.runReset();
     }
 #endif
+
+    if (parser.isSet(addUser)) {
+        Setup setup(parser.value(iniFile), parser.isSet(quiet));
+        return setup.addUser(parser.value(userName), parser.value(userEmail), parser.value(userPassword), parser.value(userType));
+    }
 
     return 0;
 }

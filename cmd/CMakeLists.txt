@@ -12,6 +12,8 @@ target_sources(gikwimictl
         configuration.h
         database.cpp
         database.h
+        setup.cpp
+        setup.h
 )
 
 target_compile_features(gikwimictl PUBLIC cxx_std_14)
@@ -24,6 +26,7 @@ target_link_libraries(gikwimictl
     Qt5::Network
     Qt5::Sql
     Cutelyst::Authentication
+    Cutelyst::Utils::Validator
     FirfuoridaQt5::Core
 )
 
