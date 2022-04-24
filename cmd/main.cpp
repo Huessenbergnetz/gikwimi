@@ -75,18 +75,12 @@ int main(int argc, char *argv[])
 
     QCommandLineOption addUser(QStringLiteral("add-user"),
                                //: CLI option description
-                               //% "Add a new user."
-                               qtTrId("gikctl-cliopt-adduser-desc"));
+                               //% "Add a new user with the given username. The user name must not be assigned yet."
+                               qtTrId("gikctl-cliopt-adduser-desc"),
+                               //: CLI option value name
+                               //% "username"
+                               qtTrId("gikctl-cliopt-adduser-value"));
     parser.addOption(addUser);
-
-    QCommandLineOption userName(QStringLiteral("user-name"),
-                                //: CLI option descriptin
-                                //% "Username for new user to create, has to be unique."
-                                qtTrId("gikctl-cliopt-username-desc"),
-                                //: CLI option value name
-                                //% "username"
-                                qtTrId("gikctl-cliopt-username-value"));
-    parser.addOption(userName);
 
     QCommandLineOption userType(QStringLiteral("user-type"),
                                 //: CLI option description
@@ -148,7 +142,7 @@ int main(int argc, char *argv[])
 
     if (parser.isSet(addUser)) {
         Setup setup(parser.value(iniFile), parser.isSet(quiet));
-        return setup.addUser(parser.value(userName).trimmed(), parser.value(userEmail).trimmed(), parser.value(userPassword).trimmed(), parser.value(userType).trimmed());
+        return setup.addUser(parser.value(addUser).trimmed(), parser.value(userEmail).trimmed(), parser.value(userPassword).trimmed(), parser.value(userType).trimmed());
     }
 
     if (parser.isSet(runSetup)) {

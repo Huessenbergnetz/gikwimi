@@ -78,18 +78,9 @@
         <translation type="unfinished"/>
     </message>
     <message id="gikctl-cliopt-adduser-desc">
-        <source>Add a new user.</source>
+        <source>Add a new user with the given username. The user name must not be assigned yet.</source>
+        <oldsource>Add a new user.</oldsource>
         <extracomment>CLI option description</extracomment>
-        <translation type="unfinished"/>
-    </message>
-    <message id="gikctl-cliopt-username-desc">
-        <source>Username for new user to create, has to be unique.</source>
-        <extracomment>CLI option descriptin</extracomment>
-        <translation type="unfinished"/>
-    </message>
-    <message id="gikctl-cliopt-username-value">
-        <source>username</source>
-        <extracomment>CLI option value name</extracomment>
         <translation type="unfinished"/>
     </message>
     <message id="gikctl-cliopt-usertype-desc">
@@ -165,6 +156,11 @@
     </message>
     <message id="gikctl-cli-status-generated-password">
         <source>Generated password for user “%1“: %2</source>
+        <translation type="unfinished"/>
+    </message>
+    <message id="gikctl-cliopt-adduser-value">
+        <source>username</source>
+        <extracomment>CLI option value name</extracomment>
         <translation type="unfinished"/>
     </message>
 </context>
