@@ -19,10 +19,9 @@ ControlCenter::~ControlCenter() = default;
 
 void ControlCenter::index(Context *c)
 {
-    QString body;
-    body = QStringLiteral("Controlcenter!");
-    c->response()->setBody(body);
-    c->response()->setContentType(QLatin1String("text/html; charset=utf-8"));
+    c->stash({
+                  {QStringLiteral("site_title"), c->translate("ControlCenter", "Dashboard")}
+             });
 }
 
 bool ControlCenter::Auto(Context *c)
@@ -46,9 +45,9 @@ bool ControlCenter::Auto(Context *c)
 void ControlCenter::buildMenu(Context *c)
 {
     std::vector<MenuItem> mainMenu({
-                                       MenuItem(c, QStringLiteral("controlcenter_index"), c->translate("ControlCenter", "Dashboard"), QString(), QStringLiteral("index"), QStringLiteral("controlcenter")),
-                                       MenuItem(c, QStringLiteral("controlcenter_users"), c->translate("ControlCenter", "Users"), QString(), QStringLiteral("index"), QStringLiteral("controlcenter/users")),
-                                       MenuItem(c, QStringLiteral("controlcenter_settings"), c->translate("ControlCenter", "Settings"), QString(), QStringLiteral("index"), QStringLiteral("controlcenter/settings")),
+                                       MenuItem(c, QStringLiteral("controlcenter_index"), c->translate("ControlCenter", "Dashboard"), QStringLiteral(R"(<i class="bi bi-speedometer2"></i>)"), QStringLiteral("index"), QStringLiteral("controlcenter")),
+                                       MenuItem(c, QStringLiteral("controlcenter_users"), c->translate("ControlCenter", "Users"), QStringLiteral(R"(<i class="bi bi-people"></i>)"), QStringLiteral("index"), QStringLiteral("controlcenter/users")),
+                                       MenuItem(c, QStringLiteral("controlcenter_settings"), c->translate("ControlCenter", "Settings"), QStringLiteral(R"(<i class="bi bi-sliders"></i>)"), QStringLiteral("index"), QStringLiteral("controlcenter/settings")),
                                    });
     c->setStash(QStringLiteral("controlcenter_main_menu"), QVariant::fromValue<std::vector<MenuItem>>(mainMenu));
 }

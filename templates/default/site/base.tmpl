@@ -8,9 +8,27 @@
     <title>{{ site_title }} – {{ site_name }}</title>
   </head>
   <body>
-    <header></header>
-    <main></main>
-    <footer></footer>
+    <header class="container-fluid"></header>
+    <div class="container-fluid">
+      <div class="row">
+        <nav id="controlcenter_main_sidemenu" class="d-none d-md-flex flex-column col-md-3 col-lg-2 bg-dark text-white vh-100 p-3">
+          <a class="text-white text-decoration-none">
+            <span class="fs-4">{{ site_name }}</span>
+          </a>
+          <hr>
+          <ul class="nav nav-pills flex-column mb-auto">
+            {% for menuitem in controlcenter_main_menu %}
+            <li class="nav-item">
+              <a class="nav-link{% if menuitem.isActive or menuitem.isExpanded %} active{% else %} text-white{% endif %}" href="{{ menuitem.url }}"{% if menuitem.isActive %} aria-current="page"{% endif %}>{{ menuitem.icon|safe }} {{ menuitem.title }}</a>
+            </li>
+            {% endfor %}
+          </ul>
+        </nav>
+        <main class="col-12 col-sm-12 col-md-9 col-lg-10">
+
+        </main>
+      </div>
+    <footer class="container-fluid"></footer>
     <script src="/js/scripts.js"></script>
   </body>
 </html>

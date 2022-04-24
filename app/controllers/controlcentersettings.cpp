@@ -15,8 +15,9 @@ ControlCenterSettings::~ControlCenterSettings() = default;
 
 void ControlCenterSettings::index(Context *c)
 {
-    c->response()->setBody(QStringLiteral("ControlCenter Settings"));
-    c->response()->setContentType(QLatin1String("text/html; charset=utf-8"));
+    c->stash({
+                 {QStringLiteral("site_title"), c->translate("ControlCenterSettings", "Settings")}
+             });
 }
 
 #include "moc_controlcentersettings.cpp"

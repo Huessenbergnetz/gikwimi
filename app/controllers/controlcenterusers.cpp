@@ -17,14 +17,16 @@ ControlCenterUsers::~ControlCenterUsers() = default;
 
 void ControlCenterUsers::index(Context *c)
 {
-    c->response()->setBody(QStringLiteral("ControlCenter Users"));
-    c->response()->setContentType(QLatin1String("text/html; charset=utf-8"));
+    c->stash({
+                 {QStringLiteral("site_title"), c->translate("ControlCenterUsers", "Users")}
+             });
 }
 
 void ControlCenterUsers::add(Context *c)
 {
-    c->response()->setBody(QStringLiteral("ControlCenter Users Add"));
-    c->response()->setContentType(QLatin1String("text/html; charset=utf-8"));
+    c->stash({
+                 {QStringLiteral("site_title"), c->translate("ControlCenterUsers", "Add User")}
+             });
 }
 
 bool ControlCenterUsers::Auto(Context *c)
