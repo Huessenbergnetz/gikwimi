@@ -5,6 +5,8 @@ target_sources(gikwimi
     PRIVATE
         controlcenter.cpp
         controlcenter.h
+        controlcentersettings.cpp
+        controlcentersettings.h
         login.cpp
         login.h
         logout.cpp
