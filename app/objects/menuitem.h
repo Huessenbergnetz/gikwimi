@@ -65,6 +65,8 @@ public:
 
     bool isExpanded() const;
 
+    void addChildItem(const MenuItem &child);
+
 protected:
     QSharedDataPointer<MenuItemData> d;
 };
