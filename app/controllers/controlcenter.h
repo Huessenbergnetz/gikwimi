@@ -24,6 +24,8 @@ public:
 private:
     C_ATTR(Auto, :Private)
     bool Auto(Context *c);
+
+    void buildMenu(Context *c);
 };
 
 #endif // GIKWIMI_CONTROLCENTER_H

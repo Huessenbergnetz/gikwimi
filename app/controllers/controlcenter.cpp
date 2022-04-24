@@ -5,6 +5,7 @@
 
 #include "controlcenter.h"
 #include "logging.h"
+#include "objects/menuitem.h"
 
 #include <Cutelyst/Plugins/Authentication/authentication.h>
 
@@ -37,5 +38,16 @@ bool ControlCenter::Auto(Context *c)
         return false;
     }
 
+    buildMenu(c);
+
     return true;
+}
+
+void ControlCenter::buildMenu(Context *c)
+{
+    std::vector<MenuItem> mainMenu({
+                                       MenuItem(c, QStringLiteral("controlcenter_index"), c->translate("ControlCenter", "Dashboard"), QString(), QStringLiteral("index"), QStringLiteral("controlcenter")),
+                                       MenuItem(c, QStringLiteral("controlcenter_settings"), c->translate("ControlCenter", "Settings"), QString(), QStringLiteral("index"), QStringLiteral("controlcenter/settings")),
+                                   });
+    c->setStash(QStringLiteral("main_menu"), QVariant::fromValue<std::vector<MenuItem>>(mainMenu));
 }

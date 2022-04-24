@@ -12,6 +12,8 @@
 #include "controllers/login.h"
 #include "controllers/logout.h"
 #include "controllers/controlcenter.h"
+#include "controllers/controlcentersettings.h"
+#include "objects/menuitem.h"
 
 #include <Cutelyst/Engine>
 #include <Cutelyst/Plugins/StaticSimple/StaticSimple>
@@ -53,6 +55,9 @@ Gikwimi::~Gikwimi()
 
 bool Gikwimi::init()
 {
+    qCDebug(GIK_CORE) << "Registering Qt meta types";
+    qRegisterMetaType<std::vector<MenuItem>>("std::vector<MenuItem>");
+
     if (!isInitialized) {
         GikwimiConfig::load(engine()->config(QStringLiteral(GIKWIMI_CONF_GIK)));
 
@@ -82,6 +87,7 @@ bool Gikwimi::init()
     new Login(this);
     new Logout(this);
     new ControlCenter(this);
+    new ControlCenterSettings(this);
 
     qCDebug(GIK_CORE) << "Registering plugins";
     auto staticSimple = new StaticSimple(this);

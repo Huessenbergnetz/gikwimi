@@ -15,6 +15,7 @@ target_sources(gikwimi
 
 add_subdirectory(../common common)
 add_subdirectory(controllers)
+add_subdirectory(objects)
 
 target_link_libraries(gikwimi
     Qt5::Core
