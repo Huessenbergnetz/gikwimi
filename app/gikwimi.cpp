@@ -6,12 +6,12 @@
 #include "logging.h"
 #include "gikwimi.h"
 #include "gikwimiconfig.h"
-#include "root.h"
-#include "login.h"
-#include "logout.h"
-#include "controlcenter.h"
 #include "confignames.h"
 #include "userauthstoresql.h"
+#include "controllers/root.h"
+#include "controllers/login.h"
+#include "controllers/logout.h"
+#include "controllers/controlcenter.h"
 
 #include <Cutelyst/Engine>
 #include <Cutelyst/Plugins/StaticSimple/StaticSimple>
