@@ -7,9 +7,6 @@
 #include "logging.h"
 #include "gikwimiconfig.h"
 
-#include <QCoreApplication>
-#include <Cutelyst/Application>
-#include <Cutelyst/Plugins/Authentication/authentication.h>
 #include <Cutelyst/Plugins/StatusMessage>
 
 using namespace Cutelyst;
