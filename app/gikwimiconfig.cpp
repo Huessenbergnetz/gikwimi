@@ -15,7 +15,7 @@ struct ConfigValues {
     mutable QReadWriteLock lock{QReadWriteLock::Recursive};
 
     QString tmpl = QStringLiteral(GIKWIMI_CONF_GIK_TEMPLATE_DEFVAL);
-    QString tmplDir = QStringLiteral(GIKWIMI_TEMPLATEDIR);
+    QString tmplDir = QStringLiteral(GIKWIMI_TEMPLATESDIR);
     QString siteName = QStringLiteral(GIKWIMI_CONF_GIK_SITENAME_DEFVAL);
 };
 Q_GLOBAL_STATIC(ConfigValues, cfg)

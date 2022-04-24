@@ -28,7 +28,7 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 include(GNUInstallDirs)
 
 set(GIKWIMI_APPDIR ${CMAKE_INSTALL_DATADIR}/gikwimi CACHE PATH "Directory to install gikwimi data files into")
-set(GIKWIMI_TEMPLATEDIR ${GIKWIMI_APPDIR}/templates CACHE PATH "Directory to install gikwimi template files into")
+set(GIKWIMI_TEMPLATESDIR ${GIKWIMI_APPDIR}/templates CACHE PATH "Directory to install gikwimi template files into")
 set(GIKWIMI_TRANSLATIONSDIR ${GIKWIMI_APPDIR}/translations CACHE PATH "Directory to install gikwimi translation files into")
 
 set(GIKWIMI_CONF_DB "database")
@@ -49,8 +49,6 @@ set(GIKWIMI_CONF_GIK_TEMPLATE "template")
 set(GIKWIMI_CONF_GIK_TEMPLATE_DEFVAL "default")
 set(GIKWIMI_CONF_GIK_SITENAME "sitename")
 set(GIKWIMI_CONF_GIK_SITENAME_DEFVAL "Gikwimi")
-
-GNUInstallDirs_get_absolute_install_dir(GIKWIMI_FULL_TEMPLATEDIR GIKWIMI_TEMPLATEDIR)
 
 add_subdirectory(app)
 add_subdirectory(cmd)
