@@ -7,22 +7,14 @@ target_sources(gikwimi
     PRIVATE
         gikwimi.h
         gikwimi.cpp
-        root.h
-        root.cpp
-        login.h
-        login.cpp
-        logout.h
-        logout.cpp
-        logging.h
         gikwimiconfig.h
         gikwimiconfig.cpp
         userauthstoresql.h
         userauthstoresql.cpp
-        controlcenter.h
-        controlcenter.cpp
 )
 
 add_subdirectory(../common common)
+add_subdirectory(controllers)
 
 target_link_libraries(gikwimi
     Qt5::Core
