@@ -8,11 +8,14 @@
 #include "gikwimiconfig.h"
 #include "confignames.h"
 #include "userauthstoresql.h"
+
 #include "controllers/root.h"
 #include "controllers/login.h"
 #include "controllers/logout.h"
 #include "controllers/controlcenter.h"
 #include "controllers/controlcentersettings.h"
+#include "controllers/controlcenterusers.h"
+
 #include "objects/menuitem.h"
 
 #include <Cutelyst/Engine>
@@ -88,6 +91,7 @@ bool Gikwimi::init()
     new Logout(this);
     new ControlCenter(this);
     new ControlCenterSettings(this);
+    new ControlCenterUsers(this);
 
     qCDebug(GIK_CORE) << "Registering plugins";
     auto staticSimple = new StaticSimple(this);

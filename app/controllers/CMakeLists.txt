@@ -7,6 +7,8 @@ target_sources(gikwimi
         controlcenter.h
         controlcentersettings.cpp
         controlcentersettings.h
+        controlcenterusers.cpp
+        controlcenterusers.h
         login.cpp
         login.h
         logout.cpp
