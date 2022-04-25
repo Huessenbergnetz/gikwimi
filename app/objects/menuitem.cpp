@@ -22,6 +22,7 @@ MenuItem::MenuItem(Cutelyst::Context *c, const QString &name, const QString &tit
     d->title = title;
     d->icon = icon;
     auto _action = c->getAction(action, ns);
+    Q_ASSERT_X(_action, "create new MenuItem", "can not find action");
     d->url = c->uriFor(_action, captures, args, queryValues);
     d->isActive = _action == c->action();
 }
