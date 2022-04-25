@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: (C) 2022 Matthias Fehring / www.huessenbergnetz.de
+ * SPDX-License-Identifier: AGPL-3.0-or-later
+ */
+
 #ifndef M20220413T113135_CREATE_USERS_TABLE_H
 #define M20220413T113135_CREATE_USERS_TABLE_H
 
