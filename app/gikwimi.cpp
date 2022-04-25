@@ -16,6 +16,7 @@
 #include "controllers/controlcentersettings.h"
 #include "controllers/controlcenterusers.h"
 #include "controllers/controlcenterusersettings.h"
+#include "controllers/controlcenterevents.h"
 
 #include "objects/menuitem.h"
 
@@ -94,6 +95,7 @@ bool Gikwimi::init()
     new ControlCenterSettings(this);
     new ControlCenterUsers(this);
     new ControlCenterUserSettings(this);
+    new ControlCenterEvents(this);
 
     qCDebug(GIK_CORE) << "Registering plugins";
     auto staticSimple = new StaticSimple(this);

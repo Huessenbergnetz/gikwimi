@@ -48,15 +48,11 @@ void ControlCenter::buildMenu(Context *c)
     mainMenu.reserve(3);
 
     mainMenu.emplace_back(c, QStringLiteral("controlcenter_index"), c->translate("ControlCenter", "Dashboard"), QStringLiteral(R"(<i class="bi bi-speedometer2 me-2"></i>)"), QStringLiteral("index"), QStringLiteral("controlcenter"));
+    mainMenu.emplace_back(c, QStringLiteral("controlcenter_events"), c->translate("ControlCenter", "Events"), QStringLiteral(R"(<i class="bi bi-calendar-event me-2"></i>)"), QStringLiteral("index"), QStringLiteral("controlcenter/events"));
 
     if (Utils::isAdmin(c)) {
-
-        MenuItem usersMenu(c, QStringLiteral("controlcenter_users"), c->translate("ControlCenter", "Users"), QStringLiteral(R"(<i class="bi bi-people me-2"></i>)"), QStringLiteral("index"), QStringLiteral("controlcenter/users"));
-        usersMenu.addChildItem(MenuItem(c, QStringLiteral("controlcenter_users_add"), c->translate("ControlCenterUsers", "Add"), QString(), QStringLiteral("add"), QStringLiteral("controlcenter/users")));
-        mainMenu.push_back(usersMenu);
-
+        mainMenu.emplace_back(c, QStringLiteral("controlcenter_users"), c->translate("ControlCenter", "Users"), QStringLiteral(R"(<i class="bi bi-people me-2"></i>)"), QStringLiteral("index"), QStringLiteral("controlcenter/users"));
         mainMenu.emplace_back(c, QStringLiteral("controlcenter_settings"), c->translate("ControlCenter", "Settings", "general settings"), QStringLiteral(R"(<i class="bi bi-sliders me-2"></i>)"), QStringLiteral("index"), QStringLiteral("controlcenter/settings"));
-
     }
 
     c->setStash(QStringLiteral("controlcenter_main_menu"), QVariant::fromValue<std::vector<MenuItem>>(mainMenu));
