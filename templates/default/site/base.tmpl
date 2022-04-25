@@ -23,9 +23,18 @@
             </li>
             {% endfor %}
           </ul>
+          <hr>
+          <div class="dropdown">
+            <a id="dropdownUserSidebar" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" href="#" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi bi-person-circle me-2 fs-2"></i> <strong>{{ user.username }}</strong></a>
+            <ul class="dropdown-menu dropdown-menu-dark text-small shadow" aria-labelledby="dropdownUserSidebar">
+              {% for menuitem in controlcenter_user_menu %}
+              <li><a class="dropdown-item" href="{{ menuitem.url }}">{{ menuitem.title }}</a></li>
+              {% endfor %}
+            </ul>
+          </div>
         </nav>
         <main class="col-12 col-sm-12 col-md-9 col-lg-10">
-
+          {% include template %}
         </main>
       </div>
     <footer class="container-fluid"></footer>

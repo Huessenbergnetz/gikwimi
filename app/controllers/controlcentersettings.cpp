@@ -16,7 +16,8 @@ ControlCenterSettings::~ControlCenterSettings() = default;
 void ControlCenterSettings::index(Context *c)
 {
     c->stash({
-                 {QStringLiteral("site_title"), c->translate("ControlCenterSettings", "Settings")}
+                 {QStringLiteral("site_title"), c->translate("ControlCenterSettings", "Settings")},
+                 {QStringLiteral("template"), QStringLiteral("controlcenter/settings/index.tmpl")}
              });
 }
 

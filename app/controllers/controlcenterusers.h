@@ -23,12 +23,6 @@ public:
 
     C_ATTR(add, :Path("add") :Args(0))
     void add(Context *c);
-
-private:
-    C_ATTR(Auto, :Private)
-    bool Auto(Context *c);
-
-    void buildMenu(Context *c);
 };
 
 #endif // GIKWIMI_CONTROLCENTERUSERS_H

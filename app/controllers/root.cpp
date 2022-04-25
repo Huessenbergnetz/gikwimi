@@ -8,6 +8,8 @@
 #include "gikwimiconfig.h"
 
 #include <Cutelyst/Plugins/StatusMessage>
+#include <Cutelyst/Plugins/Authentication/authentication.h>
+#include <Cutelyst/Plugins/Authentication/authenticationuser.h>
 
 using namespace Cutelyst;
 
@@ -38,6 +40,11 @@ bool Root::Auto(Context *c)
     qCDebug(GIK_CORE) << "Entering Root::Auto()";
 
     StatusMessage::load(c);
+
+    const AuthenticationUser user = Authentication::user(c);
+    if (!user.isNull()) {
+        c->setStash(QStringLiteral("user"), user);
+    }
 
     c->setStash(QStringLiteral("site_name"), GikwimiConfig::siteName());
 
