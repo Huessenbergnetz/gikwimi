@@ -49,6 +49,7 @@ void ControlCenter::buildMenu(Context *c)
 
     mainMenu.emplace_back(c, QStringLiteral("controlcenter_index"), c->translate("ControlCenter", "Dashboard"), QStringLiteral(R"(<i class="bi bi-speedometer2 me-2"></i>)"), QStringLiteral("index"), QStringLiteral("controlcenter"));
     mainMenu.emplace_back(c, QStringLiteral("controlcenter_events"), c->translate("ControlCenter", "Events"), QStringLiteral(R"(<i class="bi bi-calendar-event me-2"></i>)"), QStringLiteral("index"), QStringLiteral("controlcenter/events"));
+    mainMenu.emplace_back(c, QStringLiteral("controlcenter_addressbook"), c->translate("ControlCenter", "Addressbook"), QStringLiteral(R"(<i class="bi bi-person-lines-fill me-2"></i>)"), QStringLiteral("index"), QStringLiteral("controlcenter/addressbook"));
 
     if (Utils::isAdmin(c)) {
         mainMenu.emplace_back(c, QStringLiteral("controlcenter_users"), c->translate("ControlCenter", "Users"), QStringLiteral(R"(<i class="bi bi-people me-2"></i>)"), QStringLiteral("index"), QStringLiteral("controlcenter/users"));
