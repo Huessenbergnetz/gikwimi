@@ -6,6 +6,7 @@
 #include "confignames.h"
 #include "dbmigrations.h"
 #include "m0001_create_users_table.h"
+#include "m0002_createusersettings.h"
 
 #include <Firfuorida/Migrator>
 
@@ -25,6 +26,7 @@ void DbMigrations::initMigrations()
 {
     m_migrator = std::make_unique<Firfuorida::Migrator>(QStringLiteral(DBCONNAME), QStringLiteral("migrations"));
     new M0001_Create_Users_Table(m_migrator.get());
+    new M0002_CreateUserSettings(m_migrator.get());
 }
 
 int DbMigrations::runMigrations()

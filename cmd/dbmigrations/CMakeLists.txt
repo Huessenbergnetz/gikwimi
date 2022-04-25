@@ -7,4 +7,6 @@ target_sources(gikwimictl
         dbmigrations.h
         m0001_create_users_table.cpp
         m0001_create_users_table.h
+        m0002_createusersettings.cpp
+        m0002_createusersettings.h
 )
