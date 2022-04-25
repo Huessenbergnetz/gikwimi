@@ -33,6 +33,18 @@ AuthenticationUser UserAuthStoreSql::findUser(Context *c, const ParamsMultiMap &
             user.insert(QStringLiteral("username"), username);
             user.insert(QStringLiteral("type"), q.value(1));
             user.insert(QStringLiteral("password"), q.value(2));
+
+            QSqlQuery qq = CPreparedSqlQueryThreadFO(QStringLiteral("SELECT name, value FROM user_settings WHERE user_id = :user_id"));
+            qq.bindValue(QStringLiteral(":user_id"), user.id());
+
+            if (Q_LIKELY(qq.exec())) {
+                while (Q_LIKELY(qq.next())) {
+                    user.insert(qq.value(0).toString(), qq.value(1));
+                }
+            } else {
+                qCCritical(GIK_AUTH) << "Failed to execute database query to get user settings for user" << username << "from the database:" << qq.lastError().text();
+            }
+
         } else {
             qCWarning(GIK_AUTH) << "Can not find user" << username << "in the database";
         }
