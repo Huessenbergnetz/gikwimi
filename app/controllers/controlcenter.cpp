@@ -47,15 +47,15 @@ void ControlCenter::buildMenu(Context *c)
     std::vector<MenuItem> mainMenu;
     mainMenu.reserve(3);
 
-    mainMenu.emplace_back(c, QStringLiteral("controlcenter_index"), c->translate("ControlCenter", "Dashboard"), QStringLiteral(R"(<i class="bi bi-speedometer2"></i>)"), QStringLiteral("index"), QStringLiteral("controlcenter"));
+    mainMenu.emplace_back(c, QStringLiteral("controlcenter_index"), c->translate("ControlCenter", "Dashboard"), QStringLiteral(R"(<i class="bi bi-speedometer2 me-2"></i>)"), QStringLiteral("index"), QStringLiteral("controlcenter"));
 
     if (Utils::isAdmin(c)) {
 
-        MenuItem usersMenu(c, QStringLiteral("controlcenter_users"), c->translate("ControlCenter", "Users"), QStringLiteral(R"(<i class="bi bi-people"></i>)"), QStringLiteral("index"), QStringLiteral("controlcenter/users"));
+        MenuItem usersMenu(c, QStringLiteral("controlcenter_users"), c->translate("ControlCenter", "Users"), QStringLiteral(R"(<i class="bi bi-people me-2"></i>)"), QStringLiteral("index"), QStringLiteral("controlcenter/users"));
         usersMenu.addChildItem(MenuItem(c, QStringLiteral("controlcenter_users_add"), c->translate("ControlCenterUsers", "Add"), QString(), QStringLiteral("add"), QStringLiteral("controlcenter/users")));
         mainMenu.push_back(usersMenu);
 
-        mainMenu.emplace_back(c, QStringLiteral("controlcenter_settings"), c->translate("ControlCenter", "Settings", "general settings"), QStringLiteral(R"(<i class="bi bi-sliders"></i>)"), QStringLiteral("index"), QStringLiteral("controlcenter/settings"));
+        mainMenu.emplace_back(c, QStringLiteral("controlcenter_settings"), c->translate("ControlCenter", "Settings", "general settings"), QStringLiteral(R"(<i class="bi bi-sliders me-2"></i>)"), QStringLiteral("index"), QStringLiteral("controlcenter/settings"));
 
     }
 
@@ -64,7 +64,7 @@ void ControlCenter::buildMenu(Context *c)
     std::vector<MenuItem> userMenu;
     userMenu.reserve(2);
 
-//    userMenu.emplace_back(c, QStringLiteral("user_menu_settings"), c->translate("ControlCenter", "Settings", "user settings"), QString(), QStringLiteral("index"), QStringLiteral("controlcenter/usersettings"));
+    userMenu.emplace_back(c, QStringLiteral("user_menu_settings"), c->translate("ControlCenter", "Settings", "user settings"), QString(), QStringLiteral("index"), QStringLiteral("controlcenter/usersettings"));
     userMenu.emplace_back(c, QStringLiteral("user_menu_logout"), c->translate("ControlCenter", "Logout"), QString(), QStringLiteral("index"), QStringLiteral("logout"));
 
     c->setStash(QStringLiteral("controlcenter_user_menu"), QVariant::fromValue<std::vector<MenuItem>>(userMenu));
