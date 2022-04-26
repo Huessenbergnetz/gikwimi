@@ -11,4 +11,6 @@ target_sources(gikwimictl
         m0002_createusersettings.h
         m0003_createoptionstable.cpp
         m0003_createoptionstable.h
+        m0004_createaddressbookstable.cpp
+        m0004_createaddressbookstable.h
 )

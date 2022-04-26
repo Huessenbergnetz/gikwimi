@@ -3,6 +3,9 @@
 
 target_sources(gikwimi
     PRIVATE
+        addressbook.cpp
+        addressbook.h
+        addressbook_p.h
         menuitem.cpp
         menuitem.h
         menuitem_p.h
