@@ -4,6 +4,9 @@
  */
 
 #include "controlcenteraddressbook.h"
+#include "global.h"
+
+#include <Cutelyst/Plugins/Authentication/authenticationuser.h>
 
 ControlCenterAddressBook::ControlCenterAddressBook(QObject *parent)
     : Controller{parent}
@@ -24,7 +27,15 @@ void ControlCenterAddressBook::index(Context *c)
 void ControlCenterAddressBook::add(Context *c)
 {
     c->stash({
-                 {QStringLiteral("site_title"), c->translate("ControlCenterAddressBook", "Add Contact")},
+                 {QStringLiteral("site_title"), c->translate("ControlCenterAddressBook", "Add addressbook")},
                  {QStringLiteral("template"), QStringLiteral("controlcenter/addressbook/add.tmpl")}
+             });
+}
+
+void ControlCenterAddressBook::edit(Context *c, const QString &id)
+{
+    c->stash({
+                 {QStringLiteral("site_title"), c->translate("ControlCenterAddressBook", "Edit addressbook")},
+                 {QStringLiteral("template"), QStringLiteral("controlcenter/addressbook/edit.tmpl")}
              });
 }

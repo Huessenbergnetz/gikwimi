@@ -23,6 +23,9 @@ public:
 
     C_ATTR(add, :Path("add") :Args(0))
     void add(Context *c);
+
+    C_ATTR(edit, :Path("edit") :Args(1))
+    void edit(Context *c, const QString &id);
 };
 
 #endif // GIKWIMI_CONTROLCENTERADDRESSBOOK_H
