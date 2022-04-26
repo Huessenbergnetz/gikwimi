@@ -13,6 +13,11 @@
 #include "dbmigrations/dbmigrations.h"
 #endif
 #include "setup.h"
+#include "addressbookmanager.h"
+#include "usermanager.h"
+
+#include "../app/objects/addressbook.h"
+#include "../app/objects/user.h"
 
 int main(int argc, char *argv[])
 {
@@ -22,8 +27,8 @@ int main(int argc, char *argv[])
     app.setApplicationName(QStringLiteral("gikwimictl"));
     app.setApplicationVersion(QStringLiteral(GIKWIMI_VERSION));
 
+    const QLocale locale;
     {
-        const QLocale locale;
         auto trans = new QTranslator(&app);
         if (Q_LIKELY(trans->load(locale, QStringLiteral("gikwimictl"), QStringLiteral("_"), QStringLiteral(GIKWIMI_TRANSLATIONSDIR)))) {
             if (Q_UNLIKELY(!QCoreApplication::installTranslator(trans))) {
@@ -82,14 +87,15 @@ int main(int argc, char *argv[])
                                qtTrId("gikctl-cliopt-adduser-value"));
     parser.addOption(addUser);
 
+    const QString userTypeDefault = QStringLiteral("registered");
     QCommandLineOption userType(QStringLiteral("user-type"),
-                                //: CLI option description
-                                //% "Type for the user to create or edit."
-                                qtTrId("gikctl-cliopt-usertype-desc"),
+                                //: CLI option description, %1 will be replaced by a list of supported types, %2 by the default value
+                                //% "Type for the user to create or edit. Currently supported types: %1. Default: %2"
+                                qtTrId("gikctl-cliopt-usertype-desc").arg(locale.createSeparatedList(User::supportedTypes()), userTypeDefault),
                                 //: CLI option value name
                                 //% "type"
                                 qtTrId("gikctl-cliopt-usertype-value"),
-                                QStringLiteral("1"));
+                                userTypeDefault);
     parser.addOption(userType);
 
     QCommandLineOption userEmail(QStringLiteral("user-email"),
@@ -109,6 +115,35 @@ int main(int argc, char *argv[])
                                     //% "password"
                                     qtTrId("gikctl-cliopt-userpass-value"));
     parser.addOption(userPassword);
+
+    QCommandLineOption userId(QStringLiteral("user"),
+                              //: CLI option description
+                              //% "User ID or username used to create addressbooks and events."
+                              qtTrId("gikctl-cliopt-userid-desc"),
+                              //: CLI option value
+                              //% "user"
+                              qtTrId("gikctl-cliopt-userid-value"));
+    parser.addOption(userId);
+
+    QCommandLineOption addAddressBook(QStringLiteral("add-addressbook"),
+                                      //: CLI option description
+                                      //% "Add a new addressbook with the given name."
+                                      qtTrId("gikctl-cliopt-addaddressbook-desc"),
+                                      //: CLI option value for addressbook name
+                                      //% "name"
+                                      qtTrId("gikctl-cliopt-addaddressbook-value"));
+    parser.addOption(addAddressBook);
+
+    const QString addressBookTypeDefault = QStringLiteral("local");
+    QCommandLineOption addressBookType(QStringLiteral("addressbook-type"),
+                                       //: CLI option description, %1 will be replaced by a list of supported types, %2 by the default value
+                                       //% "Type of the addressbook to create. Currently supported types: %1. Default: %2
+                                       qtTrId("gikctl-cliopt-addressbooktype-desc").arg(locale.createSeparatedList(AddressBook::supportedTypes()), addressBookTypeDefault),
+                                       //: CLI option value for addressbook type
+                                       //% "type"
+                                       qtTrId("gikctl-cliopt-addressbooktype-value"),
+                                       addressBookTypeDefault);
+    parser.addOption(addressBookType);
 
     QCommandLineOption runSetup(QStringLiteral("setup"),
                                 //: CLI option description
@@ -143,6 +178,11 @@ int main(int argc, char *argv[])
     if (parser.isSet(addUser)) {
         Setup setup(parser.value(iniFile), parser.isSet(quiet));
         return setup.addUser(parser.value(addUser).trimmed(), parser.value(userEmail).trimmed(), parser.value(userPassword).trimmed(), parser.value(userType).trimmed());
+    }
+
+    if (parser.isSet(addAddressBook)) {
+        AddressBookManager abm(parser.value(iniFile), parser.isSet(quiet));
+        return abm.add(parser.value(userId), parser.value(addAddressBook), parser.value(addressBookType), QString());
     }
 
     if (parser.isSet(runSetup)) {

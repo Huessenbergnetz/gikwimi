@@ -6,6 +6,8 @@ add_executable(gikwimictl)
 target_sources(gikwimictl
     PRIVATE
         main.cpp
+        addressbookmanager.cpp
+        addressbookmanager.h
         cli.cpp
         cli.h
         configuration.cpp
@@ -14,6 +16,8 @@ target_sources(gikwimictl
         database.h
         setup.cpp
         setup.h
+        usermanager.cpp
+        usermanager.h
 )
 
 target_compile_features(gikwimictl PUBLIC cxx_std_14)
@@ -28,6 +32,7 @@ target_link_libraries(gikwimictl
     Cutelyst::Authentication
     Cutelyst::Utils::Validator
     FirfuoridaQt5::Core
+    gikwimi
 )
 
 GNUInstallDirs_get_absolute_install_dir(GIKWIMI_FULL_TRANSLATIONSDIR GIKWIMI_TRANSLATIONSDIR)
