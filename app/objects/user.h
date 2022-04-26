@@ -33,6 +33,7 @@ class User
     Q_PROPERTY(qint64 lockedAt READ lockedAt CONSTANT)
     Q_PROPERTY(dbid_t lockedBy READ lockedBy CONSTANT)
     Q_PROPERTY(QVariantMap settings READ settings CONSTANT)
+    Q_PROPERTY(bool isAdmin READ isAdmin CONSTANT)
 public:
     enum Type : quint8 {
         Disabled = 0,
@@ -78,6 +79,8 @@ public:
     dbid_t lockedBy() const;
 
     QVariantMap settings() const;
+
+    bool isAdmin() const;
 
     bool isValid() const;
 

@@ -143,6 +143,11 @@ QVariantMap User::settings() const
     return d->settings;
 }
 
+bool User::isAdmin() const
+{
+    return d->type >= User::Administrator;
+}
+
 bool User::isValid() const
 {
     return d->id > 0;
