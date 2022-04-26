@@ -13,6 +13,8 @@
 
 #include <QSqlQuery>
 #include <QSqlError>
+#include <QMetaObject>
+#include <QMetaEnum>
 
 #define USER_STASH_KEY "user"
 
@@ -238,6 +240,51 @@ User User::get(Cutelyst::Context *c, Error &e, dbid_t id)
     }
 
     return user;
+}
+
+User::Type User::typeStringToEnum(const QString &str)
+{
+    if (str.compare(QLatin1String("disabled"), Qt::CaseInsensitive) == 0) {
+        return User::Disabled;
+    } else if (str.compare(QLatin1String("registered"), Qt::CaseInsensitive) == 0) {
+        return User::Registered;
+    } else if (str.compare(QLatin1String("administrator"), Qt::CaseInsensitive) == 0) {
+        return User::Administrator;
+    } else if (str.compare(QLatin1String("superuser"), Qt::CaseInsensitive) == 0) {
+        return User::SuperUser;
+    } else {
+        return User::Invalid;
+    }
+}
+
+QString User::typeEnumToString(User::Type type)
+{
+    QString str;
+
+    if (type != User::Invalid) {
+        const QMetaObject mo = User::staticMetaObject;
+        const QMetaEnum   me = mo.enumerator(mo.indexOfEnumerator("Type"));
+
+        str = QString::fromLatin1(me.valueToKey(static_cast<int>(type)));
+    }
+
+    return str;
+}
+
+QStringList User::supportedTypes()
+{
+    QStringList lst;
+
+    const QMetaObject mo = User::staticMetaObject;
+    const QMetaEnum   me = mo.enumerator(mo.indexOfEnumerator("Type"));
+
+    lst.reserve(me.keyCount() - 1);
+
+    for (int i = 1; i < me.keyCount(); ++i) {
+        lst.append(QString::fromLatin1(me.key(i)));
+    }
+
+    return lst;
 }
 
 #include "moc_user.cpp"

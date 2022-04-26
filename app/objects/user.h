@@ -35,11 +35,12 @@ class User
     Q_PROPERTY(QVariantMap settings READ settings CONSTANT)
     Q_PROPERTY(bool isAdmin READ isAdmin CONSTANT)
 public:
-    enum Type : quint8 {
+    enum Type : qint8 {
+        Invalid = -1,
         Disabled = 0,
-        Registered = 64,
-        Administrator = 128,
-        SuperUser = 255
+        Registered = 32,
+        Administrator = 64,
+        SuperUser = 127
     };
 
     User();
@@ -91,6 +92,12 @@ public:
     static std::vector<User> list(Cutelyst::Context *c, Error &e);
 
     static User get(Cutelyst::Context *c, Error &e, dbid_t id);
+
+    static User::Type typeStringToEnum(const QString &str);
+
+    static QString typeEnumToString(User::Type tpye);
+
+    static QStringList supportedTypes();
 
 private:
     QSharedDataPointer<UserData> d;
