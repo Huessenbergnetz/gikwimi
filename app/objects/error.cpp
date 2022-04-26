@@ -68,6 +68,12 @@ Error::Error(Error::Type type, const QString &text)
 
 }
 
+Error::Error(const QSqlError &sqlError, const QString &text)
+    : d(new ErrorData(sqlError, text))
+{
+
+}
+
 Error::Error(const Error &other) = default;
 
 Error::Error(Error &&oher) noexcept = default;
