@@ -61,9 +61,6 @@ Gikwimi::~Gikwimi()
 
 bool Gikwimi::init()
 {
-    qCDebug(GIK_CORE) << "Registering Qt meta types";
-    qRegisterMetaType<std::vector<MenuItem>>("std::vector<MenuItem>");
-
     if (!isInitialized) {
         GikwimiConfig::load(engine()->config(QStringLiteral(GIKWIMI_CONF_GIK)));
 
