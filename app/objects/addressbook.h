@@ -29,7 +29,8 @@ class AddressBook
     Q_PROPERTY(QVariant data READ data CONSTANT)
 public:
     enum Type : quint8 {
-        Local = 0
+        Invalid = 0,
+        Local = 1
     };
     Q_ENUM(Type)
 
@@ -66,6 +67,12 @@ public:
     static std::vector<AddressBook> list(Cutelyst::Context *c, Error &e, dbid_t userId);
 
     static AddressBook get(Cutelyst::Context *c, Error &e, dbid_t id);
+
+    static AddressBook::Type typeStringToEnum(const QString &str);
+
+    static QString typeEnumToString(AddressBook::Type type);
+
+    static QStringList supportedTypes();
 
 protected:
     QSharedDataPointer<AddressBookData> d;

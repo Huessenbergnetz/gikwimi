@@ -11,6 +11,8 @@
 #include <Cutelyst/Plugins/Utils/Sql>
 #include <QSqlQuery>
 #include <QSqlError>
+#include <QMetaObject>
+#include <QMetaEnum>
 
 AddressBook::AddressBook()
     : d(new AddressBookData)
@@ -142,6 +144,45 @@ AddressBook AddressBook::get(Cutelyst::Context *c, Error &e, dbid_t id)
     }
 
     return addressBook;
+}
+
+AddressBook::Type AddressBook::typeStringToEnum(const QString &str)
+{
+    if (str.compare(QStringLiteral("local"), Qt::CaseInsensitive) == 0) {
+        return AddressBook::Local;
+    } else {
+        return AddressBook::Invalid;
+    }
+}
+
+QString AddressBook::typeEnumToString(AddressBook::Type type)
+{
+    QString str;
+
+    if (type != AddressBook::Invalid) {
+        const QMetaObject mo = AddressBook::staticMetaObject;
+        const QMetaEnum   me = mo.enumerator(mo.indexOfEnumerator("Type"));
+
+        str = QString::fromLatin1(me.valueToKey(static_cast<int>(type)));
+    }
+
+    return str;
+}
+
+QStringList AddressBook::supportedTypes()
+{
+    QStringList lst;
+
+    const QMetaObject mo = AddressBook::staticMetaObject;
+    const QMetaEnum   me = mo.enumerator(mo.indexOfEnumerator("Type"));
+
+    lst.reserve(me.keyCount() - 1);
+
+    for (int i = 1; i < me.keyCount(); ++i) {
+        lst.append(QString::fromLatin1(me.key(i)));
+    }
+
+    return lst;
 }
 
 #include "moc_addressbook.cpp"
