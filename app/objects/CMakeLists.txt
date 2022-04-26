@@ -11,4 +11,6 @@ target_sources(gikwimi
         menuitem.cpp
         menuitem.h
         menuitem_p.h
+        user.cpp
+        user.h
 )

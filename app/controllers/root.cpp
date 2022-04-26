@@ -7,6 +7,7 @@
 #include "logging.h"
 #include "gikwimiconfig.h"
 #include "objects/error.h"
+#include "objects/user.h"
 
 #include <Cutelyst/Plugins/StatusMessage>
 #include <Cutelyst/Plugins/Authentication/authentication.h>
@@ -85,9 +86,10 @@ bool Root::Auto(Context *c)
 
     StatusMessage::load(c);
 
-    const AuthenticationUser user = Authentication::user(c);
-    if (!user.isNull()) {
-        c->setStash(QStringLiteral("user"), user);
+    const AuthenticationUser authUser = Authentication::user(c);
+    if (!authUser.isNull()) {
+        User user(authUser);
+        user.toStash(c);
     }
 
     c->setStash(QStringLiteral("site_name"), GikwimiConfig::siteName());
