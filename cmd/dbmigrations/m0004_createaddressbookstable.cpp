@@ -21,7 +21,7 @@ void M0004_CreateAddressBooksTable::up()
     auto t = create(QStringLiteral("addressbooks"));
     t->increments();
     t->integer(QStringLiteral("user_id"))->unSigned();
-    t->tinyInteger(QStringLiteral("type"))->unSigned()->defaultValue(0);
+    t->tinyInteger(QStringLiteral("type"))->unSigned()->defaultValue(1);
     t->varChar(QStringLiteral("name"), 63);
     t->text(QStringLiteral("data"));
 
