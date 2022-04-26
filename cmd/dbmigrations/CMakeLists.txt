@@ -9,4 +9,6 @@ target_sources(gikwimictl
         m0001_create_users_table.h
         m0002_createusersettings.cpp
         m0002_createusersettings.h
+        m0003_createoptionstable.cpp
+        m0003_createoptionstable.h
 )
