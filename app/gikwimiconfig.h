@@ -21,6 +21,12 @@ public:
     static QString tmplPath(const QStringList &pathParts);
 
     static QString siteName();
+
+private:
+    template< typename T >
+    static T getDbOption(const QString &option, const T &defVal);
+    template< typename T >
+    static bool setDbOption(const QString &option, const T &value);
 };
 
 #endif // GIKWIMICONFIG_H

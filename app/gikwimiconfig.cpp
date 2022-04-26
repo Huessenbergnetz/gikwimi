@@ -5,11 +5,18 @@
 
 #include "gikwimiconfig.h"
 #include "confignames.h"
+#include "logging.h"
+
+#include <Cutelyst/Plugins/Utils/Sql>
 
 #include <QGlobalStatic>
 #include <QReadWriteLock>
 #include <QReadLocker>
 #include <QWriteLocker>
+#include <QSqlQuery>
+#include <QSqlError>
+
+Q_LOGGING_CATEGORY(GIK_CONFIG, "gikwimi.config")
 
 struct ConfigValues {
     mutable QReadWriteLock lock{QReadWriteLock::Recursive};
@@ -60,4 +67,45 @@ QString GikwimiConfig::siteName()
 {
     QReadLocker locker(&cfg->lock);
     return cfg->siteName;
+}
+
+template< typename T >
+T GikwimiConfig::getDbOption(const QString &option, const T &defVal)
+{
+    T retVal = defVal;
+
+    QSqlQuery q = CPreparedSqlQueryThreadFO(QStringLiteral("SELECT option_value FROM options WHERE option_name = :option_name"));
+    q.bindValue(QStringLiteral(":option_name"), option);
+
+    if (Q_LIKELY(q.exec())) {
+        if (q.next()) {
+            retVal = q.value(0).value<T>();
+        }
+    } else {
+        qCCritical(GIK_CONFIG) << "Failed to query option" << option << "from database:" << q.lastError().text();
+    }
+
+    return retVal;
+}
+
+template< typename T >
+bool GikwimiConfig::setDbOption(const QString &option, const T &value)
+{
+    bool rv = false;
+
+    QSqlQuery q = CPreparedSqlQueryThread(QStringLiteral("INSERT INTO options (option_name, option_value) "
+                                                         "VALUES (:option_Name, :option_value) "
+                                                         "ON DUPLICATE KEY UPDATE "
+                                                         "option_value = :option_value"));
+    q.bindValue(QStringLiteral(":option_name"), option);
+    q.bindValue(QStringLiteral(":option_value"), QVariant::fromValue<T>(value));
+
+
+    rv = q.exec();
+
+    if (Q_UNLIKELY(!rv)) {
+        qCCritical(GIK_CONFIG) << "Failed to save value" << value << "for option" << option << "in database:" << q.lastError().text();
+    }
+
+    return rv;
 }

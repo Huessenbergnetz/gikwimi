@@ -9,6 +9,7 @@ target_sources(gikwimi
         gikwimi.cpp
         gikwimiconfig.h
         gikwimiconfig.cpp
+        logging.h
         userauthstoresql.h
         userauthstoresql.cpp
         utils.h
