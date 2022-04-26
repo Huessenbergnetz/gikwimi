@@ -87,3 +87,5 @@ void MenuItem::addChildItem(const MenuItem &child)
     d->children.push_back(child);
     d->isExpanded = child.isActive();
 }
+
+#include "moc_menuitem.cpp"
