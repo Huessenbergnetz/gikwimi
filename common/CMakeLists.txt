@@ -5,6 +5,7 @@ if (TARGET gikwimictl)
     target_sources(gikwimictl
         PRIVATE
             confignames.h.in
+            global.h
     )
 endif (TARGET gikwimictl)
 
@@ -12,6 +13,7 @@ if (TARGET gikwimi)
     target_sources(gikwimi
         PRIVATE
             confignames.h.in
+            global.h
     )
 endif (TARGET gikwimi)
 
@@ -21,6 +23,7 @@ if (TARGET gikwimictl)
     target_include_directories(gikwimictl
         PRIVATE
             ${CMAKE_CURRENT_BINARY_DIR}
+            ${CMAKE_CURRENT_SOURCE_DIR}
     )
 endif (TARGET gikwimictl)
 
@@ -28,5 +31,6 @@ if (TARGET gikwimi)
     target_include_directories(gikwimi
         PRIVATE
             ${CMAKE_CURRENT_BINARY_DIR}
+            ${CMAKE_CURRENT_SOURCE_DIR}
     )
 endif (TARGET gikwimi)
