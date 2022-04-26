@@ -3,20 +3,20 @@
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
 
-#include "controlcenteraddressbook.h"
+#include "controlcenteraddressbooks.h"
 #include "global.h"
 
 #include <Cutelyst/Plugins/Authentication/authenticationuser.h>
 
-ControlCenterAddressBook::ControlCenterAddressBook(QObject *parent)
+ControlCenterAddressBooks::ControlCenterAddressBooks(QObject *parent)
     : Controller{parent}
 {
 
 }
 
-ControlCenterAddressBook::~ControlCenterAddressBook() = default;
+ControlCenterAddressBooks::~ControlCenterAddressBooks() = default;
 
-void ControlCenterAddressBook::index(Context *c)
+void ControlCenterAddressBooks::index(Context *c)
 {
     c->stash({
                  {QStringLiteral("site_title"), c->translate("ControlCenterAddressBook", "Addressbook")},
@@ -24,7 +24,7 @@ void ControlCenterAddressBook::index(Context *c)
              });
 }
 
-void ControlCenterAddressBook::add(Context *c)
+void ControlCenterAddressBooks::add(Context *c)
 {
     c->stash({
                  {QStringLiteral("site_title"), c->translate("ControlCenterAddressBook", "Add addressbook")},
@@ -32,7 +32,7 @@ void ControlCenterAddressBook::add(Context *c)
              });
 }
 
-void ControlCenterAddressBook::edit(Context *c, const QString &id)
+void ControlCenterAddressBooks::edit(Context *c, const QString &id)
 {
     c->stash({
                  {QStringLiteral("site_title"), c->translate("ControlCenterAddressBook", "Edit addressbook")},

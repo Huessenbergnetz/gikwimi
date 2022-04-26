@@ -5,8 +5,8 @@ target_sources(gikwimi
     PRIVATE
         controlcenter.cpp
         controlcenter.h
-        controlcenteraddressbook.cpp
-        controlcenteraddressbook.h
+        controlcenteraddressbooks.cpp
+        controlcenteraddressbooks.h
         controlcenterevents.cpp
         controlcenterevents.h
         controlcentersettings.cpp

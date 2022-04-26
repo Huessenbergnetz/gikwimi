@@ -10,13 +10,13 @@
 
 using namespace Cutelyst;
 
-class ControlCenterAddressBook : public Controller
+class ControlCenterAddressBooks : public Controller
 {
     Q_OBJECT
-    C_NAMESPACE("controlcenter/addressbook")
+    C_NAMESPACE("controlcenter/addressbooks")
 public:
-    explicit ControlCenterAddressBook(QObject *parent = nullptr);
-    ~ControlCenterAddressBook() override;
+    explicit ControlCenterAddressBooks(QObject *parent = nullptr);
+    ~ControlCenterAddressBooks() override;
 
     C_ATTR(index, :Path :Args(0))
     void index(Context *);
