@@ -42,6 +42,7 @@ public:
         Administrator = 64,
         SuperUser = 127
     };
+    Q_ENUM(Type)
 
     User();
 
