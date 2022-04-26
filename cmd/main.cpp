@@ -137,7 +137,7 @@ int main(int argc, char *argv[])
     const QString addressBookTypeDefault = QStringLiteral("local");
     QCommandLineOption addressBookType(QStringLiteral("addressbook-type"),
                                        //: CLI option description, %1 will be replaced by a list of supported types, %2 by the default value
-                                       //% "Type of the addressbook to create. Currently supported types: %1. Default: %2
+                                       //% "Type of the addressbook to create. Currently supported types: %1. Default: %2"
                                        qtTrId("gikctl-cliopt-addressbooktype-desc").arg(locale.createSeparatedList(AddressBook::supportedTypes()), addressBookTypeDefault),
                                        //: CLI option value for addressbook type
                                        //% "type"

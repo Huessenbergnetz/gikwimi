@@ -86,8 +86,9 @@
         <translation type="unfinished"></translation>
     </message>
     <message id="gikctl-cliopt-usertype-desc">
-        <source>Type for the user to create or edit.</source>
-        <extracomment>CLI option description</extracomment>
+        <source>Type for the user to create or edit. Currently supported types: %1. Default: %2</source>
+        <oldsource>Type for the user to create or edit.</oldsource>
+        <extracomment>CLI option description, %1 will be replaced by a list of supported types, %2 by the default value</extracomment>
         <translation type="unfinished"></translation>
     </message>
     <message id="gikctl-cliopt-usertype-value">
@@ -163,6 +164,62 @@
     <message id="gikctl-cliopt-adduser-value">
         <source>username</source>
         <extracomment>CLI option value name</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message id="gikctl-status-add-addressbook">
+        <source>Adding new addressbook “%1“</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message id="gikctl-err-add-addressbook-empty-user">
+        <source>Can not add a new addressbook without a valid user</source>
+        <extracomment>CLI error message</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message id="gikctl-err-add-addressebook-empty-name">
+        <source>Can not add a new addresbook with an empty name</source>
+        <extracomment>CLI error message</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message id="gikctl-err-add-addressbook-invalid-type">
+        <source>Can not add a new addressbo of a not supported type. Currently supported types are: %1</source>
+        <extracomment>CLI error message</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message id="gikctl-err-add-addressbook-user-not-found">
+        <source>Can not find user</source>
+        <extracomment>CLI error message</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message id="gikctl-cliopt-userid-desc">
+        <source>User ID or username used to create addressbooks and events.</source>
+        <extracomment>CLI option description</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message id="gikctl-cliopt-userid-value">
+        <source>user</source>
+        <extracomment>CLI option value</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message id="gikctl-cliopt-addaddressbook-desc">
+        <source>Add a new addressbook with the given name.</source>
+        <extracomment>CLI option description</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message id="gikctl-cliopt-addaddressbook-value">
+        <source>name</source>
+        <extracomment>CLI option value for addressbook name</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message id="gikctl-cliopt-addressbooktype-desc">
+        <source>Type of the addressbook to create. Currently supported types: %1. Default: %2</source>
+        <oldsource>Type of the addressbook to create. Currently supported types: %1. Default: %2
+</oldsource>
+        <extracomment>CLI option description, %1 will be replaced by a list of supported types, %2 by the default value</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message id="gikctl-cliopt-addressbooktype-value">
+        <source>type</source>
+        <extracomment>CLI option value for addressbook type</extracomment>
         <translation type="unfinished"></translation>
     </message>
 </context>
