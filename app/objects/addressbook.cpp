@@ -134,6 +134,7 @@ AddressBook AddressBook::get(Cutelyst::Context *c, Error &e, dbid_t id)
             addressBook = AddressBook(id, q.value(0).toUInt(), static_cast<AddressBook::Type>(q.value(1).value<quint8>()), q.value(2).toString(), q.value(3));
         } else {
             e = Error(Error::NotFound, c->translate("AddressBook", "Can not find addressbook with ID %1.").arg(id));
+            qCWarning(GIK_CORE) << "Can not find addressbook with ID" << id << "in the database";
         }
     } else {
         e = Error(q.lastError().text(), c->translate("AddressBook", "Failed to get addressbook with ID %1 from the database.").arg(id));
