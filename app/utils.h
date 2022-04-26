@@ -13,7 +13,7 @@ class Context;
 class Utils
 {
 public:
-    static bool isAdmin(Cutelyst::Context *c);
+    static bool isCurrentUserAdmin(Cutelyst::Context *c);
 };
 
 #endif // GIKWIMI_UTILS_H

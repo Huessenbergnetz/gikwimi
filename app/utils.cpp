@@ -4,11 +4,12 @@
  */
 
 #include "utils.h"
+#include "objects/user.h"
 #include <QDebug>
 
 #include <Cutelyst/Context>
 
-bool Utils::isAdmin(Cutelyst::Context *c)
+bool Utils::isCurrentUserAdmin(Cutelyst::Context *c)
 {
-    return c->stash(QStringLiteral("user")).toMap().value(QStringLiteral("type")).toUInt() >= 127;
+    return User::fromStash(c).isAdmin();
 }
