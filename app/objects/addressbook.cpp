@@ -5,7 +5,9 @@
 
 #include "addressbook_p.h"
 #include "logging.h"
+#include "error.h"
 
+#include <Cutelyst/Context>
 #include <Cutelyst/Plugins/Utils/Sql>
 #include <QSqlQuery>
 #include <QSqlError>
@@ -67,9 +69,11 @@ bool AddressBook::isValid() const
     return d->id > 0;
 }
 
-AddressBook AddressBook::create(dbid_t userId, AddressBook::Type type, const QString &name, const QVariant &data)
+AddressBook AddressBook::create(Cutelyst::Context *c, Error &e, dbid_t userId, AddressBook::Type type, const QString &name, const QVariant &data)
 {
     AddressBook addressBook;
+
+    Q_ASSERT(c);
 
     QSqlQuery q = CPreparedSqlQueryThread(QStringLiteral("INSERT INTO addressbooks (user_id, type, name, data) VALUES (:user_id, :type, :name, :data)"));
     q.bindValue(QStringLiteral(":user_id"), userId);
@@ -80,36 +84,47 @@ AddressBook AddressBook::create(dbid_t userId, AddressBook::Type type, const QSt
     if (Q_LIKELY(q.exec())) {
         addressBook = AddressBook(q.lastInsertId().toUInt(), userId, type, name, data);
     } else {
+        e = Error(q.lastError(), c->translate("AddressBook", "Failed to create new addressbook."));
         qCCritical(GIK_CORE) << "Failed to create new addressbook for user id" << userId << "with name" << name << "in database:" << q.lastError().text();
     }
 
     return addressBook;
 }
 
-std::vector<AddressBook> AddressBook::list(dbid_t userId)
+std::vector<AddressBook> AddressBook::list(Cutelyst::Context *c, Error &e, dbid_t userId)
 {
     std::vector<AddressBook> addressBooks;
 
-    QSqlQuery q = CPreparedSqlQueryThreadFO(QStringLiteral("SELECT id, type, name, data FROM addressbooks WHERE user_id = :user_id"));
-    q.bindValue(QStringLiteral(":user_id"), userId);
+    Q_ASSERT(c);
+
+    QSqlQuery q;
+    if (userId > 0) {
+        q = CPreparedSqlQueryThreadFO(QStringLiteral("SELECT id, user_id, type, name, data FROM addressbooks WHERE user_id = :user_id"));
+        q.bindValue(QStringLiteral(":user_id"), userId);
+    } else {
+        q = CPreparedSqlQueryThreadFO(QStringLiteral("SELECT id, user_id, type, name, data FROM addressbooks"));
+    }
 
     if (Q_LIKELY(q.exec())) {
         if (q.size() > 0) {
             addressBooks.reserve(q.size());
         }
         while (q.next()) {
-            addressBooks.emplace_back(q.value(0).toUInt(), userId, static_cast<AddressBook::Type>(q.value(1).value<quint8>()), q.value(2).toString(), q.value(3));
+            addressBooks.emplace_back(q.value(0).toUInt(), q.value(1).toUInt(), static_cast<AddressBook::Type>(q.value(2).value<quint8>()), q.value(3).toString(), q.value(4));
         }
     } else {
+        e = Error(q.lastError(), c->translate("AddressBook", "Failed to query addressbooks from the database."));
         qCCritical(GIK_CORE) << "Failed to query list of addressbooks for user id" << userId << "from the database:" << q.lastError().text();
     }
 
     return addressBooks;
 }
 
-AddressBook AddressBook::get(dbid_t id)
+AddressBook AddressBook::get(Cutelyst::Context *c, Error &e, dbid_t id)
 {
     AddressBook addressBook;
+
+    Q_ASSERT(c);
 
     QSqlQuery q = CPreparedSqlQueryThreadFO(QStringLiteral("SELECT user_id, type, name, data FROM addressbooks WHERE id = :id"));
     q.bindValue(QStringLiteral(":id"), id);
@@ -118,11 +133,14 @@ AddressBook AddressBook::get(dbid_t id)
         if (Q_LIKELY(q.next())) {
             addressBook = AddressBook(id, q.value(0).toUInt(), static_cast<AddressBook::Type>(q.value(1).value<quint8>()), q.value(2).toString(), q.value(3));
         } else {
-
+            e = Error(Error::NotFound, c->translate("AddressBook", "Can not find addressbook with ID %1.").arg(id));
         }
     } else {
+        e = Error(q.lastError().text(), c->translate("AddressBook", "Failed to get addressbook with ID %1 from the database.").arg(id));
         qCCritical(GIK_CORE) << "Failed to get addressbook with id" << id << "from the database:" << q.lastError().text();
     }
 
     return addressBook;
 }
+
+#include "moc_addressbook.cpp"

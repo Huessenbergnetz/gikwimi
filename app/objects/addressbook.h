@@ -13,6 +13,11 @@
 #include <QVariant>
 #include <vector>
 
+namespace Cutelyst {
+class Context;
+}
+
+class Error;
 class AddressBookData;
 class AddressBook
 {
@@ -56,11 +61,11 @@ public:
 
     bool isValid() const;
 
-    static AddressBook create(dbid_t userId, AddressBook::Type type, const QString &name, const QVariant &data);
+    static AddressBook create(Cutelyst::Context *c, Error &e, dbid_t userId, AddressBook::Type type, const QString &name, const QVariant &data);
 
-    static std::vector<AddressBook> list(dbid_t userId);
+    static std::vector<AddressBook> list(Cutelyst::Context *c, Error &e, dbid_t userId);
 
-    static AddressBook get(dbid_t id);
+    static AddressBook get(Cutelyst::Context *c, Error &e, dbid_t id);
 
 protected:
     QSharedDataPointer<AddressBookData> d;
