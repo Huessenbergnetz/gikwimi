@@ -21,7 +21,7 @@ void M0001_Create_Users_Table::up()
     auto t = create(QStringLiteral("users"));
 
     t->increments();
-    t->tinyInteger(QStringLiteral("type"))->unSigned()->defaultValue(0);
+    t->tinyInteger(QStringLiteral("type"))->defaultValue(0);
     t->varChar(QStringLiteral("username"))->unique();
     t->varChar(QStringLiteral("password"))->charset(QStringLiteral("latin1"));
     t->varChar(QStringLiteral("email"))->unique();
