@@ -21,6 +21,8 @@ public:
     static QString tmplPath(const QStringList &pathParts);
 
     static QString siteName();
+    static bool useMemcached();
+    static bool useMemcachedSession();
 
 private:
     template< typename T >

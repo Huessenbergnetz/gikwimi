@@ -103,7 +103,17 @@ bool Gikwimi::init()
     auto staticSimple = new StaticSimple(this);
     staticSimple->setIncludePaths({GikwimiConfig::tmplPath(QStringLiteral("static"))});
 
-    new Session(this);
+    auto sess = new Session(this);
+
+    if (GikwimiConfig::useMemcached()) {
+        auto memc = new Memcached(this);
+        memc->setDefaultConfig({
+                                   {QStringLiteral("binary_protocol"), true}
+                               });
+        if (GikwimiConfig::useMemcachedSession()) {
+            sess->setStorage(new MemcachedSessionStore(this, this));
+        }
+    }
 
     new StatusMessage(this);
 
