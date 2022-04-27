@@ -48,12 +48,12 @@ int AddressBookManager::add(const QString &user, const QString &name, const QStr
     }
 
     const QStringList supportedTypes = AddressBook::supportedTypes();
-    if (!supportedTypes.contains(type.toLower())) {
+    if (!supportedTypes.contains(type, Qt::CaseInsensitive)) {
         QLocale locale;
         printFailed();
         //: CLI error message
-        //% "Can not add a new addressbo of a not supported type. Currently supported types are: %1"
-        rc = inputError(qtTrId("gikctl-err-add-addressbook-invalid-type").arg(locale.createSeparatedList(supportedTypes)));
+        //% "Can not add a new addressbook of not supported type “%1”. Currently supported types are: %2"
+        rc = inputError(qtTrId("gikctl-err-add-addressbook-invalid-type").arg(type, locale.createSeparatedList(supportedTypes)));
         return rc;
     }
 
