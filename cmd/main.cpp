@@ -176,8 +176,8 @@ int main(int argc, char *argv[])
 #endif
 
     if (parser.isSet(addUser)) {
-        Setup setup(parser.value(iniFile), parser.isSet(quiet));
-        return setup.addUser(parser.value(addUser).trimmed(), parser.value(userEmail).trimmed(), parser.value(userPassword).trimmed(), parser.value(userType).trimmed());
+        UserManager um(parser.value(iniFile), parser.isSet(quiet));
+        return um.add(parser.value(addUser).trimmed(), parser.value(userEmail).trimmed(), parser.value(userPassword).trimmed(), parser.value(userType).trimmed());
     }
 
     if (parser.isSet(addAddressBook)) {

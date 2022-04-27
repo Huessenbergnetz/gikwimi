@@ -14,6 +14,8 @@ public:
     explicit UserManager(const QString &iniPath, bool quiet = false);
 
     ~UserManager();
+
+    int add(const QString &name, const QString &email, const QString &password, const QString &type);
 };
 
 #endif // GIKWIMICTL_USERMANAGER_H
