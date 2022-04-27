@@ -8,6 +8,7 @@
 #include "m0001_create_users_table.h"
 #include "m0002_createusersettings.h"
 #include "m0003_createoptionstable.h"
+#include "m0004_createaddressbookstable.h"
 
 #include <Firfuorida/Migrator>
 
@@ -29,6 +30,7 @@ void DbMigrations::initMigrations()
     new M0001_Create_Users_Table(m_migrator.get());
     new M0002_CreateUserSettings(m_migrator.get());
     new M0003_CreateOptionsTable(m_migrator.get());
+    new M0004_CreateAddressBooksTable(m_migrator.get());
 }
 
 int DbMigrations::runMigrations()
