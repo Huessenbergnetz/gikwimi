@@ -7,6 +7,10 @@ target_sources(gikwimictl
         addressbookcommand.h
         addressbookaddcommand.cpp
         addressbookaddcommand.h
+        contactcommand.cpp
+        contactcommand.h
+        contactimportcommand.cpp
+        contactimportcommand.h
         databasecommand.cpp
         databasecommand.h
         databasemigrationcommand.cpp

@@ -30,6 +30,7 @@ target_link_libraries(gikwimictl
     Qt5::Sql
     Cutelyst::Authentication
     Cutelyst::Utils::Validator
+    KF5::Contacts
     FirfuoridaQt5::Core
     gikwimi
 )

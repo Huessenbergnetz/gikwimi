@@ -17,6 +17,7 @@ find_package(Qt5 COMPONENTS Core Network Sql LinguistTools REQUIRED)
 find_package(Cutelyst3Qt5 REQUIRED)
 find_package(Cutelee6Qt5 5.2.0 REQUIRED)
 find_package(FirfuoridaQt5 REQUIRED)
+find_package(KF5Contacts REQUIRED)
 
 # Auto generate moc files
 set(CMAKE_AUTOMOC ON)
