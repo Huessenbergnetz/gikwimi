@@ -369,5 +369,106 @@
         <extracomment>CLI option value name</extracomment>
         <translation type="unfinished"/>
     </message>
+    <message id="gikctl-command-contact-summary">
+        <source>Manage contacts</source>
+        <extracomment>CLI command summary</extracomment>
+        <translation type="unfinished"/>
+    </message>
+    <message id="gikctl-command-contact-description">
+        <source>Add, edit, delete and list contacts in a user’s addressbook.</source>
+        <extracomment>CLI command description</extracomment>
+        <translation type="unfinished"/>
+    </message>
+    <message id="gikctl-opt-contact-import-filepath-desc">
+        <source>Path to a vCard file that contains the addresses to import.</source>
+        <extracomment>CLI option description</extracomment>
+        <translation type="unfinished"/>
+    </message>
+    <message id="gikctl-opt-contact-import-filepath-value">
+        <source>filepath</source>
+        <extracomment>CLI option value name</extracomment>
+        <translation type="unfinished"/>
+    </message>
+    <message id="gikctl-opt-contact-import-merge-desc">
+        <source>Set the strategy how to handle conflicting contact entries. Currently supported values: %1. Default value: %2.</source>
+        <extracomment>CLI option description, %1 will be replaced by the supported values, %2 by the default value</extracomment>
+        <translation type="unfinished"/>
+    </message>
+    <message id="gikctl-opt-contact-import-merge-value">
+        <source>strategy</source>
+        <extracomment>CLI option value name</extracomment>
+        <translation type="unfinished"/>
+    </message>
+    <message id="gikctl-opt-contact-import-addressbook-desc">
+        <source>Database ID of the addressbook the contacts should be added to.</source>
+        <extracomment>CLI option description</extracomment>
+        <translation type="unfinished"/>
+    </message>
+    <message id="gikctl-opt-contact-import-addressbook-value">
+        <source>database id</source>
+        <extracomment>CLI option value name</extracomment>
+        <translation type="unfinished"/>
+    </message>
+    <message id="gikctl-status-import-contacts">
+        <source>Importing contacts</source>
+        <translation type="unfinished"/>
+    </message>
+    <message id="gikctl-contact-import-err-invalid-merge-strategy">
+        <source>“%1“ is not a valid merge strategy. Currently supported stragies are: %2</source>
+        <extracomment>CLI error message, %1 will be replaced by the invalid value, %2 by the list of allowed values.</extracomment>
+        <translation type="unfinished"/>
+    </message>
+    <message id="gikctl-contact-import-err-empty-abid">
+        <source>Please use -b to set a database ID of an addressbook the contacts should be imported to</source>
+        <extracomment>CLI error message</extracomment>
+        <translation type="unfinished"/>
+    </message>
+    <message id="gikctl-contact-import-err-invalid-abid">
+        <source>“%1“ ist not a valid addressbook database ID</source>
+        <extracomment>CLI error message, %1 will be replaced by the invalid input value</extracomment>
+        <translation type="unfinished"/>
+    </message>
+    <message id="gikctl-contact-import-err-empty-filepath">
+        <source>Please use the -f option to specify a file to import from.</source>
+        <extracomment>CLI error message</extracomment>
+        <translation type="unfinished"/>
+    </message>
+    <message id="gikctl-contact-import-err-file-not-exists">
+        <source>Can not find vCard file at %1</source>
+        <extracomment>CLI error message, %1 will be replaced by the file path</extracomment>
+        <translation type="unfinished"/>
+    </message>
+    <message id="gikctl-contact-import-err-open-file">
+        <source>Can not open vCard file at %1 for reading</source>
+        <extracomment>CLI error message, %1 will be replaced by the file path</extracomment>
+        <translation type="unfinished"/>
+    </message>
+    <message id="gikctl-contact-import-err-empty-file">
+        <source>Can not import contacts from empty vCard file at %1</source>
+        <extracomment>CLI error message, %1 will be replaced by the file path</extracomment>
+        <translation type="unfinished"/>
+    </message>
+    <message id="gikctl-contact-import-err-empty-vcards">
+        <source>Can not find any vCards in file at %1</source>
+        <oldsource>Can not find any vCards in file at %1
+</oldsource>
+        <extracomment>CLI error message, %1 will be replaced by the file path</extracomment>
+        <translation type="unfinished"/>
+    </message>
+    <message id="gikctl-contact-import-err-ab-not-found">
+        <source>Can not find addressbook with ID %1 in the database</source>
+        <extracomment>CLI error message, %1 will be replaced by the database id</extracomment>
+        <translation type="unfinished"/>
+    </message>
+    <message id="gikctl-command-contact-import-summary">
+        <source>Import contacts</source>
+        <extracomment>CLI command summary</extracomment>
+        <translation type="unfinished"/>
+    </message>
+    <message id="gikctl-command-contact-import-description">
+        <source>Import one or more contacts from a vCard file into a specific addressbook.</source>
+        <extracomment>CLI command description</extracomment>
+        <translation type="unfinished"/>
+    </message>
 </context>
 </TS>
