@@ -27,12 +27,12 @@ void M0004_CreateAddressBooksTable::up()
 
     t->foreignKey(QStringLiteral("user_id"), QStringLiteral("users"), QStringLiteral("id"), QStringLiteral("addressbooks_user_id_idx"))->onDelete(QStringLiteral("CASCADE"))->onUpdate(QStringLiteral("CASCADE"));
 
-    t->setCharset(QStringLiteral("utf8"));
-
     switch(dbType()) {
     case Firfuorida::Migrator::MariaDB:
     case Firfuorida::Migrator::MySQL:
         t->setEngine(QStringLiteral("InnoDB"));
+        t->setCharset(QStringLiteral("utf8mb4"));
+        t->setCollation(QStringLiteral("utf8mb4_unicode_ci"));
         break;
     case Firfuorida::Migrator::DB2:
     case Firfuorida::Migrator::InterBase:

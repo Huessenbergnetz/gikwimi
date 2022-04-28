@@ -30,11 +30,12 @@ void M0001_Create_Users_Table::up()
     t->bigInteger(QStringLiteral("locked_at"))->defaultValue(0)->nullable();
     t->integer(QStringLiteral("locked_by"))->unSigned()->defaultValue(0)->nullable();
 
-    t->setCharset(QStringLiteral("utf8"));
     switch(dbType()) {
     case Firfuorida::Migrator::MariaDB:
     case Firfuorida::Migrator::MySQL:
         t->setEngine(QStringLiteral("InnoDB"));
+        t->setCharset(QStringLiteral("utf8mb4"));
+        t->setCollation(QStringLiteral("utf8mb4_unicode_ci"));
         break;
     case Firfuorida::Migrator::DB2:
     case Firfuorida::Migrator::InterBase:

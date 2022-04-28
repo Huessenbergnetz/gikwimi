@@ -26,11 +26,12 @@ void M0002_CreateUserSettings::up()
     t->uniqueKey(QStringList({QStringLiteral("user_id"), QStringLiteral("name")}), QStringLiteral("user_id_name_idx"));
     t->foreignKey(QStringLiteral("user_id"), QStringLiteral("users"), QStringLiteral("id"), QStringLiteral("user_settings_user_id_idx"))->onDelete(QStringLiteral("CASCADE"))->onUpdate(QStringLiteral("CASCADE"));
 
-    t->setCharset(QStringLiteral("utf8"));
     switch(dbType()) {
     case Firfuorida::Migrator::MariaDB:
     case Firfuorida::Migrator::MySQL:
         t->setEngine(QStringLiteral("InnoDB"));
+        t->setCharset(QStringLiteral("utf8mb4"));
+        t->setCollation(QStringLiteral("utf8mb4_unicode_ci"));
         break;
     case Firfuorida::Migrator::DB2:
     case Firfuorida::Migrator::InterBase:
