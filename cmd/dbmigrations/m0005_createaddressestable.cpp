@@ -21,7 +21,7 @@ void M0005_CreateAddressesTable::up()
     auto t = create(QStringLiteral("addresses"));
     t->increments();
     t->integer(QStringLiteral("addressbook_id"))->unSigned();
-    t->varChar(QStringLiteral("uid"));
+    t->varChar(QStringLiteral("uid"))->nullable();
     t->varChar(QStringLiteral("given_name"));
     t->varChar(QStringLiteral("family_name"));
     t->longText(QStringLiteral("vcard"));
