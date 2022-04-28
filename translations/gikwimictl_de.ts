@@ -324,7 +324,8 @@
         <translation type="unfinished"/>
     </message>
     <message id="gikctl-command-database-reset-description">
-        <source>Resets all database migrations. A reset will roll back all migrations and will rerun them afterwards. Note that this will result in data loss. This command is for development purposes only.</source>
+        <source>Resets all database migrations. A reset will roll back all migrations. Note that this will result in data loss. This command is for development purposes only.</source>
+        <oldsource>Resets all database migrations. A reset will roll back all migrations and will rerun them afterwards. Note that this will result in data loss. This command is for development purposes only.</oldsource>
         <extracomment>CLI command description</extracomment>
         <translation type="unfinished"/>
     </message>

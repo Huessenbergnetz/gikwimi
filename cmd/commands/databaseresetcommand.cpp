@@ -56,7 +56,7 @@ QString DatabaseResetCommand::summary() const
 QString DatabaseResetCommand::description() const
 {
     //: CLI command description
-    //% "Resets all database migrations. A reset will roll back all migrations and will rerun them afterwards. Note that this will result in data loss. This command is for development purposes only."
+    //% "Resets all database migrations. A reset will roll back all migrations. Note that this will result in data loss. This command is for development purposes only."
     return qtTrId("gikctl-command-database-reset-description");
 }
 
