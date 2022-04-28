@@ -25,15 +25,17 @@ void DatabaseMigrationCommand::init()
 
 int DatabaseMigrationCommand::exec(QCommandLineParser *parser)
 {
+    int rc = 0;
+
     parser->parse(QCoreApplication::arguments());
 
     if (checkShowHelp(parser)) {
-        return 0;
+        return rc;
     }
 
     setGlobalOptions(parser);
 
-    int rc = openDb(dbConName());
+    rc = openDb(dbConName());
     if (rc != 0) {
         return rc;
     }

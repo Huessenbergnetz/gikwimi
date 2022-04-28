@@ -40,7 +40,7 @@ int DatabaseRollbackCommand::exec(QCommandLineParser *parser)
     parser->parse(QCoreApplication::arguments());
 
     if (checkShowHelp(parser)) {
-        return 0;
+        return rc;
     }
 
     const QString stepsString = parser->value(QStringLiteral("steps"));

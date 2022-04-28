@@ -70,17 +70,19 @@ void UserAddCommand::init()
 
 int UserAddCommand::exec(QCommandLineParser *parser)
 {
+    int rc = 0;
+
     parser->addOptions(m_cliOptions);
     parser->parse(QCoreApplication::arguments());
 
-    setGlobalOptions(parser);
-
-    int rc = openDb(QStringLiteral(DBCONNAME));
-    if (rc != 0) {
+    if (checkShowHelp(parser)) {
         return rc;
     }
 
-    if (checkShowHelp(parser)) {
+    setGlobalOptions(parser);
+
+    rc = openDb(QStringLiteral(DBCONNAME));
+    if (rc != 0) {
         return rc;
     }
 
