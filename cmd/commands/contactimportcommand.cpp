@@ -277,7 +277,7 @@ QString ContactImportCommand::strategyEnumToString(Strategy strategy) const
         const auto mo = ContactImportCommand::metaObject();
         const auto me = mo->enumerator(mo->indexOfEnumerator("Strategy"));
 
-        str = QString::fromLatin1(me.valueToKey(static_cast<int>(strategy)));
+        str = QString::fromLatin1(me.valueToKey(static_cast<int>(strategy))).toLower();
     }
 
     return str;
