@@ -34,21 +34,37 @@ void UserAddCommand::init()
     QLocale locale;
 
     m_cliOptions.append(QCommandLineOption(QStringList({QStringLiteral("u"), QStringLiteral("username")}),
+                                           //: CLI option description
+                                           //% "The user name for the user to create."
                                            qtTrId("gikctl-opt-user-add-username-desc"),
+                                           //: CLI option value name
+                                           //% "name"
                                            qtTrId("gikctl-opt-user-add-username-value")));
 
     m_cliOptions.append(QCommandLineOption(QStringList({QStringLiteral("e"), QStringLiteral("email")}),
+                                           //: CLI option description
+                                           //% "The email address of the user to create."
                                            qtTrId("gikctl-opt-user-add-email-desc"),
+                                           //: CLI option value name
+                                           //% "email"
                                            qtTrId("gikctl-opt-user-add-email-value")));
 
     const QString userTypeDefVal = User::typeEnumToString(User::Registered);
     m_cliOptions.append(QCommandLineOption(QStringList({QStringLiteral("t"), QStringLiteral("type")}),
+                                           //: CLI option description, %1 will be replaced by a list of supported types, %2 by the default value
+                                           //% "The type of the new user. Available types: %1. Default value: %2."
                                            qtTrId("gikctl-opt-user-add-type-desc").arg(locale.createSeparatedList(User::supportedTypes()), userTypeDefVal),
+                                           //: CLI option value name
+                                           //% "type"
                                            qtTrId("gikctl-opt-user-add-type-value"),
                                            userTypeDefVal));
 
     m_cliOptions.append(QCommandLineOption(QStringList({QStringLiteral("p"), QStringLiteral("password")}),
+                                           //: CLI option description
+                                           //% "The password for the new user. If empty, a random password will be generated that will be displayed after the user has been created successfully."
                                            qtTrId("gikctl-opt-user-add-password-desc"),
+                                           //: CLI option value name
+                                           //% "password"
                                            qtTrId("gikctl-opt-user-add-password-value")));
 }
 
@@ -175,12 +191,16 @@ int UserAddCommand::exec(QCommandLineParser *parser)
 
 QString UserAddCommand::summary() const
 {
-    return qtTrId("gikctl-cli-command-user-add-summary");
+    //: CLI command summary
+    //% "Add a new user"
+    return qtTrId("gikctl-command-user-add-summary");
 }
 
 QString UserAddCommand::description() const
 {
-    return qtTrId("gikctl-cli-command-user-add-description");
+    //: CLI command description
+    //% "Add a new user with the given option parameters."
+    return qtTrId("gikctl-command-user-add-description");
 }
 
 #include "moc_useraddcommand.cpp"

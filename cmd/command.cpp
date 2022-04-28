@@ -34,13 +34,6 @@ void Command::showHelp() const
     showOptions(&out);
 }
 
-int Command::invalidSubCommand(const QString &subCommand) const
-{
-    //: CLI error message, %1 will be replaced by the invalid subcommand, %2 by the current command and %3 by the application name
-    //% "“%1“ is not a valid subcommand of “%2”. Run '%3 --help %2' for more information on the command."
-    return inputError(qtTrId("gikctl-cli-command-error-invalid-subcommand").arg(subCommand, objectName(), QCoreApplication::applicationName()));
-}
-
 void Command::showGlobalOptions(QTextStream *out) const
 {
     Controller *c = nullptr;
@@ -58,7 +51,7 @@ void Command::showGlobalOptions(QTextStream *out) const
 
     if (!options.empty()) {
         //% "Global options:"
-        *out << qtTrId("gikctl-clihelp-header-global-options") << '\n';
+        *out << qtTrId("gikctl-help-header-global-options") << '\n';
         showOptions(out, options);
         *out << '\n';
     }
@@ -71,9 +64,9 @@ void Command::showUsage(QTextStream *out) const
     const QString exeName = args.first();
 
     //% "Usage:"
-    *out << qtTrId("gikctl-clihelp-usage") << ' ' << exeName << ' ';
+    *out << qtTrId("gikctl-help-usage") << ' ' << exeName << ' ';
     //% "[global options]"
-    *out << qtTrId("gikctl-clihelp-usage-global-options");
+    *out << qtTrId("gikctl-help-usage-global-options");
     QStringList commands;
     QObject *p = parent();
     while (p->inherits("Command")) {
@@ -87,12 +80,12 @@ void Command::showUsage(QTextStream *out) const
 
     if (!findChildren<Command*>(QString(), Qt::FindDirectChildrenOnly).empty()) {
         //% "<command>"
-        *out << ' ' << qtTrId("gikctl-clihelp-usage-command");
+        *out << ' ' << qtTrId("gikctl-help-usage-command");
     }
 
     if (!m_cliOptions.empty()) {
-        //% [options]
-        *out << ' ' << qtTrId("gikctl-clihelp-usage-options");
+        //% "[options]"
+        *out << ' ' << qtTrId("gikctl-help-usage-options");
     }
 
     *out << '\n';
@@ -105,7 +98,7 @@ void Command::showSubCommands(QTextStream *out) const
     if (!coms.empty()) {
         // CLI help header
         //% "Commands:"
-        *out << qtTrId("gikctl-clihelp-header-commands") << '\n';
+        *out << qtTrId("gikctl-help-header-commands") << '\n';
 
         const QList<Command*> coms = findChildren<Command *>(QString(), Qt::FindDirectChildrenOnly);
         int maxCommandNameLength = 0;
@@ -128,7 +121,7 @@ void Command::showOptions(QTextStream *out) const
     if (!m_cliOptions.empty()) {
         //: CLI help header
         //% "Options:"
-        *out << qtTrId("gikctl-clihelp-header-options") << '\n';
+        *out << qtTrId("gikctl-help-header-options") << '\n';
         showOptions(out, m_cliOptions);
         *out << '\n';
     }

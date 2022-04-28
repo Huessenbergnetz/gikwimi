@@ -48,12 +48,16 @@ int DatabaseResetCommand::exec(QCommandLineParser *parser)
 
 QString DatabaseResetCommand::summary() const
 {
-    return qtTrId("gikctl-cli-command-database-reset-summary");
+    //: CLI command summary
+    //% "Reset database migrations"
+    return qtTrId("gikctl-command-database-reset-summary");
 }
 
 QString DatabaseResetCommand::description() const
 {
-    return qtTrId("gikctl-cli-command-database-reset-description");
+    //: CLI command description
+    //% "Resets all database migrations. A reset will roll back all migrations and will rerun them afterwards. Note that this will result in data loss. This command is for development purposes only."
+    return qtTrId("gikctl-command-database-reset-description");
 }
 
 #include "moc_databaseresetcommand.cpp"

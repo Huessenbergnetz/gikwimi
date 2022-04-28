@@ -29,7 +29,6 @@ public:
     void showHelp() const;
 
 protected:
-    int invalidSubCommand(const QString &subCommand) const;
     void showGlobalOptions(QTextStream *out) const;
     void showUsage(QTextStream *out) const;
     void showSubCommands(QTextStream *out) const;

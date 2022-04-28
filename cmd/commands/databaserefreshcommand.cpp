@@ -21,10 +21,15 @@ DatabaseRefreshCommand::~DatabaseRefreshCommand() = default;
 
 void DatabaseRefreshCommand::init()
 {
+    const QString defVal = QStringLiteral("0");
     m_cliOptions.append(QCommandLineOption(QStringList({QStringLiteral("s"), QStringLiteral("steps")}),
-                                           qtTrId("gikctl-opt-database-refresh-steps-desc"),
+                                           //: CLI option description, %1 will be replaced by the default value
+                                           //% "Number of migration steps to refresh. If 0, all migrations will be refreshed. Default: %1."
+                                           qtTrId("gikctl-opt-database-refresh-steps-desc").arg(defVal),
+                                           //: CLI option value name
+                                           //% "steps"
                                            qtTrId("gikctl-opt-database-refresh-steps-value"),
-                                           QStringLiteral("0")));
+                                           defVal));
 }
 
 int DatabaseRefreshCommand::exec(QCommandLineParser *parser)
@@ -66,12 +71,16 @@ int DatabaseRefreshCommand::exec(QCommandLineParser *parser)
 
 QString DatabaseRefreshCommand::summary() const
 {
-    return qtTrId("gikctl-cli-command-database-refresh-summary");
+    //: CLI command summary
+    //% "Refresh database migrations"
+    return qtTrId("gikctl-command-database-refresh-summary");
 }
 
 QString DatabaseRefreshCommand::description() const
 {
-    return qtTrId("gikctl-cli-command-database-refresh-description");
+    //: CLI command description
+    //% "Refreshes the specified number of migration steps. A refresh will roll back the specified number of migrations and will rerun them afterwards. Note that this will result in data loss. This command is for development purposes only."
+    return qtTrId("gikctl-command-database-refresh-description");
 }
 
 #include "moc_databaserefreshcommand.cpp"

@@ -50,12 +50,16 @@ int UserCommand::exec(QCommandLineParser *parser)
 
 QString UserCommand::summary() const
 {
-    return qtTrId("gikctl-cli-command-user-summary");
+    //: CLI command summary
+    //% "Manage users"
+    return qtTrId("gikctl-command-user-summary");
 }
 
 QString UserCommand::description() const
 {
-    return qtTrId("gikctl-cli-command-user-description");
+    //: CLI command description
+    //% "Add, edit, delete and list users."
+    return qtTrId("gikctl-command-user-description");
 }
 
 #include "moc_usercommand.cpp"

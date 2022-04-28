@@ -21,10 +21,15 @@ DatabaseRollbackCommand::~DatabaseRollbackCommand() = default;
 
 void DatabaseRollbackCommand::init()
 {
+    const QString defVal = QStringLiteral("1");
     m_cliOptions.append(QCommandLineOption({QStringLiteral("s"), QStringLiteral("steps")},
-                                           qtTrId("gikctl-opt-database-rollback-steps-desc"),
+                                           //: CLI option description, %1 will be replaced by the default value
+                                           //% "Number of migration steps to roll back. Default: %1."
+                                           qtTrId("gikctl-opt-database-rollback-steps-desc").arg(defVal),
+                                           //: CLI option value name
+                                           //% "steps"
                                            qtTrId("gikctl-opt-database-rollback-steps-value"),
-                                           QStringLiteral("1")));
+                                           defVal));
 }
 
 int DatabaseRollbackCommand::exec(QCommandLineParser *parser)
@@ -66,12 +71,16 @@ int DatabaseRollbackCommand::exec(QCommandLineParser *parser)
 
 QString DatabaseRollbackCommand::summary() const
 {
-    return qtTrId("gikctl-cli-command-database-rollback-summary");
+    //: CLI command summary
+    //% "Roll back database migrations"
+    return qtTrId("gikctl-command-database-rollback-summary");
 }
 
 QString DatabaseRollbackCommand::description() const
 {
-    return qtTrId("gikctl-cli-command-database-rollback-description");
+    //: CLI command description
+    //% "Rolls back the specified number of migration steps. Note that this will result in data loss. This command is for development purposes only."
+    return qtTrId("gikctl-command-database-rollback-description");
 }
 
 #include "moc_databaserollbackcommand.cpp"

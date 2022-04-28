@@ -63,12 +63,16 @@ int DatabaseCommand::exec(QCommandLineParser *parser)
 
 QString DatabaseCommand::summary() const
 {
-    return qtTrId("gikctl-cli-command-database-summary");
+    //: CLI command summary
+    //% "Manage database migrations"
+    return qtTrId("gikctl-command-database-summary");
 }
 
 QString DatabaseCommand::description() const
 {
-    return qtTrId("gikctl-cli-command-database-description");
+    //: CLI command description
+    //% "Run, roll back, reset and refresh database migrations. Be careful, these commands can easily lead to data loss! Make sure that you have made a backup of your database beforehand."
+    return qtTrId("gikctl-command-database-description");
 }
 
 QString DatabaseCommand::dbConName() const

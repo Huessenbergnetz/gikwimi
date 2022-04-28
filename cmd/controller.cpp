@@ -24,21 +24,23 @@ Controller::~Controller() = default;
 void Controller::init()
 {
     m_globalOptions.append(QCommandLineOption(QStringList({QStringLiteral("h"), QStringLiteral("help")}),
-                           qtTrId("gikctl-cliopt-global-help-desc")));
+                                              //: CLI option description
+                                              //% "Displays help on commandline options and commands."
+                                              qtTrId("gikctl-opt-global-help-desc")));
 
     const QString iniFileDefVal = QStringLiteral(GIKWIMI_CONFFILE);
     m_globalOptions.append(QCommandLineOption(QStringList({QStringLiteral("i"), QStringLiteral("ini")}),
                                               //: CLI option description, %1 will be the default value
                                               //% "Path to configuration ini file. Default: %1"
-                                              qtTrId("gikctl-cliopt-global-inifile-desc").arg(iniFileDefVal),
+                                              qtTrId("gikctl-opt-global-inifile-desc").arg(iniFileDefVal),
                                               //: CLI option value name
                                               //% "ini file"
-                                              qtTrId("gikctl-cliopt-global-inifile-val"),
+                                              qtTrId("gikctl-opt-global-inifile-val"),
                                               iniFileDefVal));
     m_globalOptions.append(QCommandLineOption(QStringList({QStringLiteral("q"), QStringLiteral("quiet")}),
                                               //: CLI option description
                                               //% "Be quiet and print less output."
-                                              qtTrId("gikctl-cliopt-global-quiet-desc")));
+                                              qtTrId("gikctl-opt-global-quiet-desc")));
 
     new DatabaseCommand(this);
     new UserCommand(this);
@@ -75,15 +77,17 @@ void Controller::showHelp() const
 
     QTextStream out(stdout, QIODevice::WriteOnly);
 
-    out << qtTrId("gikctl-clihelp-usage") << ' ' << exeName << ' ';
-    out << qtTrId("gikctl-clihelp-usage-global-options") << ' ';
-    out << qtTrId("gikctl-clihelp-usage-command") << '\n';
+    out << qtTrId("gikctl-help-usage") << ' ' << exeName << ' ';
+    out << qtTrId("gikctl-help-usage-global-options") << ' ';
+    out << qtTrId("gikctl-help-usage-command") << '\n';
     out << '\n';
 
-    out << qtTrId("gikctl-clihelp-description") << '\n';
+    //: General description for gikwimictl
+    //% "Gikwimi is a online event guest management system. This command line client helps to manage several aspects of Gikwimi from the command line."
+    out << qtTrId("gikctl-help-description") << '\n';
     out << '\n';
 
-    out << qtTrId("gikctl-clihelp-header-global-options") << '\n';
+    out << qtTrId("gikctl-help-header-global-options") << '\n';
     int longestOptionNameAndValue = 0;
     for (const QCommandLineOption &opt : qAsConst(m_globalOptions)) {
         const QStringList names = opt.names();
@@ -127,7 +131,7 @@ void Controller::showHelp() const
     }
     out << '\n';
 
-    out << qtTrId("gikctl-clihelp-header-commands") << '\n';
+    out << qtTrId("gikctl-help-header-commands") << '\n';
 
     const QList<Command*> coms = findChildren<Command *>(QString(), Qt::FindDirectChildrenOnly);
     int maxCommandNameLength = 0;

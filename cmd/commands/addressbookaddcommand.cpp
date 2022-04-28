@@ -30,21 +30,37 @@ void AddressBookAddCommand::init()
     QLocale locale;
 
     m_cliOptions.append(QCommandLineOption(QStringList({QStringLiteral("n"), QStringLiteral("name")}),
+                                           //: CLI option description
+                                           //% "The name for the addressbook to create."
                                            qtTrId("gikctl-opt-addressbook-add-name-desc"),
+                                           //: CLI option value name
+                                           //% "name"
                                            qtTrId("gikctl-opt-addressbook-add-name-value")));
 
     m_cliOptions.append(QCommandLineOption(QStringList({QStringLiteral("u"), QStringLiteral("user")}),
+                                           //: CLI option description
+                                           //% "The user name, email or ID of the user that will be the owner of the addressbook."
                                            qtTrId("gikctl-opt-addressbook-add-user-desc"),
+                                           //: CLI option value name
+                                           //% "user"
                                            qtTrId("gikctl-opt-addressbook-add-user-value")));
 
     const QString typeDefVal = AddressBook::typeEnumToString(AddressBook::Local);
     m_cliOptions.append(QCommandLineOption(QStringList({QStringLiteral("t"), QStringLiteral("type")}),
-                                           qtTrId("gikctl-opt-addressbook-add-user-desc").arg(locale.createSeparatedList(AddressBook::supportedTypes()), typeDefVal),
-                                           qtTrId("gikctl-opt-addressbook-add-user-value"),
+                                           //: CLI option description, %1 will be replaced by a list of available types, %2 by the default value
+                                           //% "The type of the addressbook. Currently supported values: %1. Default value: %2."
+                                           qtTrId("gikctl-opt-addressbook-add-type-desc").arg(locale.createSeparatedList(AddressBook::supportedTypes()), typeDefVal),
+                                           //: CLI option value name
+                                           //% "type"
+                                           qtTrId("gikctl-opt-addressbook-add-type-value"),
                                            typeDefVal));
 
     m_cliOptions.append(QCommandLineOption(QStringList({QStringLiteral("d"), QStringLiteral("data")}),
+                                           //: CLI option description
+                                           //% "Optional data required by some addressbook types."
                                            qtTrId("gikctl-opt-addressbook-add-data-desc"),
+                                           //: CLI option value name
+                                           //% "data"
                                            qtTrId("gikctl-opt-addressbook-add-data-value")));
 }
 
@@ -137,12 +153,16 @@ int AddressBookAddCommand::exec(QCommandLineParser *parser)
 
 QString AddressBookAddCommand::summary() const
 {
-    return qtTrId("gikctl-cli-command-addressbook-add-summary");
+    //: CLI command summary
+    //% "Add a new addressbook"
+    return qtTrId("gikctl-command-addressbook-add-summary");
 }
 
 QString AddressBookAddCommand::description() const
 {
-    return qtTrId("gikctl-cli-command-addressbook-add-description");
+    //: CLI command description
+    //% "Add a new addressbook for a specific user."
+    return qtTrId("gikctl-command-addressbook-add-description");
 }
 
 #include "moc_addressbookaddcommand.cpp"

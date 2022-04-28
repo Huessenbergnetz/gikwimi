@@ -49,12 +49,16 @@ int DatabaseMigrationCommand::exec(QCommandLineParser *parser)
 
 QString DatabaseMigrationCommand::summary() const
 {
-    return qtTrId("gikctl-cli-command-database-migration-summary");
+    //: CLI command summary
+    //% "Run database migrations"
+    return qtTrId("gikctl-command-database-migration-summary");
 }
 
 QString DatabaseMigrationCommand::description() const
 {
-    return qtTrId("gikctl-cli-command-database-migration-description");
+    //: CLI command description
+    //% "Performs all database migrations that have not already be performed before. You should run this command after upgrading Gikwimi."
+    return qtTrId("gikctl-command-database-migration-description");
 }
 
 #include "moc_databasemigrationcommand.cpp"

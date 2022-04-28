@@ -41,12 +41,16 @@ int AddressBookCommand::exec(QCommandLineParser *parser)
 
 QString AddressBookCommand::summary() const
 {
-    return qtTrId("gikctl-cli-command-addressbook-summary");
+    //: CLI command summary
+    //% "Manage addressbooks"
+    return qtTrId("gikctl-command-addressbook-summary");
 }
 
 QString AddressBookCommand::description() const
 {
-    return qtTrId("gikctl-cli-command-addressbook-description");
+    //: CLI command description
+    //% "Add, edit, delete and list addressbooks."
+    return qtTrId("gikctl-command-addressbook-description");
 }
 
 #include "moc_addressbookcommand.cpp"
