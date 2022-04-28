@@ -11,11 +11,12 @@
 #include <QTextStream>
 #include <cstdio>
 
-CLI::CLI(bool quiet)
-    : m_quiet{quiet}
+CLI::CLI(QObject *parent) : QObject(parent)
 {
 
 }
+
+CLI::~CLI() = default;
 
 void CLI::printError(const QString &error) const
 {
@@ -296,3 +297,10 @@ int CLI::readPort(const QString &name, int defaultValue) const
 {
     return readIntWithDef(name, defaultValue, 0, 65535);
 }
+
+void CLI::setQuiet(bool quiet)
+{
+    m_quiet = quiet;
+}
+
+#include "moc_cli.cpp"

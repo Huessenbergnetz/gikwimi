@@ -8,10 +8,14 @@
 
 #include "configuration.h"
 
+#include <QObject>
+
 class Database : public Configuration
 {
+    Q_OBJECT
 public:
-    explicit Database(const QString &iniPath, bool quiet = false);
+    explicit Database(QObject *parent = nullptr);
+
     ~Database();
 
 protected:

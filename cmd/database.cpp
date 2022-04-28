@@ -10,8 +10,7 @@
 
 #define DBCONNAME "dbmigrations"
 
-Database::Database(const QString &iniPath, bool quiet)
-    : Configuration(iniPath, quiet)
+Database::Database(QObject *parent) : Configuration(parent)
 {
 
 }
@@ -77,3 +76,5 @@ int Database::openDb(const QString &connectionName)
 
     return rc;
 }
+
+#include "moc_database.cpp"

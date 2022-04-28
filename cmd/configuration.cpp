@@ -7,11 +7,12 @@
 #include <QSettings>
 #include <QFileInfo>
 
-Configuration::Configuration(const QString &iniPath, bool quiet)
-    : CLI{quiet}, m_iniPath{iniPath}
+Configuration::Configuration(QObject *parent) : CLI(parent)
 {
 
 }
+
+Configuration::~Configuration() = default;
 
 int Configuration::loadConfig()
 {
@@ -69,3 +70,10 @@ QVariant Configuration::value(const QString &group, const QString &key, const QV
 
     return map.value(key, defaultValue);
 }
+
+void Configuration::setIniPath(const QString &iniPath)
+{
+    m_iniPath = iniPath;
+}
+
+#include "moc_configuration.cpp"

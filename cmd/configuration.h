@@ -8,18 +8,23 @@
 
 #include "cli.h"
 
+#include <QObject>
 #include <QString>
 #include <QVariantMap>
 
 class Configuration : public CLI
 {
+    Q_OBJECT
 public:
-    explicit Configuration(const QString &iniPath, bool quiet = false);
+    explicit Configuration(QObject *parent = nullptr);
+
+    ~Configuration();
 
     QVariant value(const QString &group, const QString &key, const QVariant &defaultValue = QVariant()) const;
 
 protected:
     int loadConfig();
+    void setIniPath(const QString &iniPath);
 
 private:
     QString m_iniPath;

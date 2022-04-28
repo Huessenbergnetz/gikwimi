@@ -6,6 +6,7 @@
 #ifndef GIKWIMICTL_CLI_H
 #define GIKWIMICTL_CLI_H
 
+#include <QObject>
 #include <QString>
 #include <QStringList>
 #include <limits>
@@ -13,10 +14,13 @@ class QSqlError;
 class QSqlQuery;
 class QSqlDatabase;
 
-class CLI
+class CLI : public QObject
 {
+    Q_OBJECT
 public:
-    explicit CLI(bool quiet = false);
+    explicit CLI(QObject *parent = nullptr);
+
+    ~CLI() override;
 
 protected:
     void printError(const QString &error) const;
@@ -71,12 +75,16 @@ protected:
 
     int readPort(const QString &name, int defaultValue) const;
 
+    void setQuiet(bool quiet);
+
 private:
     bool m_quiet = false;
 
     void printInputline(const QString &name, const QString &defaultValue = QString()) const;
 
     QString readInputline() const;
+
+    Q_DISABLE_COPY(CLI)
 };
 
 #endif // GIKWIMICTL_CLI_H
