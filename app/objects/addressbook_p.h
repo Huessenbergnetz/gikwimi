@@ -14,21 +14,21 @@ class AddressBookData : public QSharedData
 public:
     AddressBookData() = default;
 
-    AddressBookData(dbid_t _id, dbid_t _userId, AddressBook::Type _type, const QString &_name, const QVariant &_data)
+    AddressBookData(dbid_t _id, AddressBook::Type _type, const QString &_name, const QVariant &_data, const User &_user)
         : QSharedData(),
           name{_name},
+          user{_user},
           data{_data},
           id{_id},
-          userId{_userId},
           type{_type}
     {}
 
     ~AddressBookData() = default;
 
     QString name;
+    User user;
     QVariant data;
     dbid_t id = 0;
-    dbid_t userId = 0;
     AddressBook::Type type = AddressBook::Local;
 };
 
