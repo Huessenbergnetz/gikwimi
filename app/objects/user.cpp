@@ -33,7 +33,6 @@ public:
 };
 
 User::User()
-    : d(new UserData)
 {
 
 }
@@ -102,57 +101,62 @@ void User::swap(User &other) noexcept
 
 dbid_t User::id() const
 {
-    return d->id;
+    return d ? d->id : 0;
 }
 
 User::Type User::type() const
 {
-    return d->type;
+    return d ? d->type : User::Invalid;
 }
 
 QString User::username() const
 {
-    return d->username;
+    return d ? d->username : QString();
 }
 
 QString User::email() const
 {
-    return d->username;
+    return d ? d->email : QString();
 }
 
 QDateTime User::created() const
 {
-    return d->created;
+    return d ? d->created : QDateTime();
 }
 
 QDateTime User::updated() const
 {
-    return d->updated;
+    return d ? d->updated : QDateTime();
 }
 
 qint64 User::lockedAt() const
 {
-    return d->lockedAt;
+    return d ? d->lockedAt : 0;
 }
 
 dbid_t User::lockedBy() const
 {
-    return d->lockedBy;
+    return d ? d->lockedBy : 0;
 }
 
 QVariantMap User::settings() const
 {
-    return d->settings;
+    return d ? d->settings : QVariantMap();
 }
 
 bool User::isAdmin() const
 {
-    return d->type >= User::Administrator;
+    return d && d->type >= User::Administrator;
 }
 
 bool User::isValid() const
 {
-    return d->id > 0;
+    return d && d->id > 0;
+}
+
+bool User::isNull() const
+{
+    return d ? false : true;
 }
 
 void User::toStash(Cutelyst::Context *c)

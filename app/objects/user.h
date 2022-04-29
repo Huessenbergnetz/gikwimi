@@ -86,6 +86,8 @@ public:
 
     bool isValid() const;
 
+    bool isNull() const;
+
     void toStash(Cutelyst::Context *c);
 
     static User fromStash(Cutelyst::Context *c);
