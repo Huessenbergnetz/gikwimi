@@ -67,6 +67,8 @@ public:
 
     static AddressBook create(Cutelyst::Context *c, Error &e, const User &user, AddressBook::Type type, const QString &name, const QVariant &data);
 
+    static std::vector<AddressBook> list(Cutelyst::Context *c, Error &e, dbid_t userId);
+
     static std::vector<AddressBook> list(Cutelyst::Context *c, Error &e, const User &user);
 
     static AddressBook get(Cutelyst::Context *c, Error &e, dbid_t id);

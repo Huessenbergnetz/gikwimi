@@ -81,10 +81,11 @@ AddressBook AddressBook::create(Cutelyst::Context *c, Error &e, dbid_t userId, A
     User user = User::fromStash(c);
     if (user.id() != userId) {
         user = User::get(c, e, userId);
-        if (e.type() == Error::NoError) {
-            addressBook = AddressBook::create(c, e, user, type, name, data);
+        if (e.type() != Error::NoError) {
+            return addressBook;
         }
     }
+    addressBook = AddressBook::create(c, e, user, type, name, data);
 
     return addressBook;
 }
@@ -110,6 +111,22 @@ AddressBook AddressBook::create(Cutelyst::Context *c, Error &e, const User &user
     }
 
     return addressBook;
+}
+
+std::vector<AddressBook> AddressBook::list(Cutelyst::Context *c, Error &e, dbid_t userId)
+{
+    std::vector<AddressBook> addressBooks;
+
+    User user = User::fromStash(c);
+    if (user.id() != userId) {
+        user = User::get(c, e, userId);
+        if (e.type() != Error::NoError) {
+            return addressBooks;
+        }
+    }
+    addressBooks = AddressBook::list(c, e, user);
+
+    return addressBooks;
 }
 
 std::vector<AddressBook> AddressBook::list(Cutelyst::Context *c, Error &e, const User &user)
