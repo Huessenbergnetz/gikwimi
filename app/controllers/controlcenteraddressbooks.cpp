@@ -5,6 +5,9 @@
 
 #include "controlcenteraddressbooks.h"
 #include "global.h"
+#include "../objects/user.h"
+#include "../objects/addressbook.h"
+#include "../objects/error.h"
 
 #include <Cutelyst/Plugins/Authentication/authenticationuser.h>
 
@@ -18,9 +21,20 @@ ControlCenterAddressBooks::~ControlCenterAddressBooks() = default;
 
 void ControlCenterAddressBooks::index(Context *c)
 {
+    const User currentUser = User::fromStash(c);
+
+    Error e;
+    const std::vector<AddressBook> addressBooks = AddressBook::list(c, e, currentUser);
+
+    if (e.type() != Error::NoError) {
+        e.toStash(c, true);
+        return;
+    }
+
     c->stash({
                  {QStringLiteral("site_title"), c->translate("ControlCenterAddressBook", "Addressbook")},
-                 {QStringLiteral("template"), QStringLiteral("controlcenter/addressbook/index.tmpl")}
+                 {QStringLiteral("template"), QStringLiteral("controlcenter/addressbook/index.tmpl")},
+                 {QStringLiteral("addressBooks"), QVariant::fromValue<std::vector<AddressBook>>(addressBooks)}
              });
 }
 
