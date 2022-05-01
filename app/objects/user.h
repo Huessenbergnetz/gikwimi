@@ -106,4 +106,7 @@ private:
     QSharedDataPointer<UserData> d;
 };
 
+Q_DECLARE_METATYPE(User)
+Q_DECLARE_TYPEINFO(User, Q_MOVABLE_TYPE);
+
 #endif // USER_H
