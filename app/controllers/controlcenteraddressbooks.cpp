@@ -8,6 +8,7 @@
 #include "../objects/user.h"
 #include "../objects/addressbook.h"
 #include "../objects/error.h"
+#include "../objects/menuitem.h"
 
 #include <Cutelyst/Plugins/Authentication/authenticationuser.h>
 
@@ -31,10 +32,21 @@ void ControlCenterAddressBooks::index(Context *c)
         return;
     }
 
+    buildMenu(c);
+
+    QMap<QString,QString> addressbooksTableHeaders;
+    //: table header
+    addressbooksTableHeaders.insert(QStringLiteral("id"), c->translate("ControlCenterAddressBooks", "ID"));
+    //: table header
+    addressbooksTableHeaders.insert(QStringLiteral("type"), c->translate("ControlCenterAddressBooks", "type"));
+    //: table header
+    addressbooksTableHeaders.insert(QStringLiteral("name"), c->translate("ControlCenterAddressBooks", "name"));
+
     c->stash({
-                 {QStringLiteral("site_title"), c->translate("ControlCenterAddressBook", "Addressbook")},
+                 {QStringLiteral("site_title"), c->translate("ControlCenterAddressBook", "Addressbooks")},
                  {QStringLiteral("template"), QStringLiteral("controlcenter/addressbooks/index.tmpl")},
-                 {QStringLiteral("addressBooks"), QVariant::fromValue<std::vector<AddressBook>>(addressBooks)}
+                 {QStringLiteral("addressbooks"), QVariant::fromValue<std::vector<AddressBook>>(addressBooks)},
+                 {QStringLiteral("addressbooks_table_headers"), QVariant::fromValue<QMap<QString,QString>>(addressbooksTableHeaders)}
              });
 }
 
@@ -52,4 +64,14 @@ void ControlCenterAddressBooks::edit(Context *c, const QString &id)
                  {QStringLiteral("site_title"), c->translate("ControlCenterAddressBook", "Edit addressbook")},
                  {QStringLiteral("template"), QStringLiteral("controlcenter/addressbooks/edit.tmpl")}
              });
+}
+
+void ControlCenterAddressBooks::buildMenu(Context *c)
+{
+    std::vector<MenuItem> addressBooksMenu;
+    addressBooksMenu.reserve(1);
+
+    addressBooksMenu.emplace_back(c, QStringLiteral("addressbooks_menu_add"), c->translate("ControlCenterAddressBooks", "add"), QString(), QStringLiteral("add"), QStringLiteral("controlcenter/addressbooks"));
+
+    c->setStash(QStringLiteral("controlcenter_addressbooks_menu"), QVariant::fromValue<std::vector<MenuItem>>(addressBooksMenu));
 }

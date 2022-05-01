@@ -8,6 +8,7 @@
 #include "gikwimiconfig.h"
 #include "confignames.h"
 #include "userauthstoresql.h"
+#include "global.h"
 
 #include "controllers/root.h"
 #include "controllers/login.h"
@@ -75,6 +76,9 @@ bool Gikwimi::init()
 
         isInitialized = true;
     }
+
+    qCDebug(GIK_CORE) << "Registering meta types";
+    qRegisterMetaType<dbid_t>("dbid_t");
 
     qCDebug(GIK_CORE) << "Registering Cutelee view";
     auto view = new CuteleeView(this);
