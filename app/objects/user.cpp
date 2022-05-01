@@ -314,6 +314,10 @@ QDataStream &operator<<(QDataStream &stream, const User &user)
 
 QDataStream &operator>>(QDataStream &stream, User &user)
 {
+    if (user.d == nullptr) {
+        user.d = new UserData;
+    }
+
     stream >> user.d->id;
     stream >> user.d->type;
     stream >> user.d->username;
