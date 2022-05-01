@@ -33,7 +33,7 @@ void ControlCenterAddressBooks::index(Context *c)
 
     c->stash({
                  {QStringLiteral("site_title"), c->translate("ControlCenterAddressBook", "Addressbook")},
-                 {QStringLiteral("template"), QStringLiteral("controlcenter/addressbook/index.tmpl")},
+                 {QStringLiteral("template"), QStringLiteral("controlcenter/addressbooks/index.tmpl")},
                  {QStringLiteral("addressBooks"), QVariant::fromValue<std::vector<AddressBook>>(addressBooks)}
              });
 }
@@ -42,7 +42,7 @@ void ControlCenterAddressBooks::add(Context *c)
 {
     c->stash({
                  {QStringLiteral("site_title"), c->translate("ControlCenterAddressBook", "Add addressbook")},
-                 {QStringLiteral("template"), QStringLiteral("controlcenter/addressbook/add.tmpl")}
+                 {QStringLiteral("template"), QStringLiteral("controlcenter/addressbooks/add.tmpl")}
              });
 }
 
@@ -50,6 +50,6 @@ void ControlCenterAddressBooks::edit(Context *c, const QString &id)
 {
     c->stash({
                  {QStringLiteral("site_title"), c->translate("ControlCenterAddressBook", "Edit addressbook")},
-                 {QStringLiteral("template"), QStringLiteral("controlcenter/addressbook/edit.tmpl")}
+                 {QStringLiteral("template"), QStringLiteral("controlcenter/addressbooks/edit.tmpl")}
              });
 }
