@@ -109,4 +109,6 @@ private:
 Q_DECLARE_METATYPE(User)
 Q_DECLARE_TYPEINFO(User, Q_MOVABLE_TYPE);
 
+QDebug operator<<(QDebug dbg, const User &user);
+
 #endif // USER_H

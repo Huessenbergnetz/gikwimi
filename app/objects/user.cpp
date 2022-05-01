@@ -15,6 +15,7 @@
 #include <QSqlError>
 #include <QMetaObject>
 #include <QMetaEnum>
+#include <QDebug>
 
 #define USER_STASH_KEY "user"
 
@@ -289,6 +290,20 @@ QStringList User::supportedTypes()
     }
 
     return lst;
+}
+
+QDebug operator<<(QDebug dbg, const User &user)
+{
+    QDebugStateSaver saver(dbg);
+    dbg.nospace() << "User(";
+    dbg << "ID: " << user.id();
+    dbg << " , Username: " << user.username();
+    dbg << " , Type: " << user.type();
+    dbg << " , Email: " << user.email();
+    dbg << " , Created: " << user.created();
+    dbg << " , Updated: " << user.updated();
+    dbg << ')';
+    return dbg.maybeSpace();
 }
 
 #include "moc_user.cpp"
