@@ -104,11 +104,18 @@ public:
 
 private:
     QSharedDataPointer<UserData> d;
+
+    friend QDataStream &operator<<(QDataStream &stream, const User &user);
+    friend QDataStream &operator>>(QDataStream &stream, User &user);
 };
 
 Q_DECLARE_METATYPE(User)
 Q_DECLARE_TYPEINFO(User, Q_MOVABLE_TYPE);
 
 QDebug operator<<(QDebug dbg, const User &user);
+
+QDataStream &operator<<(QDataStream &stream, const User &user);
+
+QDataStream &operator>>(QDataStream &stream, User &user);
 
 #endif // USER_H

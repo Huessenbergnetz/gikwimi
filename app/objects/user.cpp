@@ -306,4 +306,23 @@ QDebug operator<<(QDebug dbg, const User &user)
     return dbg.maybeSpace();
 }
 
+QDataStream &operator<<(QDataStream &stream, const User &user)
+{
+    stream << user.d->id << user.d->type << user.d->username << user.d->email << user.d->created << user.d->updated << user.d->lockedAt << user.d->lockedBy;
+    return stream;
+}
+
+QDataStream &operator>>(QDataStream &stream, User &user)
+{
+    stream >> user.d->id;
+    stream >> user.d->type;
+    stream >> user.d->username;
+    stream >> user.d->email;
+    stream >> user.d->created;
+    stream >> user.d->updated;
+    stream >> user.d->lockedAt;
+    stream >> user.d->lockedBy;
+    return stream;
+}
+
 #include "moc_user.cpp"
