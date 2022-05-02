@@ -14,6 +14,7 @@
 #include <QSqlError>
 #include <QMetaObject>
 #include <QMetaEnum>
+#include <QDebug>
 
 #define ADDRESSBOOK_STASH_KEY "addressbook"
 
@@ -265,6 +266,18 @@ QStringList AddressBook::supportedTypes()
     }
 
     return lst;
+}
+
+QDebug operator<<(QDebug dbg, const AddressBook &addressbook)
+{
+    QDebugStateSaver saver(dbg);
+    dbg.nospace() << "AddressBook(";
+    dbg << "ID: " << addressbook.id();
+    dbg << ", Type: " << addressbook.type();
+    dbg << ", Name: " << addressbook.name();
+    dbg << ", Data: " << addressbook.data();
+    dbg << ", UserID: " << addressbook.user().id();
+    return dbg.maybeSpace();
 }
 
 #include "moc_addressbook.cpp"

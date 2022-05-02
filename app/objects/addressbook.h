@@ -92,4 +92,6 @@ protected:
 Q_DECLARE_METATYPE(AddressBook)
 Q_DECLARE_TYPEINFO(AddressBook, Q_MOVABLE_TYPE);
 
+QDebug operator<<(QDebug dbg, const AddressBook &addressbook);
+
 #endif // GIKWIMI_ADDRESSBOOK_H
