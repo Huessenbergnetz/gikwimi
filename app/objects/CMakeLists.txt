@@ -6,6 +6,9 @@ target_sources(gikwimi
         addressbook.cpp
         addressbook.h
         addressbook_p.h
+        contact.cpp
+        contact.h
+        contact_p.h
         error.cpp
         error.h
         menuitem.cpp
