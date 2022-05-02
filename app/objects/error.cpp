@@ -142,4 +142,10 @@ Error Error::fromStash(Cutelyst::Context *c)
     return c->stash(QStringLiteral(STASH_KEY)).value<Error>();
 }
 
+void Error::toStash(Cutelyst::Context *c, Error::Type type, const QString &errorText, bool detach)
+{
+    Error e(type, errorText);
+    e.toStash(c, detach);
+}
+
 #include "moc_error.cpp"

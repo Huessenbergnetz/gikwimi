@@ -65,6 +65,8 @@ public:
 
     static Error fromStash(Cutelyst::Context *c);
 
+    static void toStash(Cutelyst::Context *c, Error::Type type, const QString &errorText = QString(), bool detach = true);
+
 private:
     QSharedDataPointer<ErrorData> d;
 };
