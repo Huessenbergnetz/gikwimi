@@ -214,7 +214,7 @@ int ContactImportCommand::exec(QCommandLineParser *parser)
                 continue;
             }
 
-            if (Q_UNLIKELY(!q.prepare(QStringLiteral("INSERT INTO addresses (addressbook_id, given_name, family_name, vcard) VALUES (:addressbook_id, :given_name, :family_name, :vcard)")))) {
+            if (Q_UNLIKELY(!q.prepare(QStringLiteral("INSERT INTO contacts (addressbook_id, given_name, family_name, vcard) VALUES (:addressbook_id, :given_name, :family_name, :vcard)")))) {
                 printFailed();
                 return dbError(q);
             }
