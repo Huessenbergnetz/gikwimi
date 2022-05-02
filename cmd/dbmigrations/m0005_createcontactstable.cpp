@@ -3,22 +3,22 @@
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
 
-#include "m0005_createaddressestable.h"
+#include "m0005_createcontactstable.h"
 
-M0005_CreateAddressesTable::M0005_CreateAddressesTable(Firfuorida::Migrator *parent) :
+M0005_CreateContactsTable::M0005_CreateContactsTable(Firfuorida::Migrator *parent) :
     Firfuorida::Migration(parent)
 {
 
 }
 
-M0005_CreateAddressesTable::~M0005_CreateAddressesTable()
+M0005_CreateContactsTable::~M0005_CreateContactsTable()
 {
 
 }
 
-void M0005_CreateAddressesTable::up()
+void M0005_CreateContactsTable::up()
 {
-    auto t = create(QStringLiteral("addresses"));
+    auto t = create(QStringLiteral("contacts"));
     t->increments();
     t->integer(QStringLiteral("addressbook_id"))->unSigned();
     t->varChar(QStringLiteral("uid"))->nullable();
@@ -46,10 +46,10 @@ void M0005_CreateAddressesTable::up()
     }
 }
 
-void M0005_CreateAddressesTable::down()
+void M0005_CreateContactsTable::down()
 {
-    drop(QStringLiteral("addresses"));
+    drop(QStringLiteral("contacts"));
 }
 
-#include "moc_m0005_createaddressestable.cpp"
+#include "moc_m0005_createcontactstable.cpp"
 
