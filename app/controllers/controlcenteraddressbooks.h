@@ -27,14 +27,14 @@ public:
     C_ATTR(edit, :Chained("base") :PathPart("edit") :Args(0))
     void edit(Context *c);
 
-    C_ATTR(addresses, :Chained("base") :PathPart("addresses") :Args(0))
-    void addresses(Context *c);
+    C_ATTR(contacts, :Chained("base") :PathPart("contacts") :Args(0))
+    void contacts(Context *c);
 
-    C_ATTR(addAddress, :Chained("base") :PathPart("addresses/add") :Args(0))
-    void addAddress(Context *c);
+    C_ATTR(addContact, :Chained("base") :PathPart("contacts/add") :Args(0))
+    void addContact(Context *c);
 
-    C_ATTR(editAddress, :Chained("base") :PathPart("addresses/edit") :Args(1))
-    void editAddress(Context *c, const QString &id);
+    C_ATTR(editContact, :Chained("base") :PathPart("contacts/edit") :Args(1))
+    void editContact(Context *c, const QString &id);
 
     C_ATTR(add, :Path("add") :Args(0))
     void add(Context *c);

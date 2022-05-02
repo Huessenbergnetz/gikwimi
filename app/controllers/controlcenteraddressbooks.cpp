@@ -68,27 +68,27 @@ void ControlCenterAddressBooks::edit(Context *c)
              });
 }
 
-void ControlCenterAddressBooks::addresses(Context *c)
+void ControlCenterAddressBooks::contacts(Context *c)
 {
     c->stash({
-                 {QStringLiteral("site_subtitle"), c->translate("ControlCenterAddressBook", "Addresses")},
-                 {QStringLiteral("template"), QStringLiteral("controlcenter/addressbooks/addresses/index.tmpl")}
+                 {QStringLiteral("site_subtitle"), c->translate("ControlCenterAddressBook", "Contacts")},
+                 {QStringLiteral("template"), QStringLiteral("controlcenter/addressbooks/contacts/index.tmpl")}
              });
 }
 
-void ControlCenterAddressBooks::addAddress(Context *c)
+void ControlCenterAddressBooks::addContact(Context *c)
 {
     c->stash({
-                 {QStringLiteral("site_subtitle"), c->translate("ControlCenterAddressBook", "Add address")},
-                 {QStringLiteral("template"), QStringLiteral("controlcenter/addressbooks/addresses/add.tmpl")}
+                 {QStringLiteral("site_subtitle"), c->translate("ControlCenterAddressBook", "Add contact")},
+                 {QStringLiteral("template"), QStringLiteral("controlcenter/addressbooks/contacts/add.tmpl")}
              });
 }
 
-void ControlCenterAddressBooks::editAddress(Context *c, const QString &id)
+void ControlCenterAddressBooks::editContact(Context *c, const QString &id)
 {
     c->stash({
-                 {QStringLiteral("site_subtitle"), c->translate("ControlCenterAddressBook", "Edit address")},
-                 {QStringLiteral("template"), QStringLiteral("controlcenter/addressbooks/addresses/edit.tmpl")}
+                 {QStringLiteral("site_subtitle"), c->translate("ControlCenterAddressBook", "Edit contact")},
+                 {QStringLiteral("template"), QStringLiteral("controlcenter/addressbooks/contacts/edit.tmpl")}
              });
 }
 
