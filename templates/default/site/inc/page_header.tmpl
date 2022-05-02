@@ -1,0 +1,12 @@
+<div class="d-flex">
+    <h1>{{ page_header }}{% if page_subheader %} <small class="text-muted">{{ page_subheader }}</small>{% endif %}</h1>
+    {% if page_header_menu %}
+    <div class="ms-auto">
+        <div class="btn-group" role="group"{% if page_header_menu_aria_label %} aria-label="{{ page_header_menu_aria_label }}{% endif %}">
+            {% for menuitem in page_header_menu %}
+            <a class="btn btn-outline-secondary text-capitalize" href="{{ menuitem.url }}" role="button">{{ menuitem.title }}</a>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+</div>
