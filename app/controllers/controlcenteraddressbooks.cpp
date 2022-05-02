@@ -9,6 +9,7 @@
 #include "../objects/addressbook.h"
 #include "../objects/error.h"
 #include "../objects/menuitem.h"
+#include "../utils.h"
 
 #include <Cutelyst/Plugins/Authentication/authenticationuser.h>
 
@@ -50,19 +51,52 @@ void ControlCenterAddressBooks::index(Context *c)
              });
 }
 
+void ControlCenterAddressBooks::base(Context *c, const QString &id)
+{
+    bool ok = false;
+    const dbid_t addressbookId = Utils::strToDbid(id, &ok, c->translate("ControlCenterAddressBooks", "Invalid addressbook database ID."), c);
+    if (Q_LIKELY(ok)) {
+        AddressBook::toStash(c, addressbookId);
+    }
+}
+
+void ControlCenterAddressBooks::edit(Context *c)
+{
+    c->stash({
+                 {QStringLiteral("site_subtitle"), c->translate("ControlCenterAddressBook", "Edit")},
+                 {QStringLiteral("template"), QStringLiteral("controlcenter/addressbooks/edit.tmpl")}
+             });
+}
+
+void ControlCenterAddressBooks::addresses(Context *c)
+{
+    c->stash({
+                 {QStringLiteral("site_subtitle"), c->translate("ControlCenterAddressBook", "Addresses")},
+                 {QStringLiteral("template"), QStringLiteral("controlcenter/addressbooks/addresses/index.tmpl")}
+             });
+}
+
+void ControlCenterAddressBooks::addAddress(Context *c)
+{
+    c->stash({
+                 {QStringLiteral("site_subtitle"), c->translate("ControlCenterAddressBook", "Add address")},
+                 {QStringLiteral("template"), QStringLiteral("controlcenter/addressbooks/addresses/add.tmpl")}
+             });
+}
+
+void ControlCenterAddressBooks::editAddress(Context *c, const QString &id)
+{
+    c->stash({
+                 {QStringLiteral("site_subtitle"), c->translate("ControlCenterAddressBook", "Edit address")},
+                 {QStringLiteral("template"), QStringLiteral("controlcenter/addressbooks/addresses/edit.tmpl")}
+             });
+}
+
 void ControlCenterAddressBooks::add(Context *c)
 {
     c->stash({
                  {QStringLiteral("site_title"), c->translate("ControlCenterAddressBook", "Add addressbook")},
                  {QStringLiteral("template"), QStringLiteral("controlcenter/addressbooks/add.tmpl")}
-             });
-}
-
-void ControlCenterAddressBooks::edit(Context *c, const QString &id)
-{
-    c->stash({
-                 {QStringLiteral("site_title"), c->translate("ControlCenterAddressBook", "Edit addressbook")},
-                 {QStringLiteral("template"), QStringLiteral("controlcenter/addressbooks/edit.tmpl")}
              });
 }
 
