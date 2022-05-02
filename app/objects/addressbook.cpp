@@ -15,6 +15,8 @@
 #include <QMetaObject>
 #include <QMetaEnum>
 
+#define ADDRESSBOOK_STASH_KEY "addressbook"
+
 using namespace Cutelyst;
 
 AddressBook::AddressBook()
@@ -72,6 +74,42 @@ User AddressBook::user() const
 bool AddressBook::isValid() const
 {
     return d->id > 0;
+}
+
+bool AddressBook::toStash(Cutelyst::Context *c) const
+{
+    Q_ASSERT_X(c, "addressbook to stash", "invalid context pointer");
+
+    if (Q_LIKELY(isValid())) {
+        c->stash({
+                     {QStringLiteral(ADDRESSBOOK_STASH_KEY), QVariant::fromValue<AddressBook>(*this)},
+                     {QStringLiteral("site_title"), name()}
+                 });
+        return true;
+    } else {
+        c->res()->setStatus(404);
+        c->detach(c->getAction(QStringLiteral("error")));
+        return false;
+    }
+}
+
+bool AddressBook::toStash(Cutelyst::Context *c, dbid_t id)
+{
+    Q_ASSERT_X(c, "addressbook to stash", "invalid context pointer");
+
+    Error e;
+    const auto ab = AddressBook::get(c, e, id);
+    if (Q_LIKELY(e.type() == Error::NoError)) {
+        return ab.toStash(c);
+    } else {
+        e.toStash(c, true);
+        return false;
+    }
+}
+
+AddressBook AddressBook::fromStash(Cutelyst::Context *c)
+{
+    return c->stash(QStringLiteral(ADDRESSBOOK_STASH_KEY)).value<AddressBook>();
 }
 
 AddressBook AddressBook::create(Cutelyst::Context *c, Error &e, dbid_t userId, AddressBook::Type type, const QString &name, const QVariant &data)

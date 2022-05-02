@@ -63,6 +63,12 @@ public:
 
     bool isValid() const;
 
+    bool toStash(Cutelyst::Context *c) const;
+
+    static bool toStash(Cutelyst::Context *c, dbid_t id);
+
+    static AddressBook fromStash(Cutelyst::Context *c);
+
     static AddressBook create(Cutelyst::Context *c, Error &e, dbid_t userId, AddressBook::Type type, const QString &name, const QVariant &data);
 
     static AddressBook create(Cutelyst::Context *c, Error &e, const User &user, AddressBook::Type type, const QString &name, const QVariant &data);
