@@ -6,6 +6,10 @@
 #ifndef GIKWIMI_UTILS_H
 #define GIKWIMI_UTILS_H
 
+#include "global.h"
+
+#include <QString>
+
 namespace Cutelyst {
 class Context;
 }
@@ -14,6 +18,8 @@ class Utils
 {
 public:
     static bool isCurrentUserAdmin(Cutelyst::Context *c);
+
+    static dbid_t strToDbid(const QString &str, bool *ok = nullptr, const QString &errorMsg = QString(), Cutelyst::Context *c = nullptr);
 };
 
 #endif // GIKWIMI_UTILS_H
