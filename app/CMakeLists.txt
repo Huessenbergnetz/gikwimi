@@ -38,6 +38,7 @@ target_link_libraries(gikwimi
     Cutelyst::MemcachedSessionStore
     Cutelyst::CSRFProtection
     Cutelee::Templates
+    KF5::Contacts
 )
 
 target_compile_features(gikwimi PUBLIC cxx_std_14)
