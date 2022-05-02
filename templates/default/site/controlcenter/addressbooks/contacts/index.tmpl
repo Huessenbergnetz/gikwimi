@@ -1,1 +1,43 @@
- 
+{% with site_subtitle as page_header %}
+{% with site_title as page_subheader %}
+{% include "inc/page_header.tmpl" %}
+{% endwith %}
+{% endwith %}
+
+{% if contacts.size %}
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col" class="text-capitalize">{{ contacts_table_headers.family_name }}</th>
+            <th scope="col" class="text-capitalize">{{ contacts_table_headers.given_name }}</th>
+            <th scope="col" class="text-capitalize">{{ contacts_table_headers.address }}</th>
+            <th scope="col" class="text-capitalize">{{ contacts_table_headers.email }}</th>
+            <th scope="col" class="text-capitalize">{{ contacts_table_headers.id }}</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for contact in contacts %}
+        <tr>
+            <td>{{ contact.addressee.familyName }}</td>
+            <td>{{ contact.addressee.givenName }}</td>
+            <td>
+            {% if contact.addressee.addresses.size %}
+                {% with contact.addressee.addresses.0 as address %}
+                {% if address.street %}{{ address.street }}<br>{% endif %}
+                {% if address.street %}{{ address.postalCode }} {% endif %}{% if address.locality %}{{ address.locality }}{% endif %}{% if address.postalCode or address.locality %}<br>{% endif %}
+                {{ address.region }}{% if address.region and address.country %}, {% endif %}{{ address.country }}
+                {% endwith %}
+            {% endif %}
+            </td>
+            <td>
+                {% for email in contact.addressee.emails %}
+                {{ email.email }}<br>
+                {% endfor %}
+            </td>
+            <td>{{ contact.id }}</td>
+        </tr>
+        {% endfor %}
+    </tbod>
+</table>
+{% else %}
+{% endif %}

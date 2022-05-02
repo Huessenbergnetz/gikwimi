@@ -9,6 +9,7 @@
 #include "../objects/addressbook.h"
 #include "../objects/error.h"
 #include "../objects/menuitem.h"
+#include "../objects/contact.h"
 #include "../utils.h"
 
 #include <Cutelyst/Plugins/Authentication/authenticationuser.h>
@@ -70,9 +71,31 @@ void ControlCenterAddressBooks::edit(Context *c)
 
 void ControlCenterAddressBooks::contacts(Context *c)
 {
+    const auto addressbook = AddressBook::fromStash(c);
+    Error e;
+    const std::vector<Contact> contacts = Contact::list(c, e, addressbook);
+    if (e.type() != Error::NoError) {
+        e.toStash(c, true);
+        return;
+    }
+
+    QMap<QString,QString> contactsTableHeaders;
+    //: table header
+    contactsTableHeaders.insert(QStringLiteral("id"), c->translate("ControlCenterAddressBooks", "ID"));
+    //: table header
+    contactsTableHeaders.insert(QStringLiteral("given_name"), c->translate("ControlCenterAddressBooks", "given name"));
+    //: table header
+    contactsTableHeaders.insert(QStringLiteral("family_name"), c->translate("ControlCenterAddressBooks", "family name"));
+    //: table header
+    contactsTableHeaders.insert(QStringLiteral("email"), c->translate("ControlCenterAddressBooks", "email"));
+    //: table header
+    contactsTableHeaders.insert(QStringLiteral("address"), c->translate("ControlCenterAddressBooks", "address"));
+
     c->stash({
                  {QStringLiteral("site_subtitle"), c->translate("ControlCenterAddressBook", "Contacts")},
-                 {QStringLiteral("template"), QStringLiteral("controlcenter/addressbooks/contacts/index.tmpl")}
+                 {QStringLiteral("template"), QStringLiteral("controlcenter/addressbooks/contacts/index.tmpl")},
+                 {QStringLiteral("contacts"), QVariant::fromValue<std::vector<Contact>>(contacts)},
+                 {QStringLiteral("contacts_table_headers"), QVariant::fromValue<QMap<QString,QString>>(contactsTableHeaders)}
              });
 }
 
