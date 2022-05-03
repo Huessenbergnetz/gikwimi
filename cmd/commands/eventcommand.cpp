@@ -4,6 +4,7 @@
  */
 
 #include "eventcommand.h"
+#include "eventaddcommand.h"
 
 #include <QCoreApplication>
 #include <QCommandLineParser>
@@ -18,7 +19,7 @@ EventCommand::~EventCommand() = default;
 
 void EventCommand::init()
 {
-
+    new EventAddCommand(this);
 }
 
 int EventCommand::exec(QCommandLineParser *parser)

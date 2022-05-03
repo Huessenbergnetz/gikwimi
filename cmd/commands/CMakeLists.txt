@@ -23,6 +23,8 @@ target_sources(gikwimictl
         databaserollbackcommand.h
         eventcommand.cpp
         eventcommand.h
+        eventaddcommand.cpp
+        eventaddcommand.h
         usercommand.cpp
         usercommand.h
         useraddcommand.cpp
