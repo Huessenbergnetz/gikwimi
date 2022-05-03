@@ -14,20 +14,27 @@ class AddressBookData : public QSharedData
 public:
     AddressBookData() = default;
 
-    AddressBookData(dbid_t _id, AddressBook::Type _type, const QString &_name, const QVariant &_data, const User &_user)
+    AddressBookData(dbid_t _id, AddressBook::Type _type, const QString &_name, const QVariantHash &_settings, const QDateTime &_created, const QDateTime &_updated, const User &_user)
         : QSharedData(),
           name{_name},
           user{_user},
-          data{_data},
+          settings{_settings},
+          created{_created},
+          updated{_updated},
           id{_id},
           type{_type}
-    {}
+    {
+        created.setTimeSpec(Qt::UTC);
+        updated.setTimeSpec(Qt::UTC);
+    }
 
     ~AddressBookData() = default;
 
     QString name;
     User user;
-    QVariant data;
+    QVariantHash settings;
+    QDateTime created;
+    QDateTime updated;
     dbid_t id = 0;
     AddressBook::Type type = AddressBook::Local;
 };

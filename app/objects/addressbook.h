@@ -12,6 +12,7 @@
 #include <QObject>
 #include <QSharedDataPointer>
 #include <QVariant>
+#include <QDateTime>
 #include <vector>
 
 namespace Cutelyst {
@@ -26,8 +27,10 @@ class AddressBook
     Q_PROPERTY(dbid_t id READ id CONSTANT)
     Q_PROPERTY(AddressBook::Type type READ type CONSTANT)
     Q_PROPERTY(QString name READ name CONSTANT)
-    Q_PROPERTY(QVariant data READ data CONSTANT)
+    Q_PROPERTY(QVariantHash settings READ settings CONSTANT)
     Q_PROPERTY(User user READ user CONSTANT)
+    Q_PROPERTY(QDateTime created READ created CONSTANT)
+    Q_PROPERTY(QDateTime updated READ updated CONSTANT)
 public:
     enum Type : quint8 {
         Invalid = 0,
@@ -37,7 +40,7 @@ public:
 
     AddressBook();
 
-    AddressBook(dbid_t id, AddressBook::Type type, const QString &name, const QVariant &data, const User &user);
+    AddressBook(dbid_t id, AddressBook::Type type, const QString &name, const QVariantHash &settings, const QDateTime &created, const QDateTime &updated, const User &user);
 
     AddressBook(const AddressBook &other);
 
@@ -57,9 +60,13 @@ public:
 
     QString name() const;
 
-    QVariant data() const;
+    QVariantHash settings() const;
 
     User user() const;
+
+    QDateTime created() const;
+
+    QDateTime updated() const;
 
     bool isValid() const;
 
@@ -69,9 +76,9 @@ public:
 
     static AddressBook fromStash(Cutelyst::Context *c);
 
-    static AddressBook create(Cutelyst::Context *c, Error &e, dbid_t userId, AddressBook::Type type, const QString &name, const QVariant &data);
+    static AddressBook create(Cutelyst::Context *c, Error &e, dbid_t userId, AddressBook::Type type, const QString &name, const QVariantHash &settings);
 
-    static AddressBook create(Cutelyst::Context *c, Error &e, const User &user, AddressBook::Type type, const QString &name, const QVariant &data);
+    static AddressBook create(Cutelyst::Context *c, Error &e, const User &user, AddressBook::Type type, const QString &name, const QVariantHash &settings);
 
     static std::vector<AddressBook> list(Cutelyst::Context *c, Error &e, dbid_t userId);
 
