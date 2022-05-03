@@ -120,10 +120,17 @@ void CLI::printFailed(const QString &failed) const
     }
 }
 
+void CLI::printMessage(const QByteArray &message) const
+{
+    if (!m_quiet) {
+        std::printf("%s\n", message.constData());
+    }
+}
+
 void CLI::printMessage(const QString &message) const
 {
     if (!m_quiet) {
-        std::printf("%s\n", qUtf8Printable(message));
+        printMessage(message.toUtf8());
     }
 }
 

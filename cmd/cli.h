@@ -57,6 +57,8 @@ protected:
 
     void printFailed(const QString &failed) const;
 
+    void printMessage(const QByteArray &message) const;
+
     void printMessage(const QString &message) const;
 
     void printSuccess(const QString &message) const;
