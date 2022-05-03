@@ -25,8 +25,9 @@ void M0006_CreateEventsTable::up()
     t->varChar(QStringLiteral("slug"))->charset(QStringLiteral("ascii"))->unique();
     t->dateTime(QStringLiteral("start_time"));
     t->dateTime(QStringLiteral("end_time"));
-    t->tinyInteger(QStringLiteral("type"))->defaultValue(1);
+    t->tinyInteger(QStringLiteral("audience"))->defaultValue(1);
     t->tinyInteger(QStringLiteral("participation"))->defaultValue(1);
+    t->boolean(QStringLiteral("all_day"))->defaultValue(false);
     t->longText(QStringLiteral("description"))->nullable();
     t->text(QStringLiteral("settings"))->nullable();
     t->foreignKey(QStringLiteral("user_id"), QStringLiteral("users"), QStringLiteral("id"), QStringLiteral("events_user_id_idx"))->onDelete(QStringLiteral("CASCADE"))->onUpdate(QStringLiteral("CASCADE"));
