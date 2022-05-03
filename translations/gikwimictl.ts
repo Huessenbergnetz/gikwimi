@@ -472,5 +472,166 @@
         <extracomment>CLI command description</extracomment>
         <translation type="unfinished"></translation>
     </message>
+    <message id="gikctl-opt-event-add-title-desc">
+        <source>The title for the event to create.</source>
+        <extracomment>CLI option description</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message id="gikctl-opt-event-add-title-value">
+        <source>name</source>
+        <extracomment>CLI option value name</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message id="gikctl-opt-event-add-user-desc">
+        <source>The user name, email or ID of the user that will be the owner of the event.</source>
+        <extracomment>CLI option description</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message id="gikctl-opt-event-add-user-value">
+        <source>user</source>
+        <extracomment>CLI option value name</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message id="gikctl-opt-event-add-slug-desc">
+        <source>The slug used in the event’s URL.</source>
+        <extracomment>CLI option description</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message id="gikctl-opt-event-add-slug-value">
+        <source>slug</source>
+        <extracomment>CLI option value name</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message id="gikctl-opt-event-add-start-desc">
+        <source>The date and time the event starts.</source>
+        <extracomment>CLI option description</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message id="gikctl-opt-event-add-start-value">
+        <source>date and time</source>
+        <extracomment>CLI option value name</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message id="gikctl-opt-event-add-end-desc">
+        <source>The date and time the event ends. If omitted or if it is the same as start, no end time is given.</source>
+        <extracomment>CLI option description</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message id="gikctl-opt-event-add-end-value">
+        <source>date and time</source>
+        <extracomment>CLI option value name</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message id="gikctl-opt-event-add-tz-desc">
+        <source>The time zone in which the event takes place. Use --tz-list for a list of available time zones. Default: %1.</source>
+        <extracomment>CLI option description</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message id="gikctl-opt-event-tz-list-desc">
+        <source>Show a list of all available IANA time zone IDs.</source>
+        <extracomment>CLI option description</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message id="gikctl-opt-event-add-audience-desc">
+        <source>The audience the event is intendet for. Currently supported values: %1. Default value: %2.</source>
+        <extracomment>CLI option description, %1 will be replaced by list of available values, %2 by the default value</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message id="gikctl-opt-event-add-audience-value">
+        <source>audience</source>
+        <extracomment>CLI option value name</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message id="gikctl-opt-event-add-participation-desc">
+        <source>The participation strategy used by the event. Currently supported values: %1. Default value: %2.</source>
+        <extracomment>CLI option description, %1 will be replaced by list of available values, %2 by the default value</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message id="gikctl-opt-event-add-participation-value">
+        <source>participation</source>
+        <extracomment>CLI option value name</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message id="gikctl-opt-event-add-description-desc">
+        <source>The description for ths event.</source>
+        <extracomment>CLI option description</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message id="gikctl-opt-event-add-description-value">
+        <source>text</source>
+        <extracomment>CLI option value name</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message id="gikctl-opt-event-add-all-day-desc">
+        <source>The event is all day.</source>
+        <extracomment>CLI option description</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message id="gikctl-event-show-timezones">
+        <source>Available IANA time zone IDs:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message id="gikctl-status-add-event">
+        <source>Adding new event “%1”</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message id="gikctl-event-add-err-empty-title">
+        <source>Can not add a new event with empty title</source>
+        <extracomment>CLI error message</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message id="gikctl-event-add-err-empty-user">
+        <source>Can not add a new event without valid user</source>
+        <extracomment>CLI error message</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message id="gikctl-event-add-err-empty-start">
+        <source>Can not add a new event without valid start time</source>
+        <extracomment>CLI error message</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message id="gikctl-event-add-err-invalid-end">
+        <source>Can not add a new event with invalid end time</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message id="gikctl-event-add-err-invalid-tz">
+        <source>Can not add a new event with invalid time zone</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message id="gikctl-event-add-err-invalid-audience">
+        <source>Can not add a new event with invalid audience type “%1”. Currently supported types are: %2</source>
+        <extracomment>CLI error message</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message id="gikctl-event-add-err-invalid-participation">
+        <source>Can not add a new event with invalid participation type “%1”. Currently supported types are: %2</source>
+        <extracomment>CLI error message</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message id="gikctl-err-add-event-user-not-found">
+        <source>Can not find user “%1”</source>
+        <extracomment>CLI error message</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message id="gikctl-command-event-add-summary">
+        <source>Add a new event</source>
+        <extracomment>CLI command summary</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message id="gikctl-command-event-add-description">
+        <source>Add a new event for a specific user.</source>
+        <extracomment>CLI command description</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message id="gikctl-command-event-summary">
+        <source>Manage events</source>
+        <extracomment>CLI command summary</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message id="gikctl-command-event-description">
+        <source>Add, edit, delete and list events.</source>
+        <extracomment>CLI command description</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 </TS>
