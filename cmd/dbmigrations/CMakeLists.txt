@@ -13,4 +13,6 @@ target_sources(gikwimictl
         m0004_createaddressbookstable.h
         m0005_createcontactstable.cpp
         m0005_createcontactstable.h
+        m0006_createeventstable.cpp
+        m0006_createeventstable.h
 )

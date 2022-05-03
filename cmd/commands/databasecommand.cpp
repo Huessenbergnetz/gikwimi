@@ -14,6 +14,7 @@
 #include "../dbmigrations/m0003_createoptionstable.h"
 #include "../dbmigrations/m0004_createaddressbookstable.h"
 #include "../dbmigrations/m0005_createcontactstable.h"
+#include "../dbmigrations/m0006_createeventstable.h"
 
 #include <Firfuorida/Migrator>
 
@@ -89,6 +90,7 @@ void DatabaseCommand::initMigrations()
     new M0003_CreateOptionsTable(m_migrator.get());
     new M0004_CreateAddressBooksTable(m_migrator.get());
     new M0005_CreateContactsTable(m_migrator.get());
+    new M0006_CreateEventsTable(m_migrator.get());
 }
 
 #include "moc_databasecommand.cpp"
