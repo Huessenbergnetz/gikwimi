@@ -247,6 +247,22 @@ QStringList Event::supportedParticipations()
     return lst;
 }
 
+std::vector<Event> Event::list(Cutelyst::Context *c, Error &e, dbid_t userId)
+{
+    std::vector<Event> events;
+
+    User user = User::fromStash(c);
+    if (user.id() != userId) {
+        user = User::get(c, e, userId);
+        if (e.type() != Error::NoError) {
+            return events;
+        }
+    }
+    events = Event::list(c, e, user);
+
+    return events;
+}
+
 std::vector<Event> Event::list(Cutelyst::Context *c, Error &e, const User &user)
 {
     std::vector<Event> events;
