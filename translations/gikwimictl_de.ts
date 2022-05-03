@@ -505,19 +505,9 @@
         <extracomment>CLI option description</extracomment>
         <translation type="unfinished"/>
     </message>
-    <message id="gikctl-opt-event-add-start-value">
-        <source>date and time</source>
-        <extracomment>CLI option value name</extracomment>
-        <translation type="unfinished"/>
-    </message>
     <message id="gikctl-opt-event-add-end-desc">
         <source>The date and time the event ends. If omitted or if it is the same as start, no end time is given.</source>
         <extracomment>CLI option description</extracomment>
-        <translation type="unfinished"/>
-    </message>
-    <message id="gikctl-opt-event-add-end-value">
-        <source>date and time</source>
-        <extracomment>CLI option value name</extracomment>
         <translation type="unfinished"/>
     </message>
     <message id="gikctl-opt-event-add-tz-desc">
@@ -629,6 +619,11 @@
     <message id="gikctl-command-event-description">
         <source>Add, edit, delete and list events.</source>
         <extracomment>CLI command description</extracomment>
+        <translation type="unfinished"/>
+    </message>
+    <message id="gikctl-opt-event-add-time-value">
+        <source>yyyy-mm-ddThh:mm:ss</source>
+        <extracomment>CLI option value name</extracomment>
         <translation type="unfinished"/>
     </message>
 </context>

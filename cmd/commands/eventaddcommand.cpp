@@ -59,16 +59,14 @@ void EventAddCommand::init()
                                            //% "The date and time the event starts."
                                            qtTrId("gikctl-opt-event-add-start-desc"),
                                            //: CLI option value name
-                                           //% "date and time"
-                                           qtTrId("gikctl-opt-event-add-start-value")));
+                                           //% "yyyy-mm-ddThh:mm:ss"
+                                           qtTrId("gikctl-opt-event-add-time-value")));
 
     m_cliOptions.append(QCommandLineOption(QStringLiteral("end"),
                                            //: CLI option description
                                            //% "The date and time the event ends. If omitted or if it is the same as start, no end time is given."
                                            qtTrId("gikctl-opt-event-add-end-desc"),
-                                           //: CLI option value name
-                                           //% "date and time"
-                                           qtTrId("gikctl-opt-event-add-end-value")));
+                                           qtTrId("gikctl-opt-event-add-time-value")));
 
     const QString tzDefVal = QString::fromLatin1(QTimeZone::systemTimeZoneId());
     m_cliOptions.append(QCommandLineOption(QStringLiteral("tz"),
@@ -150,7 +148,7 @@ int EventAddCommand::exec(QCommandLineParser *parser)
     const QString user                          = parser->value(QStringLiteral("user")).trimmed();
     QString slug                                = parser->value(QStringLiteral("slug")).trimmed();
     const QString start                         = parser->value(QStringLiteral("start")).trimmed();
-    QString end                                 = parser->value(QStringLiteral("end")).trimmed();
+    const QString end                           = parser->value(QStringLiteral("end")).trimmed();
     const QString tz                            = parser->value(QStringLiteral("tz")).trimmed();
     const Event::Audience audience              = Event::audienceStringToEnum(parser->value(QStringLiteral("audience")).trimmed());
     const Event::Participation participation    = Event::participationStringToEnum(parser->value(QStringLiteral("participation")).trimmed());
@@ -196,24 +194,34 @@ int EventAddCommand::exec(QCommandLineParser *parser)
         return inputError(qtTrId("gikctl-event-add-err-empty-start"));
     }
 
-    const QDateTime startTime = QDateTime::fromString(start, Qt::ISODate).toUTC();
-    if (!startTime.isValid()) {
-        printFailed();
-        return inputError(qtTrId("gikctl-event-add-err-empty-start"));
-    }
-
-    const QDateTime endTime = end.isEmpty() ? startTime : QDateTime::fromString(end, Qt::ISODate).toUTC();
-    if (!endTime.isValid()) {
-        printFailed();
-        //% "Can not add a new event with invalid end time"
-        return inputError(qtTrId("gikctl-event-add-err-invalid-end"));
-    }
-
     const QTimeZone timezone(tz.toLatin1());
     if (!timezone.isValid()) {
         printFailed();
         //% "Can not add a new event with invalid time zone"
         return inputError(qtTrId("gikctl-event-add-err-invalid-tz"));
+    }
+
+    auto _startTime = QDateTime::fromString(start, Qt::ISODate);
+    _startTime.setTimeZone(timezone);
+    const QDateTime startTime = _startTime.toUTC();
+    if (!startTime.isValid()) {
+        printFailed();
+        return inputError(qtTrId("gikctl-event-add-err-empty-start"));
+    }
+
+    const QDateTime endTime = ([end, startTime, timezone]() -> QDateTime {
+        if (end.isEmpty()) {
+            return startTime;
+        } else {
+            auto _endTime = QDateTime::fromString(end, Qt::ISODate);
+            _endTime.setTimeZone(timezone);
+            return _endTime.toUTC();
+        }
+    }());
+    if (!endTime.isValid()) {
+        printFailed();
+        //% "Can not add a new event with invalid end time"
+        return inputError(qtTrId("gikctl-event-add-err-invalid-end"));
     }
 
     if (audience == Event::InvalidAudience) {
