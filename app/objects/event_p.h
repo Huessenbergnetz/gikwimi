@@ -9,6 +9,7 @@
 #include "event.h"
 
 #include <QSharedData>
+#include <QTimeZone>
 
 class EventData : public QSharedData
 {
@@ -20,6 +21,7 @@ public:
     QDateTime start;
     QDateTime end;
     QVariantHash settings;
+    QTimeZone timezone;
     dbid_t id;
     Event::Audience audience = Event::InvalidAudience;
     Event::Participation participation = Event::InvalidParticipation;

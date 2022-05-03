@@ -13,7 +13,7 @@ Event::Event()
 
 }
 
-Event::Event(dbid_t id, const User &user, const QString &title, const QString &slug, const QDateTime &start, const QDateTime &end, Audience audience, Participation participation, const QString &description, const QVariantHash settings, bool allDay)
+Event::Event(dbid_t id, const User &user, const QString &title, const QString &slug, const QDateTime &start, const QDateTime &end, const QTimeZone &tz, Audience audience, Participation participation, const QString &description, const QVariantHash settings, bool allDay)
     : d(new EventData)
 {
     d->id = id;
@@ -22,6 +22,7 @@ Event::Event(dbid_t id, const User &user, const QString &title, const QString &s
     d->slug = slug;
     d->start = start;
     d->end = end;
+    d->timezone = tz;
     d->audience = audience;
     d->participation = participation;
     d->description = description;
@@ -67,10 +68,36 @@ QString Event::slug() const
 
 QDateTime Event::start() const
 {
+    if (d) {
+        if (d->timezone == QTimeZone::utc()) {
+            return d->start;
+        } else {
+            return d->start.toTimeZone(d->timezone);
+        }
+    } else {
+        return QDateTime();
+    }
+}
+
+QDateTime Event::startUtc() const
+{
     return d ? d->start : QDateTime();
 }
 
 QDateTime Event::end() const
+{
+    if (d) {
+        if (d->timezone == QTimeZone::utc()) {
+            return d->end;
+        } else {
+            return d->end.toTimeZone(d->timezone);
+        }
+    } else {
+        return QDateTime();
+    }
+}
+
+QDateTime Event::endUtc() const
 {
     return d ? d->end : QDateTime();
 }

@@ -18,6 +18,8 @@ namespace Cutelyst {
 class Context;
 }
 
+class QTimeZone;
+
 class Error;
 class EventData;
 class Event
@@ -28,7 +30,9 @@ class Event
     Q_PROPERTY(QString title READ title CONSTANT)
     Q_PROPERTY(QString slug READ slug CONSTANT)
     Q_PROPERTY(QDateTime start READ start CONSTANT)
+    Q_PROPERTY(QDateTime startUtc READ startUtc CONSTANT)
     Q_PROPERTY(QDateTime end READ end CONSTANT)
+    Q_PROPERTY(QDateTime endUtc READ endUtc CONSTANT)
     Q_PROPERTY(Event::Audience audience READ audience CONSTANT)
     Q_PROPERTY(Event::Participation participation READ participation CONSTANT)
     Q_PROPERTY(QString description READ description CONSTANT)
@@ -58,7 +62,7 @@ public:
 
     Event();
 
-    Event(dbid_t id, const User &user, const QString &title, const QString &slug, const QDateTime &start, const QDateTime &end, Audience audience, Participation participation, const QString &description, const QVariantHash settings, bool allDay);
+    Event(dbid_t id, const User &user, const QString &title, const QString &slug, const QDateTime &start, const QDateTime &end, const QTimeZone &tz, Audience audience, Participation participation, const QString &description, const QVariantHash settings, bool allDay);
 
     Event(const Event &other);
 
@@ -82,7 +86,11 @@ public:
 
     QDateTime start() const;
 
+    QDateTime startUtc() const;
+
     QDateTime end() const;
+
+    QDateTime endUtc() const;
 
     Event::Audience audience() const;
 
