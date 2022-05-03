@@ -11,6 +11,9 @@ target_sources(gikwimi
         contact_p.h
         error.cpp
         error.h
+        event.cpp
+        event.h
+        event_p.h
         menuitem.cpp
         menuitem.h
         menuitem_p.h
