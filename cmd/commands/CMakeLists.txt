@@ -21,6 +21,8 @@ target_sources(gikwimictl
         databaseresetcommand.h
         databaserollbackcommand.cpp
         databaserollbackcommand.h
+        eventcommand.cpp
+        eventcommand.h
         usercommand.cpp
         usercommand.h
         useraddcommand.cpp

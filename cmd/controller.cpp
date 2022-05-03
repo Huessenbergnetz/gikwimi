@@ -9,6 +9,7 @@
 #include "commands/usercommand.h"
 #include "commands/addressbookcommand.h"
 #include "commands/contactcommand.h"
+#include "commands/eventcommand.h"
 
 #include <QCommandLineParser>
 #include <QCoreApplication>
@@ -47,6 +48,7 @@ void Controller::init()
     new UserCommand(this);
     new AddressBookCommand(this);
     new ContactCommand(this);
+    new EventCommand(this);
 }
 
 int Controller::exec(QCommandLineParser *parser)
