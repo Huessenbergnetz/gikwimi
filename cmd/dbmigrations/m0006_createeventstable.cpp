@@ -22,7 +22,7 @@ void M0006_CreateEventsTable::up()
     t->increments();
     t->integer(QStringLiteral("user_id"))->unSigned();
     t->varChar(QStringLiteral("title"));
-    t->varChar(QStringLiteral("slug"))->charset(QStringLiteral("latin1"))->unique();
+    t->varChar(QStringLiteral("slug"))->charset(QStringLiteral("ascii"))->unique();
     t->dateTime(QStringLiteral("start_time"));
     t->dateTime(QStringLiteral("end_time"));
     t->tinyInteger(QStringLiteral("type"))->defaultValue(1);
