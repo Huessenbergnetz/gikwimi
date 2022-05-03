@@ -23,7 +23,9 @@ void M0004_CreateAddressBooksTable::up()
     t->integer(QStringLiteral("user_id"))->unSigned();
     t->tinyInteger(QStringLiteral("type"))->unSigned()->defaultValue(1);
     t->varChar(QStringLiteral("name"), 63);
-    t->text(QStringLiteral("data"))->nullable();
+    t->text(QStringLiteral("settings"))->nullable();
+    t->dateTime(QStringLiteral("created_at"));
+    t->dateTime(QStringLiteral("updated_at"));
 
     t->foreignKey(QStringLiteral("user_id"), QStringLiteral("users"), QStringLiteral("id"), QStringLiteral("addressbooks_user_id_idx"))->onDelete(QStringLiteral("CASCADE"))->onUpdate(QStringLiteral("CASCADE"));
 
