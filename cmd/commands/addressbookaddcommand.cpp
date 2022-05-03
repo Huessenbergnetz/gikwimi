@@ -14,6 +14,8 @@
 #include <QSqlQuery>
 #include <QDateTime>
 #include <QLocale>
+#include <QJsonDocument>
+#include <QJsonObject>
 
 #define DBCONNAME "addressbookmanagement"
 
@@ -55,13 +57,13 @@ void AddressBookAddCommand::init()
                                            qtTrId("gikctl-opt-addressbook-add-type-value"),
                                            typeDefVal));
 
-    m_cliOptions.append(QCommandLineOption(QStringList({QStringLiteral("d"), QStringLiteral("data")}),
+    m_cliOptions.append(QCommandLineOption(QStringList({QStringLiteral("s"), QStringLiteral("settings")}),
                                            //: CLI option description
-                                           //% "Optional data required by some addressbook types."
-                                           qtTrId("gikctl-opt-addressbook-add-data-desc"),
+                                           //% "Optional settings required by some addressbook types."
+                                           qtTrId("gikctl-opt-addressbook-add-settings-desc"),
                                            //: CLI option value name
-                                           //% "data"
-                                           qtTrId("gikctl-opt-addressbook-add-data-value")));
+                                           //% "key=value;..."
+                                           qtTrId("gikctl-opt-addressbook-add-settings-value")));
 }
 
 int AddressBookAddCommand::exec(QCommandLineParser *parser)
@@ -85,7 +87,7 @@ int AddressBookAddCommand::exec(QCommandLineParser *parser)
     const QString name              = parser->value(QStringLiteral("name")).trimmed();
     const QString user              = parser->value(QStringLiteral("user")).trimmed();
     const AddressBook::Type type    = AddressBook::typeStringToEnum(parser->value(QStringLiteral("type")).trimmed());
-    const QString data              = parser->value(QStringLiteral("data")).trimmed();
+    const QString settings          = parser->value(QStringLiteral("settings")).trimmed();
 
     //% "Adding new addressbook “%1“"
     printStatus(qtTrId("gikctl-status-add-addressbook").arg(name));
@@ -112,6 +114,23 @@ int AddressBookAddCommand::exec(QCommandLineParser *parser)
         return inputError(qtTrId("gikctl-addrebook-add-err-invalid-type").arg(parser->value(QStringLiteral("type")).trimmed(), locale.createSeparatedList(AddressBook::supportedTypes())));
     }
 
+    QString settingsJsonString;
+    if (!settings.isEmpty()) {
+        QVariantHash settingsHash;
+        const QStringList settingsList = settings.split(QLatin1Char(';'), Qt::SkipEmptyParts);
+        for (const QString &keyValPair : settingsList) {
+            const int idx = keyValPair.indexOf(QLatin1Char('='));
+            if (idx > 0) {
+                const QString key = keyValPair.left(idx);
+                const QString val = keyValPair.mid(idx + 1);
+                settingsHash.insert(key, val);
+            }
+        }
+        const QJsonObject settingsJsonObject = QJsonObject::fromVariantHash(settingsHash);
+        const QJsonDocument settingsJsonDoc = QJsonDocument(settingsJsonObject);
+        settingsJsonString = QString::fromUtf8(settingsJsonDoc.toJson(QJsonDocument::Compact));
+    }
+
     QSqlQuery q(QSqlDatabase::database(QStringLiteral(DBCONNAME)));
 
     bool userIsId = false;
@@ -133,15 +152,19 @@ int AddressBookAddCommand::exec(QCommandLineParser *parser)
         userId = q.value(0).toUInt();
     }
 
-    if (Q_UNLIKELY(!q.prepare(QStringLiteral("INSERT INTO addressbooks (user_id, type, name, data) VALUES (:user_id, :type, :name, :data)")))) {
+    if (Q_UNLIKELY(!q.prepare(QStringLiteral("INSERT INTO addressbooks (user_id, type, name, settings, created_at, updated_at) VALUES (:user_id, :type, :name, :settings, :created_at, :updated_at)")))) {
         printFailed();
         return dbError(q);
     }
 
+    const QDateTime now = QDateTime::currentDateTimeUtc();
+
     q.bindValue(QStringLiteral(":user_id"), userId);
     q.bindValue(QStringLiteral(":type"), static_cast<quint8>(type));
     q.bindValue(QStringLiteral(":name"), name);
-    q.bindValue(QStringLiteral(":data"), data);
+    q.bindValue(QStringLiteral(":settings"), settingsJsonString);
+    q.bindValue(QStringLiteral(":created_at"), now);
+    q.bindValue(QStringLiteral(":updated_at"), now);
 
     if (Q_UNLIKELY(!q.exec())) {
         printFailed();
