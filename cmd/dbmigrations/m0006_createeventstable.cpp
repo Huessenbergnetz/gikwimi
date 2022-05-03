@@ -31,6 +31,8 @@ void M0006_CreateEventsTable::up()
     t->boolean(QStringLiteral("all_day"))->defaultValue(false);
     t->longText(QStringLiteral("description"))->nullable();
     t->text(QStringLiteral("settings"))->nullable();
+    t->dateTime(QStringLiteral("created_at"));
+    t->dateTime(QStringLiteral("updated_at"));
     t->foreignKey(QStringLiteral("user_id"), QStringLiteral("users"), QStringLiteral("id"), QStringLiteral("events_user_id_idx"))->onDelete(QStringLiteral("CASCADE"))->onUpdate(QStringLiteral("CASCADE"));
 
     switch(dbType()) {
