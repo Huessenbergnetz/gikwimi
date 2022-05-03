@@ -20,6 +20,8 @@ public:
     QString description;
     QDateTime start;
     QDateTime end;
+    QDateTime created;
+    QDateTime updated;
     QVariantHash settings;
     QTimeZone timezone;
     dbid_t id;

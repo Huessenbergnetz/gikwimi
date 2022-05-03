@@ -4,16 +4,25 @@
  */
 
 #include "event_p.h"
+#include "logging.h"
+#include "error.h"
 
+#include <Cutelyst/Context>
+#include <Cutelyst/Plugins/Utils/Sql>
+
+#include <QSqlQuery>
+#include <QSqlError>
 #include <QMetaType>
 #include <QMetaEnum>
+#include <QJsonDocument>
+#include <QJsonObject>
 
 Event::Event()
 {
 
 }
 
-Event::Event(dbid_t id, const User &user, const QString &title, const QString &slug, const QDateTime &start, const QDateTime &end, const QTimeZone &tz, Audience audience, Participation participation, const QString &description, const QVariantHash settings, bool allDay)
+Event::Event(dbid_t id, const User &user, const QString &title, const QString &slug, const QDateTime &start, const QDateTime &end, const QTimeZone &tz, Audience audience, Participation participation, const QString &description, const QVariantHash settings, bool allDay, const QDateTime &created, const QDateTime &updated)
     : d(new EventData)
 {
     d->id = id;
@@ -21,13 +30,17 @@ Event::Event(dbid_t id, const User &user, const QString &title, const QString &s
     d->title = title;
     d->slug = slug;
     d->start = start;
+    d->start.setTimeSpec(Qt::UTC);
     d->end = end;
+    d->end.setTimeSpec(Qt::UTC);
     d->timezone = tz;
     d->audience = audience;
     d->participation = participation;
     d->description = description;
     d->settings = settings;
     d->allDay = allDay;
+    d->created = created;
+    d->updated = updated;
     d->startOnly = start == end;
 }
 
@@ -132,6 +145,16 @@ bool Event::startTimeOnly() const
     return d ? d->startOnly : false;
 }
 
+QDateTime Event::created() const
+{
+    return d ? d->created : QDateTime();
+}
+
+QDateTime Event::updated() const
+{
+    return d ? d->updated : QDateTime();
+}
+
 bool Event::isValid() const
 {
     return d && d->id > 0;
@@ -222,6 +245,71 @@ QStringList Event::supportedParticipations()
     }
 
     return lst;
+}
+
+std::vector<Event> Event::list(Cutelyst::Context *c, Error &e, const User &user)
+{
+    std::vector<Event> events;
+
+    Q_ASSERT(c);
+
+    QSqlQuery q;
+    if (user.isNull()) {
+        q = CPreparedSqlQueryThreadFO(QStringLiteral("SELECT "
+                                                     "e.id, e.title, e.slug, e.start_time, e.end_time, e.timezone, e.audience, e.participation, e.description, e.settings, e.all_day, e.created_at, e.updated_at, "
+                                                     "u.id AS user_id, u.type, u.username, u.email, u.created_at AS user_created, u.updated_at AS user_updated, u.locked_at, u.locked_by "
+                                                     "FROM events e JOIN users u ON u.id = e.user_id"));
+    } else {
+        q = CPreparedSqlQueryThreadFO(QStringLiteral("SELECT id, title, slug, start_time, end_time, timezone, audience, participation, description, settings, all_day, created_at, updated_at "
+                                                     "FROM events WHERE user_id = :user_id"));
+        q.bindValue(QStringLiteral(":user_id"), user.id());
+    }
+
+    if (Q_LIKELY(q.exec())) {
+        if (q.size() > 0) {
+            events.reserve(q.size());
+        }
+
+        while (q.next()) {
+            const User _user = user.isNull()
+                    ? User(q.value(13).toUInt(),
+                           static_cast<User::Type>(q.value(14).value<qint8>()),
+                           q.value(15).toString(),
+                           q.value(16).toString(),
+                           q.value(17).toDateTime(),
+                           q.value(18).toDateTime(),
+                           q.value(19).toLongLong(),
+                           q.value(20).toUInt())
+                    : user;
+
+            QVariantHash settings;
+            const QString settingsString = q.value(9).toString();
+            const QJsonDocument settingsJson = QJsonDocument::fromJson(settingsString.toUtf8());
+            const QJsonObject settingsObject = settingsJson.object();
+            settings = settingsObject.toVariantHash();
+
+            events.emplace_back(q.value(0).toUInt(),
+                                _user,
+                                q.value(1).toString(),
+                                q.value(2).toString(),
+                                q.value(3).toDateTime(),
+                                q.value(4).toDateTime(),
+                                QTimeZone(q.value(5).toString().toLatin1()),
+                                static_cast<Event::Audience>(q.value(6).value<qint8>()),
+                                static_cast<Event::Participation>(q.value(7).value<qint8>()),
+                                q.value(8).toString(),
+                                settings,
+                                q.value(10).toBool(),
+                                q.value(11).toDateTime(),
+                                q.value(12).toDateTime());
+        }
+
+    } else {
+        e = Error(q.lastError(), c->translate("Event", "Failed to query events from the database."));
+        qCCritical(GIK_CORE) << "Failed to query list of events for user id" << user.id() << "from database:" << q.lastError().text();
+    }
+
+    return events;
 }
 
 #include "moc_event.cpp"

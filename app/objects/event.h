@@ -14,6 +14,8 @@
 #include <QDateTime>
 #include <QVariantHash>
 
+#include <vector>
+
 namespace Cutelyst {
 class Context;
 }
@@ -39,6 +41,8 @@ class Event
     Q_PROPERTY(QVariantHash settings READ settings CONSTANT)
     Q_PROPERTY(bool isAllDay READ isAllDay CONSTANT)
     Q_PROPERTY(bool startTimeOnly READ startTimeOnly CONSTANT)
+    Q_PROPERTY(QDateTime craeted READ created CONSTANT)
+    Q_PROPERTY(QDateTime updated READ updated CONSTANT)
 public:
     /*!
      * \brief Audience for this event.
@@ -62,7 +66,7 @@ public:
 
     Event();
 
-    Event(dbid_t id, const User &user, const QString &title, const QString &slug, const QDateTime &start, const QDateTime &end, const QTimeZone &tz, Audience audience, Participation participation, const QString &description, const QVariantHash settings, bool allDay);
+    Event(dbid_t id, const User &user, const QString &title, const QString &slug, const QDateTime &start, const QDateTime &end, const QTimeZone &tz, Audience audience, Participation participation, const QString &description, const QVariantHash settings, bool allDay, const QDateTime &created, const QDateTime &updated);
 
     Event(const Event &other);
 
@@ -104,6 +108,10 @@ public:
 
     bool startTimeOnly() const;
 
+    QDateTime created() const;
+
+    QDateTime updated() const;
+
     bool isValid() const;
 
     bool isNull() const;
@@ -119,6 +127,8 @@ public:
     static QString participationEnumToString(Event::Participation participation);
 
     static QStringList supportedParticipations();
+
+    static std::vector<Event> list(Cutelyst::Context *c, Error &e, const User &user);
 
 private:
     QSharedDataPointer<EventData> d;
