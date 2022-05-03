@@ -6,7 +6,7 @@
 #ifndef GIKWIMICTL_ADDRESSBOOKADDCOMMAND_H
 #define GIKWIMICTL_ADDRESSBOOKADDCOMMAND_H
 
-#include <command.h>
+#include "../command.h"
 #include <QObject>
 
 class AddressBookAddCommand : public Command

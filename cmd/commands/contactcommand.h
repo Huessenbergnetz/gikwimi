@@ -6,7 +6,7 @@
 #ifndef GIKWIMICTL_CONTACTCOMMAND_H
 #define GIKWIMICTL_CONTACTCOMMAND_H
 
-#include <command.h>
+#include "../command.h"
 #include <QObject>
 
 class ContactCommand : public Command

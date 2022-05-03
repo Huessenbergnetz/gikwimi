@@ -6,7 +6,7 @@
 #ifndef GIKWIMICTL_USERCOMMAND_H
 #define GIKWIMICTL_USERCOMMAND_H
 
-#include <command.h>
+#include "../command.h"
 #include <QObject>
 
 class UserCommand : public Command
