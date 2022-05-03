@@ -240,6 +240,8 @@ int EventAddCommand::exec(QCommandLineParser *parser)
         return inputError(qtTrId("gikctl-event-add-err-invalid-participation").arg(parser->value(QStringLiteral("participation")).trimmed(), locale.createSeparatedList(Event::supportedParticipations())));
     }
 
+    const QDateTime now = QDateTime::currentDateTimeUtc();
+
     QSqlQuery q(QSqlDatabase::database(QStringLiteral(DBCONNAME)));
 
     bool userIsId = false;
@@ -261,8 +263,8 @@ int EventAddCommand::exec(QCommandLineParser *parser)
         userId = q.value(0).toUInt();
     }
 
-    if (Q_UNLIKELY(!q.prepare(QStringLiteral("INSERT INTO events (user_id, title, slug, start_time, end_time, timezone, audience, participation, all_day, description) "
-                                             "VALUES (:user_id, :title, :slug, :start_time, :end_time, :timezone, :audience, :participation, :all_day, :description)")))) {
+    if (Q_UNLIKELY(!q.prepare(QStringLiteral("INSERT INTO events (user_id, title, slug, start_time, end_time, timezone, audience, participation, all_day, description, created_at, updated_at) "
+                                             "VALUES (:user_id, :title, :slug, :start_time, :end_time, :timezone, :audience, :participation, :all_day, :description, :created_at, :updated_at)")))) {
         printFailed();
         return dbError(q);
     }
@@ -276,6 +278,8 @@ int EventAddCommand::exec(QCommandLineParser *parser)
     q.bindValue(QStringLiteral(":participation"), static_cast<qint8>(participation));
     q.bindValue(QStringLiteral(":all_day"), allDay);
     q.bindValue(QStringLiteral(":description"), description);
+    q.bindValue(QStringLiteral(":created_at"), now);
+    q.bindValue(QStringLiteral(":updated_at"), now);
 
     if (Q_UNLIKELY(!q.exec())) {
         printFailed();
