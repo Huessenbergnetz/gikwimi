@@ -45,6 +45,15 @@ public:
 
 private:
     QSharedDataPointer<SimpleUserData> d;
+
+    friend QDataStream &operator<<(QDataStream &stream, const SimpleUser &user);
+    friend QDataStream &operator>>(QDataStream &stream, SimpleUser &user);
 };
+
+QDebug operator<<(QDebug dbg, const SimpleUser &user);
+
+QDataStream &operator<<(QDataStream &stream, const SimpleUser &user);
+
+QDataStream &operator>>(QDataStream &stream, SimpleUser &user);
 
 #endif // GIKWIMI_SIMPLEUSER_H

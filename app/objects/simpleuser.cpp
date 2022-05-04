@@ -4,6 +4,7 @@
  */
 
 #include "simpleuser.h"
+#include <QDataStream>
 #include <QDebug>
 
 class SimpleUserData : public QSharedData
@@ -68,6 +69,23 @@ QDebug operator<<(QDebug dbg, const SimpleUser &user)
     dbg << ", Username:" << user.username();
     dbg << ')';
     return dbg.maybeSpace();
+}
+
+QDataStream &operator<<(QDataStream &stream, const SimpleUser &user)
+{
+    stream << user.d->id << user.d->username;
+    return stream;
+}
+
+QDataStream &operator>>(QDataStream &stream, SimpleUser &user)
+{
+    if (user.d == nullptr) {
+        user.d = new SimpleUserData;
+    }
+
+    stream >> user.d->id;
+    stream >> user.d->username;
+    return stream;
 }
 
 #include "moc_simpleuser.cpp"
