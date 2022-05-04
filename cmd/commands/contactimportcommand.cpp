@@ -175,12 +175,13 @@ int ContactImportCommand::exec(QCommandLineParser *parser)
 
     const QString abName = q.value(0).toString();
     const QString username = q.value(1).toString();
+    const QDateTime now = QDateTime::currentDateTimeUtc();
 
     if (strategy == Strategy::Replace || strategy == Strategy::Add) {
 
         db.transaction();
         if (strategy == Strategy::Replace) {
-            if (Q_UNLIKELY(!q.prepare(QStringLiteral("DELETE FROM addresses WHERE addressbook_id = :addressbook_id")))) {
+            if (Q_UNLIKELY(!q.prepare(QStringLiteral("DELETE FROM contacts WHERE addressbook_id = :addressbook_id")))) {
                 printFailed();
                 return dbError(q);
             }
@@ -214,7 +215,8 @@ int ContactImportCommand::exec(QCommandLineParser *parser)
                 continue;
             }
 
-            if (Q_UNLIKELY(!q.prepare(QStringLiteral("INSERT INTO contacts (addressbook_id, given_name, family_name, vcard) VALUES (:addressbook_id, :given_name, :family_name, :vcard)")))) {
+            if (Q_UNLIKELY(!q.prepare(QStringLiteral("INSERT INTO contacts (addressbook_id, given_name, family_name, vcard, created_at, updated_at) "
+                                                     "VALUES (:addressbook_id, :given_name, :family_name, :vcard, :created_at, :updated_at)")))) {
                 printFailed();
                 return dbError(q);
             }
@@ -222,6 +224,8 @@ int ContactImportCommand::exec(QCommandLineParser *parser)
             q.bindValue(QStringLiteral(":given_name"), gname);
             q.bindValue(QStringLiteral(":family_name"), fname);
             q.bindValue(QStringLiteral(":vcard"), QString::fromUtf8(converter.createVCard(a, KContacts::VCardConverter::v4_0)));
+            q.bindValue(QStringLiteral(":created_at"), now);
+            q.bindValue(QStringLiteral(":updated_at"), now);
             if (Q_UNLIKELY(!q.exec())) {
                 printFailed();
                 return dbError(q);
@@ -230,9 +234,11 @@ int ContactImportCommand::exec(QCommandLineParser *parser)
         db.commit();
 
     } else if (strategy == Strategy::KeepNew) {
-
+        printFailed();
+        return internalError(QStringLiteral("Not yet implemented"));
     } else if (strategy == Strategy::KeepOld) {
-
+        printFailed();
+        return internalError(QStringLiteral("Not yet implemented"));
     }
 
     printDone();
