@@ -7,6 +7,7 @@
 #define GIKWIMI_USER_H
 
 #include "global.h"
+#include "simpleuser.h"
 
 #include <QObject>
 #include <QSharedDataPointer>
@@ -30,8 +31,8 @@ class User
     Q_PROPERTY(QString email READ email CONSTANT)
     Q_PROPERTY(QDateTime created READ created CONSTANT)
     Q_PROPERTY(QDateTime updated READ updated CONSTANT)
-    Q_PROPERTY(qint64 lockedAt READ lockedAt CONSTANT)
-    Q_PROPERTY(dbid_t lockedBy READ lockedBy CONSTANT)
+    Q_PROPERTY(QDateTime lockedAt READ lockedAt CONSTANT)
+    Q_PROPERTY(SimpleUser lockedBy READ lockedBy CONSTANT)
     Q_PROPERTY(QVariantMap settings READ settings CONSTANT)
     Q_PROPERTY(bool isAdmin READ isAdmin CONSTANT)
 public:
@@ -46,9 +47,11 @@ public:
 
     User();
 
-    User(dbid_t id, User::Type type, const QString &username, const QString &email, const QDateTime &created, const QDateTime &updated, qint64 lockedAt, dbid_t lockedBy);
+    User(dbid_t id, User::Type type, const QString &username, const QString &email, const QDateTime &created, const QDateTime &updated);
 
-    User(dbid_t id, User::Type type, const QString &username, const QString &email, const QDateTime &created, const QDateTime &updated, qint64 lockedAt, dbid_t lockedBy, const QVariantMap &settings);
+    User(dbid_t id, User::Type type, const QString &username, const QString &email, const QDateTime &created, const QDateTime &updated, qint64 lockedAt, const SimpleUser &lockedBy);
+
+    User(dbid_t id, User::Type type, const QString &username, const QString &email, const QDateTime &created, const QDateTime &updated, qint64 lockedAt, const SimpleUser &lockedBy, const QVariantMap &settings);
 
     User(const Cutelyst::AuthenticationUser &user);
 
@@ -76,9 +79,9 @@ public:
 
     QDateTime updated() const;
 
-    qint64 lockedAt() const;
+    QDateTime lockedAt() const;
 
-    dbid_t lockedBy() const;
+    SimpleUser lockedBy() const;
 
     QVariantMap settings() const;
 

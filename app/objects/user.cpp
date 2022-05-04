@@ -26,9 +26,9 @@ public:
     QString email;
     QDateTime created;
     QDateTime updated;
+    QDateTime lockedAt;
+    SimpleUser lockedBy;
     QVariantMap settings;
-    qint64 lockedAt = 0;
-    dbid_t lockedBy = 0;
     dbid_t id = 0;
     User::Type type = User::Disabled;
 };
@@ -38,7 +38,7 @@ User::User()
 
 }
 
-User::User(dbid_t id, User::Type type, const QString &username, const QString &email, const QDateTime &created, const QDateTime &updated, qint64 lockedAt, dbid_t lockedBy)
+User::User(dbid_t id, User::Type type, const QString &username, const QString &email, const QDateTime &created, const QDateTime &updated)
     : d(new UserData)
 {
     d->username = username;
@@ -47,13 +47,26 @@ User::User(dbid_t id, User::Type type, const QString &username, const QString &e
     d->created.setTimeSpec(Qt::UTC);
     d->updated  = updated;
     d->updated.setTimeSpec(Qt::UTC);
-    d->lockedAt = lockedAt;
+    d->id       = id;
+    d->type     = type;
+}
+
+User::User(dbid_t id, User::Type type, const QString &username, const QString &email, const QDateTime &created, const QDateTime &updated, qint64 lockedAt, const SimpleUser &lockedBy)
+    : d(new UserData)
+{
+    d->username = username;
+    d->email    = email;
+    d->created  = created;
+    d->created.setTimeSpec(Qt::UTC);
+    d->updated  = updated;
+    d->updated.setTimeSpec(Qt::UTC);
+    d->lockedAt = QDateTime::fromMSecsSinceEpoch(lockedAt);
     d->lockedBy = lockedBy;
     d->id       = id;
     d->type     = type;
 }
 
-User::User(dbid_t id, User::Type type, const QString &username, const QString &email, const QDateTime &created, const QDateTime &updated, qint64 lockedAt, dbid_t lockedBy, const QVariantMap &settings)
+User::User(dbid_t id, User::Type type, const QString &username, const QString &email, const QDateTime &created, const QDateTime &updated, qint64 lockedAt, const SimpleUser &lockedBy, const QVariantMap &settings)
     : d(new UserData)
 {
     d->username = username;
@@ -63,7 +76,7 @@ User::User(dbid_t id, User::Type type, const QString &username, const QString &e
     d->updated  = updated;
     d->updated.setTimeSpec(Qt::UTC);
     d->settings = settings;
-    d->lockedAt = lockedAt;
+    d->lockedAt = QDateTime::fromMSecsSinceEpoch(lockedAt);
     d->lockedBy = lockedBy;
     d->id       = id;
     d->type     = type;
@@ -79,8 +92,6 @@ User::User(const Cutelyst::AuthenticationUser &user)
     d->updated  = user.value(QStringLiteral("updated_at")).toDateTime();
     d->updated.setTimeSpec(Qt::UTC);
     d->settings = user.value(QStringLiteral("settings")).toMap();
-    d->lockedAt = user.value(QStringLiteral("locked_at")).toLongLong();
-    d->lockedBy = user.value(QStringLiteral("locked_by")).toUInt();
     d->id       = user.id().toUInt();
     d->type     = static_cast<User::Type>(user.value(QStringLiteral("type")).toUInt());
 }
@@ -130,14 +141,14 @@ QDateTime User::updated() const
     return d ? d->updated : QDateTime();
 }
 
-qint64 User::lockedAt() const
+QDateTime User::lockedAt() const
 {
-    return d ? d->lockedAt : 0;
+    return d ? d->lockedAt : QDateTime();
 }
 
-dbid_t User::lockedBy() const
+SimpleUser User::lockedBy() const
 {
-    return d ? d->lockedBy : 0;
+    return d ? d->lockedBy : SimpleUser();
 }
 
 QVariantMap User::settings() const
@@ -178,7 +189,7 @@ std::vector<User> User::list(Cutelyst::Context *c, Error &e)
 
     Q_ASSERT(c);
 
-    QSqlQuery q = CPreparedSqlQueryThreadFO(QStringLiteral("SELECT id, type, username, email, created_at, updated_at, locked_at, locked_by FROM users"));
+    QSqlQuery q = CPreparedSqlQueryThreadFO(QStringLiteral("SELECT u1.id, u1.type, u1.username, u1.email, u1.created_at, u1.updated_at, u1.locked_at, u2.id AS locked_by_id, u2.username AS locked_by_username FROM users u1 LEFT JOIN users u2 ON u2.id = u1.locked_by"));
 
     if (Q_LIKELY(q.exec())) {
         if (q.size() > 0) {
@@ -192,7 +203,7 @@ std::vector<User> User::list(Cutelyst::Context *c, Error &e)
                                q.value(4).toDateTime(),
                                q.value(5).toDateTime(),
                                q.value(6).toLongLong(),
-                               q.value(7).toUInt());
+                               SimpleUser(q.value(7).toUInt(), q.value(8).toString()));
         }
     } else {
         e = Error(q.lastError(), c->translate("User", "Failed to query user list from the database."));
@@ -208,7 +219,7 @@ User User::get(Cutelyst::Context *c, Error &e, dbid_t id)
 
     Q_ASSERT(c);
 
-    QSqlQuery q1 = CPreparedSqlQueryThreadFO(QStringLiteral("SELECT id, type, username, email, created_at, updated_at, locked_at, locked_by FROM users WHERE id = :id"));
+    QSqlQuery q1 = CPreparedSqlQueryThreadFO(QStringLiteral("SELECT u1.id, u1.type, u1.username, u1.email, u1.created_at, u1.updated_at, u1.locked_at, u2.id AS locked_by_id, u2.username AS locked_by_username FROM users u1 LEFT JOIN users u2 ON u2.id =u1.locked_by WHERE u1.id = :id"));
     q1.bindValue(QStringLiteral(":id"), id);
 
     if (Q_LIKELY(q1.exec())) {
@@ -232,8 +243,7 @@ User User::get(Cutelyst::Context *c, Error &e, dbid_t id)
                         q1.value(4).toDateTime(),
                         q1.value(5).toDateTime(),
                         q1.value(6).toLongLong(),
-                        q1.value(7).toUInt(),
-                        settings);
+                        SimpleUser(q1.value(7).toUInt(), q1.value(8).toString()));
 
         } else {
             e = Error(Error::NotFound, c->translate("User", "Can not find user with ID %1 in the database.").arg(id));
