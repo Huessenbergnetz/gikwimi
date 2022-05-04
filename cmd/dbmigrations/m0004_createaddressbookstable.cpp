@@ -30,7 +30,6 @@ void M0004_CreateAddressBooksTable::up()
     t->integer(QStringLiteral("locked_by"))->unSigned()->defaultValue(0)->nullable();
 
     t->foreignKey(QStringLiteral("user_id"), QStringLiteral("users"), QStringLiteral("id"), QStringLiteral("addressbooks_user_id_idx"))->onDelete(QStringLiteral("CASCADE"))->onUpdate(QStringLiteral("CASCADE"));
-    t->foreignKey(QStringLiteral("locked_by"), QStringLiteral("users"), QStringLiteral("id"), QStringLiteral("addressbooks_locked_by_user_id_idx"))->onDelete(QStringLiteral("SET NULL"))->onUpdate(QStringLiteral("SET NULL"));
 
     switch(dbType()) {
     case Firfuorida::Migrator::MariaDB:
