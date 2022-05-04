@@ -4,6 +4,7 @@
  */
 
 #include "simpleuser.h"
+#include <QDebug>
 
 class SimpleUserData : public QSharedData
 {
@@ -57,6 +58,16 @@ bool SimpleUser::isValid() const
 bool SimpleUser::isNull() const
 {
     return d ? false : true;
+}
+
+QDebug operator<<(QDebug dbg, const SimpleUser &user)
+{
+    QDebugStateSaver saver(dbg);
+    dbg.nospace() << "SimpleUser(";
+    dbg << ", ID:" << user.id();
+    dbg << ", Username:" << user.username();
+    dbg << ')';
+    return dbg.maybeSpace();
 }
 
 #include "moc_simpleuser.cpp"
