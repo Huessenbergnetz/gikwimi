@@ -273,7 +273,7 @@ std::vector<Event> Event::list(Cutelyst::Context *c, Error &e, const User &user)
     if (user.isNull()) {
         q = CPreparedSqlQueryThreadFO(QStringLiteral("SELECT "
                                                      "e.id, e.title, e.slug, e.start_time, e.end_time, e.timezone, e.audience, e.participation, e.description, e.settings, e.all_day, e.created_at, e.updated_at, "
-                                                     "u.id AS user_id, u.type, u.username, u.email, u.created_at AS user_created, u.updated_at AS user_updated, u.locked_at, u.locked_by "
+                                                     "u.id AS user_id, u.type, u.username, u.email, u.created_at AS user_created, u.updated_at AS user_updated "
                                                      "FROM events e JOIN users u ON u.id = e.user_id"));
     } else {
         q = CPreparedSqlQueryThreadFO(QStringLiteral("SELECT id, title, slug, start_time, end_time, timezone, audience, participation, description, settings, all_day, created_at, updated_at "
@@ -293,9 +293,7 @@ std::vector<Event> Event::list(Cutelyst::Context *c, Error &e, const User &user)
                            q.value(15).toString(),
                            q.value(16).toString(),
                            q.value(17).toDateTime(),
-                           q.value(18).toDateTime(),
-                           q.value(19).toLongLong(),
-                           q.value(20).toUInt())
+                           q.value(18).toDateTime())
                     : user;
 
             QVariantHash settings;
