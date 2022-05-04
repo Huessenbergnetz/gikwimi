@@ -41,7 +41,7 @@ class Event
     Q_PROPERTY(QVariantHash settings READ settings CONSTANT)
     Q_PROPERTY(bool isAllDay READ isAllDay CONSTANT)
     Q_PROPERTY(bool startTimeOnly READ startTimeOnly CONSTANT)
-    Q_PROPERTY(QDateTime craeted READ created CONSTANT)
+    Q_PROPERTY(QDateTime created READ created CONSTANT)
     Q_PROPERTY(QDateTime updated READ updated CONSTANT)
 public:
     /*!
