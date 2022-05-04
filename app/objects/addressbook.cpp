@@ -27,8 +27,8 @@ AddressBook::AddressBook()
 
 }
 
-AddressBook::AddressBook(dbid_t id, AddressBook::Type type, const QString &name, const QVariantHash &settings, const QDateTime &created, const QDateTime &updated, const User &user)
-    : d(new AddressBookData(id, type, name, settings, created, updated, user))
+AddressBook::AddressBook(dbid_t id, AddressBook::Type type, const QString &name, const QVariantHash &settings, const QDateTime &created, const QDateTime &updated, const User &user, const QDateTime &lockedAt, const SimpleUser &lockedBy)
+    : d(new AddressBookData(id, type, name, settings, created, updated, user, lockedAt, lockedBy))
 {
 
 }
@@ -81,6 +81,16 @@ QDateTime AddressBook::created() const
 QDateTime AddressBook::updated() const
 {
     return d->updated;
+}
+
+QDateTime AddressBook::lockedAt() const
+{
+    return d->lockedAt;
+}
+
+SimpleUser AddressBook::lockedBy() const
+{
+    return d->lockedBy;
 }
 
 bool AddressBook::isValid() const
@@ -162,7 +172,7 @@ AddressBook AddressBook::create(Cutelyst::Context *c, Error &e, const User &user
 
     if (Q_LIKELY(q.exec())) {
         const dbid_t id = q.lastInsertId().toUInt();
-        addressBook = AddressBook(id, type, name, settings, now, now, user);
+        addressBook = AddressBook(id, type, name, settings, now, now, user, QDateTime(), SimpleUser());
     } else {
         e = Error(q.lastError(), c->translate("AddressBook", "Failed to create new addressbook."));
         qCCritical(GIK_CORE) << "Failed to create new addressbook for user id" << user.id() << "with name" << name << "in database:" << q.lastError().text();
@@ -195,11 +205,13 @@ std::vector<AddressBook> AddressBook::list(Cutelyst::Context *c, Error &e, const
 
     QSqlQuery q;
     if (user.isNull()) {
-        q = CPreparedSqlQueryThreadFO(QStringLiteral("SELECT a.id, a.type, a.name, a.settings, a.created_at, a.updated_at, "
-                                                     "u.id AS user_id, u.type AS user_type, u.username, u.email, u.created_at AS user_created, u.updated_at AS user_updated, u.locked_at, u.locked_by "
-                                                     "FROM addressbooks a JOIN users u ON u.id = a.user_id"));
+        q = CPreparedSqlQueryThreadFO(QStringLiteral("SELECT "
+                                                     "a.id, a.type, a.name, a.settings, a.created_at, a.updated_at, a.locked_at, "
+                                                     "u2.id AS locked_by_id, u2.username AS locked_by_username, "
+                                                     "u.id AS user_id, u.type AS user_type, u.username, u.email, u.created_at AS user_created, u.updated_at AS user_updated "
+                                                     "FROM addressbooks a LEFT JOIN users u2 ON u2.id = a.locked_by JOIN users u ON u.id = a.user_id"));
     } else {
-        q = CPreparedSqlQueryThreadFO(QStringLiteral("SELECT id, type, name, settings, created_at, updated_at FROM addressbooks WHERE user_id = :user_id"));
+        q = CPreparedSqlQueryThreadFO(QStringLiteral("SELECT a.id, a.type, a.name, a.settings, a.created_at, a.updated_at, a.locked_at, u.id AS locked_by_id, u.username AS locked_by_username FROM addressbooks a LEFT JOIN users u ON u.id = a.locked_by WHERE a.user_id = :user_id"));
         q.bindValue(QStringLiteral(":user_id"), user.id());
     }
 
@@ -209,15 +221,17 @@ std::vector<AddressBook> AddressBook::list(Cutelyst::Context *c, Error &e, const
         }
 
         while (q.next()) {
+
+            const qlonglong  lockedAt = q.value(6).toLongLong();
+            const SimpleUser lockedBy = lockedAt > 0 ? SimpleUser(q.value(7).toUInt(), q.value(8).toString()) : SimpleUser();
+
             const User _user = user.isNull()
-                    ? User(q.value(6).toUInt(),
-                           static_cast<User::Type>(q.value(7).value<quint8>()),
-                           q.value(8).toString(),
-                           q.value(9).toString(),
-                           q.value(10).toDateTime(),
-                           q.value(11).toDateTime(),
-                           q.value(12).toLongLong(),
-                           q.value(13).toUInt())
+                    ? User(q.value(9).toUInt(),
+                           static_cast<User::Type>(q.value(10).value<quint8>()),
+                           q.value(11).toString(),
+                           q.value(12).toString(),
+                           q.value(13).toDateTime(),
+                           q.value(14).toDateTime())
                     : user;
 
             QVariantHash settings;
@@ -232,7 +246,9 @@ std::vector<AddressBook> AddressBook::list(Cutelyst::Context *c, Error &e, const
                                       settings,
                                       q.value(4).toDateTime(),
                                       q.value(5).toDateTime(),
-                                      user);
+                                      user,
+                                      lockedAt > 0 ? QDateTime::fromMSecsSinceEpoch(lockedAt) : QDateTime(),
+                                      lockedBy);
         }
 
     } else {
@@ -250,21 +266,23 @@ AddressBook AddressBook::get(Cutelyst::Context *c, Error &e, dbid_t id)
     Q_ASSERT(c);
 
     QSqlQuery q = CPreparedSqlQueryThreadFO(QStringLiteral("SELECT "
-                                                           "a.id, a.type, a.name, a.settings, a.created_at, a.updated_at, "
-                                                           "u.id AS user_id, u.type AS user_type, u.username, u.email, u.created_at AS user_created, u.updated_at AS user_updated, u.locked_at, u.locked_by "
-                                                           "FROM addressbooks a JOIN users u ON u.id = a.user_id WHERE a.id = :id"));
+                                                           "a.id, a.type, a.name, a.settings, a.created_at, a.updated_at, a.locked_at, "
+                                                           "u2.id AS locked_by_id, u2.username AS locked_by_username, "
+                                                           "u.id AS user_id, u.type AS user_type, u.username, u.email, u.created_at AS user_created, u.updated_at AS user_updated "
+                                                           "FROM addressbooks a LEFT JOIN users u2 ON u2.id = a.locked_by JOIN users u ON u.id = a.user_id WHERE a.id = :id"));
     q.bindValue(QStringLiteral(":id"), id);
 
     if (Q_LIKELY(q.exec())) {
         if (Q_LIKELY(q.next())) {
-            User user(q.value(6).toUInt(),
-                      static_cast<User::Type>(q.value(7).value<quint8>()),
-                      q.value(8).toString(),
-                      q.value(9).toString(),
-                      q.value(10).toDateTime(),
-                      q.value(11).toDateTime(),
-                      q.value(12).toLongLong(),
-                      q.value(13).toUInt());
+            const qlonglong  lockedAt = q.value(6).toLongLong();
+            const SimpleUser lockedBy = lockedAt > 0 ? SimpleUser(q.value(7).toUInt(), q.value(8).toString()) : SimpleUser();
+
+            User user(q.value(9).toUInt(),
+                      static_cast<User::Type>(q.value(10).value<quint8>()),
+                      q.value(11).toString(),
+                      q.value(12).toString(),
+                      q.value(13).toDateTime(),
+                      q.value(14).toDateTime());
 
             QVariantHash settings;
             const QString settingsString = q.value(3).toString();
@@ -278,7 +296,9 @@ AddressBook AddressBook::get(Cutelyst::Context *c, Error &e, dbid_t id)
                                       settings,
                                       q.value(4).toDateTime(),
                                       q.value(5).toDateTime(),
-                                      user);
+                                      user,
+                                      lockedAt > 0 ? QDateTime::fromMSecsSinceEpoch(lockedAt) : QDateTime(),
+                                      lockedBy);
         } else {
             e = Error(Error::NotFound, c->translate("AddressBook", "Can not find addressbook with ID %1.").arg(id));
             qCWarning(GIK_CORE) << "Can not find addressbook with ID" << id << "in the database";

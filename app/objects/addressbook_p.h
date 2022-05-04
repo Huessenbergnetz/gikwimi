@@ -14,13 +14,15 @@ class AddressBookData : public QSharedData
 public:
     AddressBookData() = default;
 
-    AddressBookData(dbid_t _id, AddressBook::Type _type, const QString &_name, const QVariantHash &_settings, const QDateTime &_created, const QDateTime &_updated, const User &_user)
+    AddressBookData(dbid_t _id, AddressBook::Type _type, const QString &_name, const QVariantHash &_settings, const QDateTime &_created, const QDateTime &_updated, const User &_user, const QDateTime &_lockedAt, const SimpleUser &_lockedBy)
         : QSharedData(),
           name{_name},
           user{_user},
           settings{_settings},
           created{_created},
           updated{_updated},
+          lockedAt{_lockedAt},
+          lockedBy{_lockedBy},
           id{_id},
           type{_type}
     {
@@ -35,6 +37,8 @@ public:
     QVariantHash settings;
     QDateTime created;
     QDateTime updated;
+    QDateTime lockedAt;
+    SimpleUser lockedBy;
     dbid_t id = 0;
     AddressBook::Type type = AddressBook::Local;
 };

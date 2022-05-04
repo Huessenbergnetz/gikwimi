@@ -7,6 +7,7 @@
 #define GIKWIMI_ADDRESSBOOK_H
 
 #include "user.h"
+#include "simpleuser.h"
 #include "global.h"
 
 #include <QObject>
@@ -31,6 +32,8 @@ class AddressBook
     Q_PROPERTY(User user READ user CONSTANT)
     Q_PROPERTY(QDateTime created READ created CONSTANT)
     Q_PROPERTY(QDateTime updated READ updated CONSTANT)
+    Q_PROPERTY(QDateTime lockedAt READ lockedAt CONSTANT)
+    Q_PROPERTY(SimpleUser lockedBy READ lockedBy CONSTANT)
 public:
     enum Type : quint8 {
         Invalid = 0,
@@ -40,7 +43,7 @@ public:
 
     AddressBook();
 
-    AddressBook(dbid_t id, AddressBook::Type type, const QString &name, const QVariantHash &settings, const QDateTime &created, const QDateTime &updated, const User &user);
+    AddressBook(dbid_t id, AddressBook::Type type, const QString &name, const QVariantHash &settings, const QDateTime &created, const QDateTime &updated, const User &user, const QDateTime &lockedAt, const SimpleUser &lockedBy);
 
     AddressBook(const AddressBook &other);
 
@@ -67,6 +70,10 @@ public:
     QDateTime created() const;
 
     QDateTime updated() const;
+
+    QDateTime lockedAt() const;
+
+    SimpleUser lockedBy() const;
 
     bool isValid() const;
 
