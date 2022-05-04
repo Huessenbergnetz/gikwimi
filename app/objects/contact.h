@@ -11,6 +11,7 @@
 #include <KContacts/Addressee>
 
 #include <QSharedDataPointer>
+#include <QDateTime>
 
 #include <vector>
 
@@ -26,10 +27,12 @@ class Contact
     Q_PROPERTY(dbid_t id READ id CONSTANT)
     Q_PROPERTY(AddressBook addressbook READ addressbook CONSTANT)
     Q_PROPERTY(KContacts::Addressee addressee READ addressee CONSTANT)
+    Q_PROPERTY(QDateTime created READ created CONSTANT)
+    Q_PROPERTY(QDateTime updated READ updated CONSTANT)
 public:
     Contact();
 
-    Contact(dbid_t id, const AddressBook &addressbook, const KContacts::Addressee &addressee);
+    Contact(dbid_t id, const AddressBook &addressbook, const KContacts::Addressee &addressee, const QDateTime &created, const QDateTime &updated);
 
     Contact(const Contact &other);
 
@@ -48,6 +51,10 @@ public:
     AddressBook addressbook() const;
 
     KContacts::Addressee addressee() const;
+
+    QDateTime created() const;
+
+    QDateTime updated() const;
 
     bool isValid() const;
 

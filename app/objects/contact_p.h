@@ -16,6 +16,8 @@ public:
     KContacts::Addressee addressee;
     AddressBook addressbook;
     User user;
+    QDateTime created;
+    QDateTime updated;
     dbid_t id = 0;
 };
 

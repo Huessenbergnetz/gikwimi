@@ -22,12 +22,16 @@ Contact::Contact()
 
 }
 
-Contact::Contact(dbid_t id, const AddressBook &addressbook, const KContacts::Addressee &addressee)
+Contact::Contact(dbid_t id, const AddressBook &addressbook, const KContacts::Addressee &addressee, const QDateTime &created, const QDateTime &updated)
     : d(new ContactData)
 {
     d->id = id;
     d->addressbook = addressbook;
     d->addressee = addressee;
+    d->created = created;
+    d->created.setTimeSpec(Qt::UTC);
+    d->updated = updated;
+    d->updated.setTimeSpec(Qt::UTC);
 }
 
 Contact::Contact(const Contact &other) = default;
@@ -60,6 +64,16 @@ KContacts::Addressee Contact::addressee() const
     return d ? d->addressee : KContacts::Addressee();
 }
 
+QDateTime Contact::created() const
+{
+    return d ? d->created : QDateTime();
+}
+
+QDateTime Contact::updated() const
+{
+    return d ? d->updated : QDateTime();
+}
+
 bool Contact::isValid() const
 {
     return d && d->id > 0;
@@ -76,7 +90,7 @@ std::vector<Contact> Contact::list(Cutelyst::Context *c, Error &e, const Address
 
     Q_ASSERT(c);
 
-    QSqlQuery q = CPreparedSqlQueryThreadFO(QStringLiteral("SELECT id, vcard FROM contacts WHERE addressbook_id = :addressbook_id"));
+    QSqlQuery q = CPreparedSqlQueryThreadFO(QStringLiteral("SELECT id, vcard, created_at, updated_at FROM contacts WHERE addressbook_id = :addressbook_id"));
     q.bindValue(QStringLiteral(":addressbook_id"), addressbook.id());
 
     if (Q_UNLIKELY(!q.exec())) {
@@ -91,13 +105,15 @@ std::vector<Contact> Contact::list(Cutelyst::Context *c, Error &e, const Address
 
     KContacts::VCardConverter converter;
     while (q.next()) {
-        const dbid_t id = q.value(0).toUInt();
-        const QByteArray vcard = q.value(1).toString().toUtf8();
-        const KContacts::Addressee addressee = converter.parseVCard(vcard);
+        const dbid_t id                         = q.value(0).toUInt();
+        const QByteArray vcard                  = q.value(1).toString().toUtf8();
+        const KContacts::Addressee addressee    = converter.parseVCard(vcard);
+        const QDateTime created                 = q.value(2).toDateTime();
+        const QDateTime updated                 = q.value(3).toDateTime();
         if (Q_UNLIKELY(addressee.isEmpty())) {
             qCWarning(GIK_CORE) << "Failed to parse vCard data for contact ID" << id;
         } else {
-            contacts.emplace_back(id, addressbook, addressee);
+            contacts.emplace_back(id, addressbook, addressee, created, updated);
         }
     }
 
