@@ -50,6 +50,9 @@ private:
     friend QDataStream &operator>>(QDataStream &stream, SimpleUser &user);
 };
 
+Q_DECLARE_METATYPE(SimpleUser)
+Q_DECLARE_TYPEINFO(SimpleUser, Q_MOVABLE_TYPE);
+
 QDebug operator<<(QDebug dbg, const SimpleUser &user);
 
 QDataStream &operator<<(QDataStream &stream, const SimpleUser &user);
