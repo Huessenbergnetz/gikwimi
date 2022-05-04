@@ -25,6 +25,10 @@ void M0005_CreateContactsTable::up()
     t->varChar(QStringLiteral("given_name"));
     t->varChar(QStringLiteral("family_name"));
     t->longText(QStringLiteral("vcard"));
+    t->dateTime(QStringLiteral("created_at"));
+    t->dateTime(QStringLiteral("updated_at"));
+    t->bigInteger(QStringLiteral("locked_at"))->defaultValue(0)->nullable();
+    t->integer(QStringLiteral("locked_by"))->unSigned()->defaultValue(0)->nullable();
 
     t->foreignKey(QStringLiteral("addressbook_id"), QStringLiteral("addressbooks"), QStringLiteral("id"), QStringLiteral("addresses_books_id_idx"))->onDelete(QStringLiteral("CASCADE"))->onDelete(QStringLiteral("CASCADE"));
 
