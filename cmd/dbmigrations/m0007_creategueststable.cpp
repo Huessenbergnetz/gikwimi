@@ -32,6 +32,10 @@ void M0007_CreateGuestsTable::up()
     t->tinyInteger(QStringLiteral("notified"))->unSigned()->defaultValue(0);
     t->text(QStringLiteral("note"))->nullable();
     t->text(QStringLiteral("comment"))->nullable();
+    t->dateTime(QStringLiteral("created_at"));
+    t->dateTime(QStringLiteral("updated_at"));
+    t->bigInteger(QStringLiteral("locked_at"))->defaultValue(0)->nullable();
+    t->integer(QStringLiteral("locked_by"))->unSigned()->defaultValue(0)->nullable();
 
     t->foreignKey(QStringLiteral("event_id"), QStringLiteral("events"), QStringLiteral("id"), QStringLiteral("guests_event_id_idx"))->onDelete(QStringLiteral("CASCADE"))->onUpdate(QStringLiteral("CASCADE"));
     t->foreignKey(QStringLiteral("contact_id"), QStringLiteral("contacts"), QStringLiteral("id"), QStringLiteral("guests_contact_id_idx"))->onDelete(QStringLiteral("CASCADE"))->onUpdate(QStringLiteral("CASCADE"));
