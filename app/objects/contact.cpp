@@ -40,6 +40,23 @@ Contact::Contact(dbid_t id, const AddressBook &addressbook, const KContacts::Add
     d->lockedBy = lockedBy;
 }
 
+Contact::Contact(dbid_t id, dbid_t addressbookId, const KContacts::Addressee &addressee, const QDateTime &created, const QDateTime &updated, const QDateTime &lockedAt, const SimpleUser &lockedBy)
+    : d(new ContactData)
+{
+    d->id = id;
+    d->addressbookId = addressbookId;
+    d->addressee = addressee;
+    d->created = created;
+    d->created.setTimeSpec(Qt::UTC);
+    d->updated = updated;
+    d->updated.setTimeSpec(Qt::UTC);
+    d->lockedAt = lockedAt;
+    if (lockedAt.isValid()) {
+        d->lockedAt.setTimeSpec(Qt::UTC);
+    }
+    d->lockedBy = lockedBy;
+}
+
 Contact::Contact(const Contact &other) = default;
 
 Contact::Contact(Contact &&other) noexcept = default;
@@ -60,9 +77,16 @@ dbid_t Contact::id() const
     return d ? d->id : 0;
 }
 
-AddressBook Contact::addressbook() const
+AddressBook Contact::addressbook()
 {
-    return d ? d->addressbook : AddressBook();
+    if (d) {
+        if (!d->addressbook.isValid() && d->addressbookId > 0) {
+            d->addressbook = AddressBook::get(nullptr, nullptr, d->addressbookId);
+        }
+        return d->addressbook;
+    } else {
+        return AddressBook();
+    }
 }
 
 KContacts::Addressee Contact::addressee() const
@@ -148,7 +172,8 @@ QDataStream &operator<<(QDataStream &stream, const Contact &contact)
            << contact.d->updated
            << contact.d->lockedAt
            << contact.d->lockedBy
-           << contact.d->id;
+           << contact.d->id
+           << contact.d->addressbookId;
     return stream;
 }
 
@@ -166,7 +191,7 @@ QDataStream &operator>>(QDataStream &stream, Contact &contact)
     stream >> contact.d->lockedAt;
     stream >> contact.d->lockedBy;
     stream >> contact.d->id;
-
+    stream >> contact.d->addressbookId;
     return stream;
 }
 

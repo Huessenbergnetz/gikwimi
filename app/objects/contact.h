@@ -37,6 +37,8 @@ public:
 
     Contact(dbid_t id, const AddressBook &addressbook, const KContacts::Addressee &addressee, const QDateTime &created, const QDateTime &updated, const QDateTime &lockedAt, const SimpleUser &lockedBy);
 
+    Contact(dbid_t id, dbid_t addressbookId, const KContacts::Addressee &addressee, const QDateTime &created, const QDateTime &updated, const QDateTime &lockedAt, const SimpleUser &lockedBy);
+
     Contact(const Contact &other);
 
     Contact(Contact &&other) noexcept;
@@ -51,7 +53,7 @@ public:
 
     dbid_t id() const;
 
-    AddressBook addressbook() const;
+    AddressBook addressbook();
 
     KContacts::Addressee addressee() const;
 

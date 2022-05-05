@@ -21,6 +21,7 @@ public:
     QDateTime lockedAt;
     SimpleUser lockedBy;
     dbid_t id = 0;
+    dbid_t addressbookId = 0;
 };
 
 #endif // CONTACT_P_H
