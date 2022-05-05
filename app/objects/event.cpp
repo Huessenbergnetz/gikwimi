@@ -211,7 +211,7 @@ QStringList Event::supportedAudiences()
 {
     QStringList lst;
 
-    const QMetaObject mo = User::staticMetaObject;
+    const QMetaObject mo = Event::staticMetaObject;
     const QMetaEnum   me = mo.enumerator(mo.indexOfEnumerator("Audience"));
 
     lst.reserve(me.keyCount() - 1);
@@ -252,7 +252,7 @@ QStringList Event::supportedParticipations()
 {
     QStringList lst;
 
-    const QMetaObject mo = User::staticMetaObject;
+    const QMetaObject mo = Event::staticMetaObject;
     const QMetaEnum   me = mo.enumerator(mo.indexOfEnumerator("Participation"));
 
     lst.reserve(me.keyCount() - 1);
