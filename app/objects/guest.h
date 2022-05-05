@@ -118,6 +118,8 @@ public:
 
     static QStringList supportedStatus();
 
+    static std::vector<Guest> list(Cutelyst::Context *c, Error *e, dbid_t eventId);
+
     static std::vector<Guest> list(Cutelyst::Context *c, Error *e, const Event &event);
 
 private:

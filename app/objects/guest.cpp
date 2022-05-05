@@ -240,6 +240,22 @@ QStringList Guest::supportedStatus()
     return lst;
 }
 
+std::vector<Guest> Guest::list(Cutelyst::Context *c, Error *e, dbid_t eventId)
+{
+    std::vector<Guest> guests;
+
+    Event event = Event::fromStash(c);
+    if (event.id() != eventId) {
+        event = Event::get(c, e, eventId);
+        if (e && e->type() != Error::NoError) {
+            return guests;
+        }
+    }
+    guests = Guest::list(c, e, event);
+
+    return guests;
+}
+
 std::vector<Guest> Guest::list(Cutelyst::Context *c, Error *e, const Event &event)
 {
     std::vector<Guest> guests;
