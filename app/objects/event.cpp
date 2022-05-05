@@ -310,7 +310,7 @@ std::vector<Event> Event::list(Cutelyst::Context *c, Error *e, dbid_t userId)
     User user = User::fromStash(c);
     if (user.id() != userId) {
         user = User::get(c, e, userId);
-        if (e->type() != Error::NoError) {
+        if (e && e->type() != Error::NoError) {
             return events;
         }
     }
