@@ -20,6 +20,7 @@ void M0007_CreateGuestsTable::up()
 {
     auto t = create(QStringLiteral("guests"));
     t->increments();
+    t->charCol(QStringLiteral("uid"), 6);
     t->integer(QStringLiteral("event_id"))->unSigned();
     t->integer(QStringLiteral("contact_id"))->unSigned();
     t->integer(QStringLiteral("partner_id"))->unSigned();
