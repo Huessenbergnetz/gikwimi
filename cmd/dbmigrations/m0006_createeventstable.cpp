@@ -33,6 +33,9 @@ void M0006_CreateEventsTable::up()
     t->text(QStringLiteral("settings"))->nullable();
     t->dateTime(QStringLiteral("created_at"));
     t->dateTime(QStringLiteral("updated_at"));
+    t->bigInteger(QStringLiteral("locked_at"))->defaultValue(0)->nullable();
+    t->integer(QStringLiteral("locked_by"))->unSigned()->defaultValue(0)->nullable();
+
     t->foreignKey(QStringLiteral("user_id"), QStringLiteral("users"), QStringLiteral("id"), QStringLiteral("events_user_id_idx"))->onDelete(QStringLiteral("CASCADE"))->onUpdate(QStringLiteral("CASCADE"));
 
     switch(dbType()) {
