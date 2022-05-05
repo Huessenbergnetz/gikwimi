@@ -91,7 +91,7 @@ public:
 
     static std::vector<AddressBook> list(Cutelyst::Context *c, Error &e, const User &user);
 
-    static AddressBook get(Cutelyst::Context *c, Error &e, dbid_t id);
+    static AddressBook get(Cutelyst::Context *c, Error *e, dbid_t id);
 
     static AddressBook::Type typeStringToEnum(const QString &str);
 

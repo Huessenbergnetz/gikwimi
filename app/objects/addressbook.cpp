@@ -121,7 +121,7 @@ bool AddressBook::toStash(Cutelyst::Context *c, dbid_t id)
     Q_ASSERT_X(c, "addressbook to stash", "invalid context pointer");
 
     Error e;
-    const auto ab = AddressBook::get(c, e, id);
+    const auto ab = AddressBook::get(c, &e, id);
     if (Q_LIKELY(e.type() == Error::NoError)) {
         return ab.toStash(c);
     } else {
@@ -260,11 +260,9 @@ std::vector<AddressBook> AddressBook::list(Cutelyst::Context *c, Error &e, const
     return addressBooks;
 }
 
-AddressBook AddressBook::get(Cutelyst::Context *c, Error &e, dbid_t id)
+AddressBook AddressBook::get(Cutelyst::Context *c, Error *e, dbid_t id)
 {
     AddressBook addressBook;
-
-    Q_ASSERT(c);
 
     QSqlQuery q = CPreparedSqlQueryThreadFO(QStringLiteral("SELECT "
                                                            "a.id, a.type, a.name, a.settings, a.created_at, a.updated_at, a.locked_at, "
@@ -301,11 +299,11 @@ AddressBook AddressBook::get(Cutelyst::Context *c, Error &e, dbid_t id)
                                       lockedAt > 0 ? QDateTime::fromMSecsSinceEpoch(lockedAt) : QDateTime(),
                                       lockedBy);
         } else {
-            e = Error(Error::NotFound, c->translate("AddressBook", "Can not find addressbook with ID %1.").arg(id));
+            if (c && e) *e = Error(Error::NotFound, c->translate("AddressBook", "Can not find addressbook with ID %1.").arg(id));
             qCWarning(GIK_CORE) << "Can not find addressbook with ID" << id << "in the database";
         }
     } else {
-        e = Error(q.lastError().text(), c->translate("AddressBook", "Failed to get addressbook with ID %1 from the database.").arg(id));
+        if (c && e) *e = Error(q.lastError().text(), c->translate("AddressBook", "Failed to get addressbook with ID %1 from the database.").arg(id));
         qCCritical(GIK_CORE) << "Failed to get addressbook with id" << id << "from the database:" << q.lastError().text();
     }
 
