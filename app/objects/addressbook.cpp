@@ -16,6 +16,7 @@
 #include <QMetaEnum>
 #include <QJsonObject>
 #include <QJsonDocument>
+#include <QDataStream>
 
 #define ADDRESSBOOK_STASH_KEY "addressbook"
 
@@ -360,6 +361,38 @@ QDebug operator<<(QDebug dbg, const AddressBook &addressbook)
     dbg << ", Settings: " << addressbook.settings();
     dbg << ", UserID: " << addressbook.user().id();
     return dbg.maybeSpace();
+}
+
+QDataStream &operator<<(QDataStream &stream, const AddressBook &ab)
+{
+    stream << ab.d->name
+           << ab.d->user
+           << ab.d->settings
+           << ab.d->created
+           << ab.d->updated
+           << ab.d->lockedAt
+           << ab.d->lockedBy
+           << ab.d->id
+           << ab.d->type;
+    return stream;
+}
+
+QDataStream &operator>>(QDataStream &stream, AddressBook &ab)
+{
+    if (ab.d == nullptr) {
+        ab.d = new AddressBookData;
+    }
+
+    stream >> ab.d->name;
+    stream >> ab.d->user;
+    stream >> ab.d->settings;
+    stream >> ab.d->created;
+    stream >> ab.d->updated;
+    stream >> ab.d->lockedAt;
+    stream >> ab.d->lockedBy;
+    stream >> ab.d->id;
+    stream >> ab.d->type;
+    return stream;
 }
 
 #include "moc_addressbook.cpp"

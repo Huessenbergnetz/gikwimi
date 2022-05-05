@@ -101,11 +101,18 @@ public:
 
 protected:
     QSharedDataPointer<AddressBookData> d;
+
+    friend QDataStream &operator<<(QDataStream &stream, const AddressBook &ab);
+    friend QDataStream &operator>>(QDataStream &stream, AddressBook &ab);
 };
 
 Q_DECLARE_METATYPE(AddressBook)
 Q_DECLARE_TYPEINFO(AddressBook, Q_MOVABLE_TYPE);
 
 QDebug operator<<(QDebug dbg, const AddressBook &addressbook);
+
+QDataStream &operator<<(QDataStream &stream, const AddressBook &ab);
+
+QDataStream &operator>>(QDataStream &stream, AddressBook &ab);
 
 #endif // GIKWIMI_ADDRESSBOOK_H
