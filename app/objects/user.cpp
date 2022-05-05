@@ -183,11 +183,9 @@ User User::fromStash(Cutelyst::Context *c)
     return c->stash(QStringLiteral(USER_STASH_KEY)).value<User>();
 }
 
-std::vector<User> User::list(Cutelyst::Context *c, Error &e)
+std::vector<User> User::list(Cutelyst::Context *c, Error *e)
 {
     std::vector<User> users;
-
-    Q_ASSERT(c);
 
     QSqlQuery q = CPreparedSqlQueryThreadFO(QStringLiteral("SELECT u1.id, u1.type, u1.username, u1.email, u1.created_at, u1.updated_at, u1.locked_at, u2.id AS locked_by_id, u2.username AS locked_by_username FROM users u1 LEFT JOIN users u2 ON u2.id = u1.locked_by"));
 
@@ -206,18 +204,16 @@ std::vector<User> User::list(Cutelyst::Context *c, Error &e)
                                SimpleUser(q.value(7).toUInt(), q.value(8).toString()));
         }
     } else {
-        e = Error(q.lastError(), c->translate("User", "Failed to query user list from the database."));
+        if (c && e) *e = Error(q.lastError(), c->translate("User", "Failed to query user list from the database."));
         qCCritical(GIK_CORE) << "Failed to query list of users from the database:" << q.lastError().text();
     }
 
     return users;
 }
 
-User User::get(Cutelyst::Context *c, Error &e, dbid_t id)
+User User::get(Cutelyst::Context *c, Error *e, dbid_t id)
 {
     User user;
-
-    Q_ASSERT(c);
 
     QSqlQuery q1 = CPreparedSqlQueryThreadFO(QStringLiteral("SELECT u1.id, u1.type, u1.username, u1.email, u1.created_at, u1.updated_at, u1.locked_at, u2.id AS locked_by_id, u2.username AS locked_by_username FROM users u1 LEFT JOIN users u2 ON u2.id =u1.locked_by WHERE u1.id = :id"));
     q1.bindValue(QStringLiteral(":id"), id);
@@ -246,11 +242,11 @@ User User::get(Cutelyst::Context *c, Error &e, dbid_t id)
                         SimpleUser(q1.value(7).toUInt(), q1.value(8).toString()));
 
         } else {
-            e = Error(Error::NotFound, c->translate("User", "Can not find user with ID %1 in the database.").arg(id));
+            if (c && e) *e = Error(Error::NotFound, c->translate("User", "Can not find user with ID %1 in the database.").arg(id));
             qCWarning(GIK_CORE) << "Can not find user with ID" << id << "in the database";
         }
     } else {
-        e = Error(q1.lastError(), c->translate("User", "Failed to get user with ID %1 from the database.").arg(id));
+        if (c && e) *e = Error(q1.lastError(), c->translate("User", "Failed to get user with ID %1 from the database.").arg(id));
         qCCritical(GIK_CORE) << "Failed to execute database query to get user with ID" << id << "from the database:" << q1.lastError().text();
     }
 

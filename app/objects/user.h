@@ -95,9 +95,9 @@ public:
 
     static User fromStash(Cutelyst::Context *c);
 
-    static std::vector<User> list(Cutelyst::Context *c, Error &e);
+    static std::vector<User> list(Cutelyst::Context *c, Error *e);
 
-    static User get(Cutelyst::Context *c, Error &e, dbid_t id);
+    static User get(Cutelyst::Context *c, Error *e, dbid_t id);
 
     static User::Type typeStringToEnum(const QString &str);
 

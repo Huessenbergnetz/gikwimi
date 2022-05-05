@@ -27,7 +27,7 @@ void ControlCenterAddressBooks::index(Context *c)
     const User currentUser = User::fromStash(c);
 
     Error e;
-    const std::vector<AddressBook> addressBooks = AddressBook::list(c, e, currentUser);
+    const std::vector<AddressBook> addressBooks = AddressBook::list(c, &e, currentUser);
 
     if (e.type() != Error::NoError) {
         e.toStash(c, true);
@@ -73,7 +73,7 @@ void ControlCenterAddressBooks::contacts(Context *c)
 {
     const auto addressbook = AddressBook::fromStash(c);
     Error e;
-    const std::vector<Contact> contacts = Contact::list(c, e, addressbook);
+    const std::vector<Contact> contacts = Contact::list(c, &e, addressbook);
     if (e.type() != Error::NoError) {
         e.toStash(c, true);
         return;

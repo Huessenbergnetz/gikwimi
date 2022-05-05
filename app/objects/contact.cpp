@@ -124,18 +124,16 @@ bool Contact::isNull() const
     return d ? false : true;
 }
 
-std::vector<Contact> Contact::list(Cutelyst::Context *c, Error &e, const AddressBook &addressbook)
+std::vector<Contact> Contact::list(Cutelyst::Context *c, Error *e, const AddressBook &addressbook)
 {
     std::vector<Contact> contacts;
-
-    Q_ASSERT(c);
 
     QSqlQuery q = CPreparedSqlQueryThreadFO(QStringLiteral("SELECT c.id, c.vcard, c.created_at, c.updated_at, c.locked_at, u.id AS locked_by_id, u.username AS locked_by_username "
                                                            "FROM contacts c LEFT JOIN users u ON u.id = c.locked_by WHERE addressbook_id = :addressbook_id"));
     q.bindValue(QStringLiteral(":addressbook_id"), addressbook.id());
 
     if (Q_UNLIKELY(!q.exec())) {
-        e = Error(q.lastError(), c->translate("Contact", "Failed to query contacts from database."));
+        if (c && e) *e = Error(q.lastError(), c->translate("Contact", "Failed to query contacts from database."));
         qCCritical(GIK_CORE) << "Failed to query contacts in" << addressbook << "from database:" << q.lastError().text();
         return contacts;
     }

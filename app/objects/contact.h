@@ -69,7 +69,7 @@ public:
 
     bool isNull() const;
 
-    static std::vector<Contact> list(Cutelyst::Context *c, Error &e, const AddressBook &addressbook);
+    static std::vector<Contact> list(Cutelyst::Context *c, Error *e, const AddressBook &addressbook);
 
 protected:
     QSharedDataPointer<ContactData> d;

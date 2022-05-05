@@ -141,11 +141,11 @@ public:
 
     static QStringList supportedParticipations();
 
-    static std::vector<Event> list(Cutelyst::Context *c, Error &e, dbid_t userId);
+    static std::vector<Event> list(Cutelyst::Context *c, Error *e, dbid_t userId);
 
-    static std::vector<Event> list(Cutelyst::Context *c, Error &e, const User &user);
+    static std::vector<Event> list(Cutelyst::Context *c, Error *e, const User &user);
 
-    static Event get(Cutelyst::Context *c, Error &e, dbid_t eventId);
+    static Event get(Cutelyst::Context *c, Error *e, dbid_t eventId);
 
 private:
     QSharedDataPointer<EventData> d;

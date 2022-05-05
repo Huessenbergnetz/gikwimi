@@ -83,13 +83,13 @@ public:
 
     static AddressBook fromStash(Cutelyst::Context *c);
 
-    static AddressBook create(Cutelyst::Context *c, Error &e, dbid_t userId, AddressBook::Type type, const QString &name, const QVariantHash &settings);
+    static AddressBook create(Cutelyst::Context *c, Error *e, dbid_t userId, AddressBook::Type type, const QString &name, const QVariantHash &settings);
 
-    static AddressBook create(Cutelyst::Context *c, Error &e, const User &user, AddressBook::Type type, const QString &name, const QVariantHash &settings);
+    static AddressBook create(Cutelyst::Context *c, Error *e, const User &user, AddressBook::Type type, const QString &name, const QVariantHash &settings);
 
-    static std::vector<AddressBook> list(Cutelyst::Context *c, Error &e, dbid_t userId);
+    static std::vector<AddressBook> list(Cutelyst::Context *c, Error *e, dbid_t userId);
 
-    static std::vector<AddressBook> list(Cutelyst::Context *c, Error &e, const User &user);
+    static std::vector<AddressBook> list(Cutelyst::Context *c, Error *e, const User &user);
 
     static AddressBook get(Cutelyst::Context *c, Error *e, dbid_t id);
 

@@ -135,14 +135,14 @@ AddressBook AddressBook::fromStash(Cutelyst::Context *c)
     return c->stash(QStringLiteral(ADDRESSBOOK_STASH_KEY)).value<AddressBook>();
 }
 
-AddressBook AddressBook::create(Cutelyst::Context *c, Error &e, dbid_t userId, AddressBook::Type type, const QString &name, const QVariantHash &settings)
+AddressBook AddressBook::create(Cutelyst::Context *c, Error *e, dbid_t userId, AddressBook::Type type, const QString &name, const QVariantHash &settings)
 {
     AddressBook addressBook;
 
     User user = User::fromStash(c);
     if (user.id() != userId) {
         user = User::get(c, e, userId);
-        if (e.type() != Error::NoError) {
+        if (e->type() != Error::NoError) {
             return addressBook;
         }
     }
@@ -151,11 +151,9 @@ AddressBook AddressBook::create(Cutelyst::Context *c, Error &e, dbid_t userId, A
     return addressBook;
 }
 
-AddressBook AddressBook::create(Cutelyst::Context *c, Error &e, const User &user, AddressBook::Type type, const QString &name, const QVariantHash &settings)
+AddressBook AddressBook::create(Cutelyst::Context *c, Error *e, const User &user, AddressBook::Type type, const QString &name, const QVariantHash &settings)
 {
     AddressBook addressBook;
-
-    Q_ASSERT(c);
 
     const QDateTime now = QDateTime::currentDateTimeUtc();
     const QJsonObject settingsObj = QJsonObject::fromVariantHash(settings);
@@ -175,21 +173,21 @@ AddressBook AddressBook::create(Cutelyst::Context *c, Error &e, const User &user
         const dbid_t id = q.lastInsertId().toUInt();
         addressBook = AddressBook(id, type, name, settings, now, now, user, QDateTime(), SimpleUser());
     } else {
-        e = Error(q.lastError(), c->translate("AddressBook", "Failed to create new addressbook."));
+        if (c && e) *e = Error(q.lastError(), c->translate("AddressBook", "Failed to create new addressbook."));
         qCCritical(GIK_CORE) << "Failed to create new addressbook for user id" << user.id() << "with name" << name << "in database:" << q.lastError().text();
     }
 
     return addressBook;
 }
 
-std::vector<AddressBook> AddressBook::list(Cutelyst::Context *c, Error &e, dbid_t userId)
+std::vector<AddressBook> AddressBook::list(Cutelyst::Context *c, Error *e, dbid_t userId)
 {
     std::vector<AddressBook> addressBooks;
 
     User user = User::fromStash(c);
     if (user.id() != userId) {
         user = User::get(c, e, userId);
-        if (e.type() != Error::NoError) {
+        if (e->type() != Error::NoError) {
             return addressBooks;
         }
     }
@@ -198,11 +196,9 @@ std::vector<AddressBook> AddressBook::list(Cutelyst::Context *c, Error &e, dbid_
     return addressBooks;
 }
 
-std::vector<AddressBook> AddressBook::list(Cutelyst::Context *c, Error &e, const User &user)
+std::vector<AddressBook> AddressBook::list(Cutelyst::Context *c, Error *e, const User &user)
 {
     std::vector<AddressBook> addressBooks;
-
-    Q_ASSERT(c);
 
     QSqlQuery q;
     if (user.isNull()) {
@@ -253,7 +249,7 @@ std::vector<AddressBook> AddressBook::list(Cutelyst::Context *c, Error &e, const
         }
 
     } else {
-        e = Error(q.lastError(), c->translate("AddressBook", "Failed to query addressbooks from the database."));
+        if (c && e) *e = Error(q.lastError(), c->translate("AddressBook", "Failed to query addressbooks from the database."));
         qCCritical(GIK_CORE) << "Failed to query list of addressbooks for user id" << user.id() << "from the database:" << q.lastError().text();
     }
 

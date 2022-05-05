@@ -207,7 +207,7 @@ bool Event::toStash(Cutelyst::Context *c, dbid_t eventId)
     Q_ASSERT_X(c, "event to stash", "invalid context pointer");
 
     Error error;
-    const auto event = Event::get(c, error, eventId);
+    const auto event = Event::get(c, &error, eventId);
     if (Q_LIKELY(error.type() != Error::NoError)) {
         return event.toStash(c);
     } else {
@@ -303,14 +303,14 @@ QStringList Event::supportedParticipations()
     return lst;
 }
 
-std::vector<Event> Event::list(Cutelyst::Context *c, Error &e, dbid_t userId)
+std::vector<Event> Event::list(Cutelyst::Context *c, Error *e, dbid_t userId)
 {
     std::vector<Event> events;
 
     User user = User::fromStash(c);
     if (user.id() != userId) {
         user = User::get(c, e, userId);
-        if (e.type() != Error::NoError) {
+        if (e->type() != Error::NoError) {
             return events;
         }
     }
@@ -319,11 +319,9 @@ std::vector<Event> Event::list(Cutelyst::Context *c, Error &e, dbid_t userId)
     return events;
 }
 
-std::vector<Event> Event::list(Cutelyst::Context *c, Error &e, const User &user)
+std::vector<Event> Event::list(Cutelyst::Context *c, Error *e, const User &user)
 {
     std::vector<Event> events;
-
-    Q_ASSERT(c);
 
     QSqlQuery q;
     if (user.isNull()) {
@@ -386,14 +384,14 @@ std::vector<Event> Event::list(Cutelyst::Context *c, Error &e, const User &user)
         }
 
     } else {
-        e = Error(q.lastError(), c->translate("Event", "Failed to query events from the database."));
+        if (c && e) *e = Error(q.lastError(), c->translate("Event", "Failed to query events from the database."));
         qCCritical(GIK_CORE) << "Failed to query list of events for user id" << user.id() << "from database:" << q.lastError().text();
     }
 
     return events;
 }
 
-Event Event::get(Cutelyst::Context *c, Error &e, dbid_t eventId)
+Event Event::get(Cutelyst::Context *c, Error *e, dbid_t eventId)
 {
     Event event;
 
@@ -444,11 +442,11 @@ Event Event::get(Cutelyst::Context *c, Error &e, dbid_t eventId)
                           lockedBy);
 
         } else {
-            e = Error(Error::NotFound, c->translate("Event", "Can not find event with ID %1").arg(eventId));
+            if (c && e ) *e = Error(Error::NotFound, c->translate("Event", "Can not find event with ID %1").arg(eventId));
             qCWarning(GIK_CORE) << "Can not find event with ID" << eventId << "in the database";
         }
     } else {
-        e = Error(q.lastError(), c->translate("Event", "Failed to get event with ID %1 from the database.").arg(eventId));
+        if (c && e) *e = Error(q.lastError(), c->translate("Event", "Failed to get event with ID %1 from the database.").arg(eventId));
         qCCritical(GIK_CORE) << "Failed to get event with ID" << eventId << "from the database:" << q.lastError().text();
     }
 
