@@ -8,6 +8,7 @@
 
 #include "global.h"
 #include "user.h"
+#include "simpleuser.h"
 
 #include <QObject>
 #include <QSharedDataPointer>
@@ -43,6 +44,8 @@ class Event
     Q_PROPERTY(bool startTimeOnly READ startTimeOnly CONSTANT)
     Q_PROPERTY(QDateTime created READ created CONSTANT)
     Q_PROPERTY(QDateTime updated READ updated CONSTANT)
+    Q_PROPERTY(QDateTime lockedAt READ lockedAt CONSTANT)
+    Q_PROPERTY(SimpleUser lockedBy READ lockedBy CONSTANT)
 public:
     /*!
      * \brief Audience for this event.
@@ -66,7 +69,7 @@ public:
 
     Event();
 
-    Event(dbid_t id, const User &user, const QString &title, const QString &slug, const QDateTime &start, const QDateTime &end, const QTimeZone &tz, Audience audience, Participation participation, const QString &description, const QVariantHash settings, bool allDay, const QDateTime &created, const QDateTime &updated);
+    Event(dbid_t id, const User &user, const QString &title, const QString &slug, const QDateTime &start, const QDateTime &end, const QTimeZone &tz, Audience audience, Participation participation, const QString &description, const QVariantHash settings, bool allDay, const QDateTime &created, const QDateTime &updated, const QDateTime &lockedAt, const SimpleUser &lockedBy);
 
     Event(const Event &other);
 
@@ -111,6 +114,10 @@ public:
     QDateTime created() const;
 
     QDateTime updated() const;
+
+    QDateTime lockedAt() const;
+
+    SimpleUser lockedBy() const;
 
     bool isValid() const;
 

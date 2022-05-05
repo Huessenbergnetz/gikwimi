@@ -22,7 +22,9 @@ public:
     QDateTime end;
     QDateTime created;
     QDateTime updated;
+    QDateTime lockedAt;
     QVariantHash settings;
+    SimpleUser lockedBy;
     QTimeZone timezone;
     dbid_t id;
     Event::Audience audience = Event::InvalidAudience;

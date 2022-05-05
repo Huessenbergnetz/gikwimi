@@ -22,7 +22,7 @@ Event::Event()
 
 }
 
-Event::Event(dbid_t id, const User &user, const QString &title, const QString &slug, const QDateTime &start, const QDateTime &end, const QTimeZone &tz, Audience audience, Participation participation, const QString &description, const QVariantHash settings, bool allDay, const QDateTime &created, const QDateTime &updated)
+Event::Event(dbid_t id, const User &user, const QString &title, const QString &slug, const QDateTime &start, const QDateTime &end, const QTimeZone &tz, Audience audience, Participation participation, const QString &description, const QVariantHash settings, bool allDay, const QDateTime &created, const QDateTime &updated, const QDateTime &lockedAt, const SimpleUser &lockedBy)
     : d(new EventData)
 {
     d->id = id;
@@ -40,7 +40,14 @@ Event::Event(dbid_t id, const User &user, const QString &title, const QString &s
     d->settings = settings;
     d->allDay = allDay;
     d->created = created;
+    d->created.setTimeSpec(Qt::UTC);
     d->updated = updated;
+    d->updated.setTimeSpec(Qt::UTC);
+    d->lockedAt = lockedAt;
+    if (d->lockedAt.isValid()) {
+        d->lockedAt.setTimeSpec(Qt::UTC);
+    }
+    d->lockedBy = lockedBy;
     d->startOnly = start == end;
 }
 
@@ -153,6 +160,16 @@ QDateTime Event::created() const
 QDateTime Event::updated() const
 {
     return d ? d->updated : QDateTime();
+}
+
+QDateTime Event::lockedAt() const
+{
+    return d ? d->lockedAt : QDateTime();
+}
+
+SimpleUser Event::lockedBy() const
+{
+    return d ? d->lockedBy : SimpleUser();
 }
 
 bool Event::isValid() const
@@ -272,12 +289,15 @@ std::vector<Event> Event::list(Cutelyst::Context *c, Error &e, const User &user)
     QSqlQuery q;
     if (user.isNull()) {
         q = CPreparedSqlQueryThreadFO(QStringLiteral("SELECT "
-                                                     "e.id, e.title, e.slug, e.start_time, e.end_time, e.timezone, e.audience, e.participation, e.description, e.settings, e.all_day, e.created_at, e.updated_at, "
+                                                     "e.id, e.title, e.slug, e.start_time, e.end_time, e.timezone, e.audience, e.participation, e.description, e.settings, e.all_day, e.created_at, e.updated_at, e.locked_at, "
+                                                     "l.id AS locked_by_id, l.username AS locked_by_username, "
                                                      "u.id AS user_id, u.type, u.username, u.email, u.created_at AS user_created, u.updated_at AS user_updated "
-                                                     "FROM events e JOIN users u ON u.id = e.user_id"));
+                                                     "FROM events e LEFT JOIN users l ON l.id = e.locked_by JOIN users u ON u.id = e.user_id"));
     } else {
-        q = CPreparedSqlQueryThreadFO(QStringLiteral("SELECT id, title, slug, start_time, end_time, timezone, audience, participation, description, settings, all_day, created_at, updated_at "
-                                                     "FROM events WHERE user_id = :user_id"));
+        q = CPreparedSqlQueryThreadFO(QStringLiteral("SELECT "
+                                                     "e.id, e.title, e.slug, e.start_time, e.end_time, e.timezone, e.audience, e.participation, e.description, e.settings, e.all_day, e.created_at, e.updated_at, e.locked_at,  "
+                                                     "u.id AS locked_by_id, u.username AS locked_by_username "
+                                                     "FROM events e LEFT JOIN users us ON u.id = e.locked_by WHERE e.user_id = :user_id"));
         q.bindValue(QStringLiteral(":user_id"), user.id());
     }
 
@@ -288,12 +308,12 @@ std::vector<Event> Event::list(Cutelyst::Context *c, Error &e, const User &user)
 
         while (q.next()) {
             const User _user = user.isNull()
-                    ? User(q.value(13).toUInt(),
-                           static_cast<User::Type>(q.value(14).value<qint8>()),
-                           q.value(15).toString(),
-                           q.value(16).toString(),
-                           q.value(17).toDateTime(),
-                           q.value(18).toDateTime())
+                    ? User(q.value(16).toUInt(),
+                           static_cast<User::Type>(q.value(17).value<qint8>()),
+                           q.value(18).toString(),
+                           q.value(19).toString(),
+                           q.value(20).toDateTime(),
+                           q.value(21).toDateTime())
                     : user;
 
             QVariantHash settings;
@@ -301,6 +321,10 @@ std::vector<Event> Event::list(Cutelyst::Context *c, Error &e, const User &user)
             const QJsonDocument settingsJson = QJsonDocument::fromJson(settingsString.toUtf8());
             const QJsonObject settingsObject = settingsJson.object();
             settings = settingsObject.toVariantHash();
+
+            const qlonglong lat         = q.value(13).toLongLong();
+            const QDateTime lockedAt    = lat > 0 ? QDateTime::fromMSecsSinceEpoch(lat) : QDateTime();
+            const SimpleUser lockedBy   = lat > 0 ? SimpleUser(q.value(14).toUInt(), q.value(15).toString()) : SimpleUser();
 
             events.emplace_back(q.value(0).toUInt(),
                                 _user,
@@ -315,7 +339,9 @@ std::vector<Event> Event::list(Cutelyst::Context *c, Error &e, const User &user)
                                 settings,
                                 q.value(10).toBool(),
                                 q.value(11).toDateTime(),
-                                q.value(12).toDateTime());
+                                q.value(12).toDateTime(),
+                                lockedAt,
+                                lockedBy);
         }
 
     } else {
