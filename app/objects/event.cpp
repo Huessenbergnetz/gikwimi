@@ -334,7 +334,7 @@ std::vector<Event> Event::list(Cutelyst::Context *c, Error *e, const User &user)
         q = CPreparedSqlQueryThreadFO(QStringLiteral("SELECT "
                                                      "e.id, e.title, e.slug, e.start_time, e.end_time, e.timezone, e.audience, e.participation, e.description, e.settings, e.all_day, e.created_at, e.updated_at, e.locked_at,  "
                                                      "u.id AS locked_by_id, u.username AS locked_by_username "
-                                                     "FROM events e LEFT JOIN users us ON u.id = e.locked_by WHERE e.user_id = :user_id"));
+                                                     "FROM events e LEFT JOIN users u ON u.id = e.locked_by WHERE e.user_id = :user_id"));
         q.bindValue(QStringLiteral(":user_id"), user.id());
     }
 

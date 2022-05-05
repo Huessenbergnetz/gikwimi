@@ -1,1 +1,27 @@
- 
+{% with site_title as page_header %}
+{% include "inc/page_header.tmpl" %}
+{% endwith %}
+
+{% if events.size %}
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col" class="text-capitalize">{{ events_table_headers.title }}</th>
+            <th scope="col" class="text-capitalize">{{ events_table_headers.start }}</th>
+            <th scope="col" class="text-capitalize">{{ events_table_headers.end }}</th>
+            <th scope="col" class="text-capitalize">{{ events_table_headers.id }}</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for event in events %}
+        <tr>
+            <td>{{ event.title }}</td>
+            <td>{{ event.start }}</td>
+            <td>{{ event.end }}</td>
+            <td>{{ event.id }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+{% endif %}
