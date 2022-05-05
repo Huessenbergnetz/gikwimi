@@ -4,9 +4,14 @@
  */
 
 #include "guest.h"
+#include "error.h"
+#include "logging.h"
 
 #include <Cutelyst/Context>
 #include <Cutelyst/Plugins/Utils/Sql>
+
+#include <KContacts/VCardConverter>
+#include <KContacts/Addressee>
 
 #include <QSqlQuery>
 #include <QSqlError>
@@ -235,9 +240,66 @@ QStringList Guest::supportedStatus()
     return lst;
 }
 
-std::vector<Guest> Guest::list(Cutelyst::Context *c, Error &e, const Event &event)
+std::vector<Guest> Guest::list(Cutelyst::Context *c, Error *e, const Event &event)
 {
     std::vector<Guest> guests;
+
+    QSqlQuery q = CPreparedSqlQueryThreadFO(QStringLiteral("SELECT"
+                                                           "g.id, g.uid, g.partner_given_name, g.partner_family_name, g.adults, g.children, g.status, g.notified, g.note, g.comment, g.created_at, g.updated_at, g.locked_at, "
+                                                           "u.id AS locked_by_id, u.username AS locked_by_username, "
+                                                           "c.id AS contact_id, c.addressbook_id, c.vcard, c.created_at contact_created, c.updated_at AS contact_updated "
+                                                           "FROM guests g LEFT JOIN users u ON u.id = g.locked_by JOIN contacts c ON c.id = g.contact_id WHERE g.event_id = :event_id"));
+    q.bindValue(QStringLiteral(":event_id"), event.id());
+
+    if (Q_LIKELY(q.exec())) {
+        if (q.size() > 0) {
+            guests.reserve(q.size());
+        }
+
+        while (q.next()) {
+
+            const qlonglong  lat      = q.value(12).toLongLong();
+            const QDateTime  lockedAt = lat > 0 ? QDateTime::fromMSecsSinceEpoch(lat) : QDateTime();
+            const SimpleUser lockedBy = lat > 0 ? SimpleUser(q.value(13).toUInt(), q.value(14).toString()) : SimpleUser();
+
+            const KContacts::VCardConverter converter;
+            const KContacts::Addressee addressee = converter.parseVCard(q.value(17).toString().toUtf8());
+            if (addressee.isEmpty()) {
+                qCWarning(GIK_CORE) << "Failed to parse vCard for contact id" << q.value(15).toUInt();
+            }
+
+            const Contact contact(q.value(15).toUInt(),
+                                  q.value(16).toUInt(),
+                                  addressee,
+                                  q.value(18).toDateTime(),
+                                  q.value(19).toDateTime(),
+                                  QDateTime(),
+                                  SimpleUser());
+
+            const Guest::Notifications notifications = static_cast<Guest::Notifications>(q.value(7).toInt());
+
+            guests.emplace_back(q.value(0).toUInt(),
+                                q.value(1).toString(),
+                                event,
+                                contact,
+                                q.value(2).toString(),
+                                q.value(3).toString(),
+                                static_cast<quint8>(q.value(4).toUInt()),
+                                static_cast<quint8>(q.value(5).toUInt()),
+                                static_cast<Guest::Status>(static_cast<qint8>(q.value(6).toInt())),
+                                notifications,
+                                q.value(8).toString(),
+                                q.value(9).toString(),
+                                q.value(10).toDateTime(),
+                                q.value(11).toDateTime(),
+                                lockedAt,
+                                lockedBy);
+        }
+
+    } else {
+        if (c && e) *e = Error(q.lastError(), c->translate("Guest", "Failed to query guests from the database."));
+        qCCritical(GIK_CORE) << "Failed to query list of guests for event ID" << event.id() << "from the database:" << q.lastError().text();
+    }
 
     return guests;
 }

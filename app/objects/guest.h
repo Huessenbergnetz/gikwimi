@@ -48,7 +48,7 @@ public:
     };
     Q_ENUM(Status)
 
-    enum Notification : quint8 {
+    enum Notification : int {
         NotNotified     = 0x0,
         Email           = 0x1,
         SMS             = 0x2,
@@ -118,7 +118,7 @@ public:
 
     static QStringList supportedStatus();
 
-    static std::vector<Guest> list(Cutelyst::Context *c, Error &e, const Event &event);
+    static std::vector<Guest> list(Cutelyst::Context *c, Error *e, const Event &event);
 
 private:
     QSharedDataPointer<GuestData> d;
