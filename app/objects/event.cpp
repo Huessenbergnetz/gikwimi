@@ -18,6 +18,8 @@
 #include <QJsonObject>
 #include <QDataStream>
 
+#define EVENT_STASH_KEY "event"
+
 Event::Event()
 {
 
@@ -183,6 +185,42 @@ bool Event::isNull() const
     return d ? false : true;
 }
 
+bool Event::toStash(Cutelyst::Context *c) const
+{
+    Q_ASSERT_X(c, "event to stash", "invalid context pointer");
+
+    if (Q_LIKELY(isValid())) {
+        c->stash({
+                     {QStringLiteral(EVENT_STASH_KEY), QVariant::fromValue<Event>(*this)},
+                     {QStringLiteral("site_title"), title()}
+                 });
+        return true;
+    } else {
+        c->res()->setStatus(404);
+        c->detach(c->getAction(QStringLiteral("error")));
+        return false;
+    }
+}
+
+bool Event::toStash(Cutelyst::Context *c, dbid_t eventId)
+{
+    Q_ASSERT_X(c, "event to stash", "invalid context pointer");
+
+    Error error;
+    const auto event = Event::get(c, error, eventId);
+    if (Q_LIKELY(error.type() != Error::NoError)) {
+        return event.toStash(c);
+    } else {
+        error.toStash(c, true);
+        return false;
+    }
+}
+
+Event Event::fromStash(Cutelyst::Context *c)
+{
+    return c->stash(QStringLiteral(EVENT_STASH_KEY)).value<Event>();
+}
+
 Event::Audience Event::audienceStringToEnum(const QString &str)
 {
     if (str.compare(QLatin1String("private"), Qt::CaseInsensitive) == 0) {
@@ -319,9 +357,11 @@ std::vector<Event> Event::list(Cutelyst::Context *c, Error &e, const User &user)
 
             QVariantHash settings;
             const QString settingsString = q.value(9).toString();
-            const QJsonDocument settingsJson = QJsonDocument::fromJson(settingsString.toUtf8());
-            const QJsonObject settingsObject = settingsJson.object();
-            settings = settingsObject.toVariantHash();
+            if (!settingsString.isEmpty()) {
+                const QJsonDocument settingsJson = QJsonDocument::fromJson(settingsString.toUtf8());
+                const QJsonObject settingsObject = settingsJson.object();
+                settings = settingsObject.toVariantHash();
+            }
 
             const qlonglong lat         = q.value(13).toLongLong();
             const QDateTime lockedAt    = lat > 0 ? QDateTime::fromMSecsSinceEpoch(lat) : QDateTime();
@@ -351,6 +391,68 @@ std::vector<Event> Event::list(Cutelyst::Context *c, Error &e, const User &user)
     }
 
     return events;
+}
+
+Event Event::get(Cutelyst::Context *c, Error &e, dbid_t eventId)
+{
+    Event event;
+
+    QSqlQuery q = CPreparedSqlQueryThreadFO(QStringLiteral("SELECT "
+                                                           "e.id, e.title, e.slug, e.start_time, e.end_time, e.timezone, e.audience, e.participation, e.description, e.settings, e.all_day, e.created_at, e.updated_at, e.locked_at, "
+                                                           "l.id AS locked_by_id, l.username AS locked_by_username, "
+                                                           "u.id AS user_id, u.type, u.username, u.email, u.created_at AS user_created, u.updated_at AS user_updated "
+                                                           "FROM events e LEFT JOIN users l ON l.id = e.locked_by JOIN users u ON u.id = e.user_id WHERE e.id = :id"));
+    q.bindValue(QStringLiteral(":id"), eventId);
+
+    if (Q_LIKELY(q.exec())) {
+        if (Q_LIKELY(q.next())) {
+
+            QVariantHash settings;
+            const QString settingsString = q.value(9).toString();
+            if (!settingsString.isEmpty()) {
+                const QJsonDocument settingsJson = QJsonDocument::fromJson(settingsString.toUtf8());
+                const QJsonObject settingsObject = settingsJson.object();
+                settings = settingsObject.toVariantHash();
+            }
+
+            const qlonglong lat         = q.value(13).toLongLong();
+            const QDateTime lockedAt    = lat > 0 ? QDateTime::fromMSecsSinceEpoch(lat) : QDateTime();
+            const SimpleUser lockedBy   = lat > 0 ? SimpleUser(q.value(14).toUInt(), q.value(15).toString()) : SimpleUser();
+
+            const User user(q.value(16).toUInt(),
+                            static_cast<User::Type>(q.value(17).value<qint8>()),
+                            q.value(18).toString(),
+                            q.value(19).toString(),
+                            q.value(20).toDateTime(),
+                            q.value(21).toDateTime());
+
+            event = Event(q.value(0).toUInt(),
+                          user,
+                          q.value(1).toString(),
+                          q.value(2).toString(),
+                          q.value(3).toDateTime(),
+                          q.value(4).toDateTime(),
+                          QTimeZone(q.value(5).toString().toLatin1()),
+                          static_cast<Event::Audience>(q.value(6).value<qint8>()),
+                          static_cast<Event::Participation>(q.value(7).value<qint8>()),
+                          q.value(8).toString(),
+                          settings,
+                          q.value(10).toBool(),
+                          q.value(11).toDateTime(),
+                          q.value(12).toDateTime(),
+                          lockedAt,
+                          lockedBy);
+
+        } else {
+            e = Error(Error::NotFound, c->translate("Event", "Can not find event with ID %1").arg(eventId));
+            qCWarning(GIK_CORE) << "Can not find event with ID" << eventId << "in the database";
+        }
+    } else {
+        e = Error(q.lastError(), c->translate("Event", "Failed to get event with ID %1 from the database.").arg(eventId));
+        qCCritical(GIK_CORE) << "Failed to get event with ID" << eventId << "from the database:" << q.lastError().text();
+    }
+
+    return event;
 }
 
 QDataStream &operator<<(QDataStream &stream, const Event &event)

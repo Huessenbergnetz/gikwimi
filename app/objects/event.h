@@ -123,6 +123,12 @@ public:
 
     bool isNull() const;
 
+    bool toStash(Cutelyst::Context *c) const;
+
+    static bool toStash(Cutelyst::Context *c, dbid_t eventId);
+
+    Event fromStash(Cutelyst::Context *c);
+
     static Event::Audience audienceStringToEnum(const QString &str);
 
     static QString audienceEnumToString(Event::Audience audience);
@@ -139,12 +145,17 @@ public:
 
     static std::vector<Event> list(Cutelyst::Context *c, Error &e, const User &user);
 
+    static Event get(Cutelyst::Context *c, Error &e, dbid_t eventId);
+
 private:
     QSharedDataPointer<EventData> d;
 
     friend QDataStream &operator<<(QDataStream &stream, const Event &event);
     friend QDataStream &operator>>(QDataStream &stream, Event &event);
 };
+
+Q_DECLARE_METATYPE(Event)
+Q_DECLARE_TYPEINFO(Event, Q_MOVABLE_TYPE);
 
 QDataStream &operator<<(QDataStream &stream, const Event &event);
 
