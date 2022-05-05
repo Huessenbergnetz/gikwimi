@@ -71,9 +71,16 @@ public:
 
 protected:
     QSharedDataPointer<ContactData> d;
+
+    friend QDataStream &operator<<(QDataStream &stream, const Contact &contact);
+    friend QDataStream &operator>>(QDataStream &stream, Contact &contact);
 };
 
 Q_DECLARE_METATYPE(Contact)
 Q_DECLARE_TYPEINFO(Contact, Q_MOVABLE_TYPE);
+
+QDataStream &operator<<(QDataStream &stream, const Contact &contact);
+
+QDataStream &operator>>(QDataStream &stream, Contact &contact);
 
 #endif // CONTACT_H

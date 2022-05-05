@@ -14,6 +14,7 @@
 
 #include <QSqlQuery>
 #include <QSqlError>
+#include <QDataStream>
 
 #define CONTACT_STASH_KEY "contact"
 
@@ -136,6 +137,37 @@ std::vector<Contact> Contact::list(Cutelyst::Context *c, Error &e, const Address
     }
 
     return contacts;
+}
+
+QDataStream &operator<<(QDataStream &stream, const Contact &contact)
+{
+    stream << contact.d->addressee
+           << contact.d->addressbook
+           << contact.d->user
+           << contact.d->created
+           << contact.d->updated
+           << contact.d->lockedAt
+           << contact.d->lockedBy
+           << contact.d->id;
+    return stream;
+}
+
+QDataStream &operator>>(QDataStream &stream, Contact &contact)
+{
+    if (contact.d == nullptr) {
+        contact.d = new ContactData;
+    }
+
+    stream >> contact.d->addressee;
+    stream >> contact.d->addressbook;
+    stream >> contact.d->user;
+    stream >> contact.d->created;
+    stream >> contact.d->updated;
+    stream >> contact.d->lockedAt;
+    stream >> contact.d->lockedBy;
+    stream >> contact.d->id;
+
+    return stream;
 }
 
 #include "moc_contact.cpp"
