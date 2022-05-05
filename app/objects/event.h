@@ -127,7 +127,7 @@ public:
 
     static bool toStash(Cutelyst::Context *c, dbid_t eventId);
 
-    Event fromStash(Cutelyst::Context *c);
+    static Event fromStash(Cutelyst::Context *c);
 
     static Event::Audience audienceStringToEnum(const QString &str);
 
