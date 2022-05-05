@@ -18,6 +18,8 @@ public:
     User user;
     QDateTime created;
     QDateTime updated;
+    QDateTime lockedAt;
+    SimpleUser lockedBy;
     dbid_t id = 0;
 };
 

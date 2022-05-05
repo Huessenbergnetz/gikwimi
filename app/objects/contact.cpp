@@ -22,7 +22,7 @@ Contact::Contact()
 
 }
 
-Contact::Contact(dbid_t id, const AddressBook &addressbook, const KContacts::Addressee &addressee, const QDateTime &created, const QDateTime &updated)
+Contact::Contact(dbid_t id, const AddressBook &addressbook, const KContacts::Addressee &addressee, const QDateTime &created, const QDateTime &updated, const QDateTime &lockedAt, const SimpleUser &lockedBy)
     : d(new ContactData)
 {
     d->id = id;
@@ -32,6 +32,11 @@ Contact::Contact(dbid_t id, const AddressBook &addressbook, const KContacts::Add
     d->created.setTimeSpec(Qt::UTC);
     d->updated = updated;
     d->updated.setTimeSpec(Qt::UTC);
+    d->lockedAt = lockedAt;
+    if (lockedAt.isValid()) {
+        d->lockedAt.setTimeSpec(Qt::UTC);
+    }
+    d->lockedBy = lockedBy;
 }
 
 Contact::Contact(const Contact &other) = default;
@@ -74,6 +79,16 @@ QDateTime Contact::updated() const
     return d ? d->updated : QDateTime();
 }
 
+QDateTime Contact::lockedAt() const
+{
+    return d ? d->lockedAt : QDateTime();
+}
+
+SimpleUser Contact::lockedBy() const
+{
+    return d ? d->lockedBy : SimpleUser();
+}
+
 bool Contact::isValid() const
 {
     return d && d->id > 0;
@@ -90,7 +105,8 @@ std::vector<Contact> Contact::list(Cutelyst::Context *c, Error &e, const Address
 
     Q_ASSERT(c);
 
-    QSqlQuery q = CPreparedSqlQueryThreadFO(QStringLiteral("SELECT id, vcard, created_at, updated_at FROM contacts WHERE addressbook_id = :addressbook_id"));
+    QSqlQuery q = CPreparedSqlQueryThreadFO(QStringLiteral("SELECT c.id, c.vcard, c.created_at, c.updated_at, c.locked_at, u.id AS locked_by_id, u.username AS locked_by_username "
+                                                           "FROM contacts c LEFT JOIN users u ON u.id = c.locked_by WHERE addressbook_id = :addressbook_id"));
     q.bindValue(QStringLiteral(":addressbook_id"), addressbook.id());
 
     if (Q_UNLIKELY(!q.exec())) {
@@ -110,10 +126,12 @@ std::vector<Contact> Contact::list(Cutelyst::Context *c, Error &e, const Address
         const KContacts::Addressee addressee    = converter.parseVCard(vcard);
         const QDateTime created                 = q.value(2).toDateTime();
         const QDateTime updated                 = q.value(3).toDateTime();
+        const qlonglong lockedAt                = q.value(4).toLongLong();
+        const SimpleUser lockedBy               = lockedAt > 0 ? SimpleUser(q.value(5).toUInt(), q.value(6).toString()) : SimpleUser();
         if (Q_UNLIKELY(addressee.isEmpty())) {
             qCWarning(GIK_CORE) << "Failed to parse vCard data for contact ID" << id;
         } else {
-            contacts.emplace_back(id, addressbook, addressee, created, updated);
+            contacts.emplace_back(id, addressbook, addressee, created, updated, QDateTime::fromMSecsSinceEpoch(lockedAt), lockedBy);
         }
     }
 
