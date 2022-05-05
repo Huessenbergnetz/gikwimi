@@ -16,6 +16,7 @@
 #include <QMetaEnum>
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QDataStream>
 
 Event::Event()
 {
@@ -350,6 +351,55 @@ std::vector<Event> Event::list(Cutelyst::Context *c, Error &e, const User &user)
     }
 
     return events;
+}
+
+QDataStream &operator<<(QDataStream &stream, const Event &event)
+{
+    stream << event.d->user
+           << event.d->title
+           << event.d->slug
+           << event.d->description
+           << event.d->start
+           << event.d->end
+           << event.d->created
+           << event.d->updated
+           << event.d->lockedAt
+           << event.d->lockedBy
+           << event.d->settings
+           << event.d->timezone
+           << event.d->id
+           << event.d->audience
+           << event.d->participation
+           << event.d->allDay
+           << event.d->startOnly;
+    return stream;
+}
+
+QDataStream &operator>>(QDataStream &stream, Event &event)
+{
+    if (event.d == nullptr) {
+        event.d = new EventData;
+    }
+
+    stream >> event.d->user;
+    stream >> event.d->title;
+    stream >> event.d->slug;
+    stream >> event.d->description;
+    stream >> event.d->start;
+    stream >> event.d->end;
+    stream >> event.d->created;
+    stream >> event.d->updated;
+    stream >> event.d->lockedAt;
+    stream >> event.d->lockedBy;
+    stream >> event.d->settings;
+    stream >> event.d->timezone;
+    stream >> event.d->id;
+    stream >> event.d->audience;
+    stream >> event.d->participation;
+    stream >> event.d->allDay;
+    stream >> event.d->startOnly;
+    return stream;
+
 }
 
 #include "moc_event.cpp"

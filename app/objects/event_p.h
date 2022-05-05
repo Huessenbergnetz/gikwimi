@@ -23,8 +23,8 @@ public:
     QDateTime created;
     QDateTime updated;
     QDateTime lockedAt;
-    QVariantHash settings;
     SimpleUser lockedBy;
+    QVariantHash settings;
     QTimeZone timezone;
     dbid_t id;
     Event::Audience audience = Event::InvalidAudience;

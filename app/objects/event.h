@@ -141,6 +141,13 @@ public:
 
 private:
     QSharedDataPointer<EventData> d;
+
+    friend QDataStream &operator<<(QDataStream &stream, const Event &event);
+    friend QDataStream &operator>>(QDataStream &stream, Event &event);
 };
+
+QDataStream &operator<<(QDataStream &stream, const Event &event);
+
+QDataStream &operator>>(QDataStream &stream, Event &event);
 
 #endif // GIKWIMI_EVENT_H
