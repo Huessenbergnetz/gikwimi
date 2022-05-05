@@ -23,7 +23,6 @@ void M0007_CreateGuestsTable::up()
     t->charCol(QStringLiteral("uid"), 6)->unique();
     t->integer(QStringLiteral("event_id"))->unSigned();
     t->integer(QStringLiteral("contact_id"))->unSigned();
-    t->integer(QStringLiteral("partner_id"))->unSigned()->nullable();
     t->varChar(QStringLiteral("partner_given_name"), 63)->nullable();
     t->varChar(QStringLiteral("partner_family_name"), 63)->nullable();
     t->tinyInteger(QStringLiteral("adults"))->unSigned()->defaultValue(1);

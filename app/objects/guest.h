@@ -60,7 +60,7 @@ public:
 
     Guest();
 
-    Guest(dbid_t id, const QString &uid, const Event &event, const Contact &contact, const Contact &partner, const QString &pgName, const QString &pfName, quint8 adults, quint8 children, Guest::Status status, Guest::Notifications notifications, const QString &note, const QString &comment);
+    Guest(dbid_t id, const QString &uid, const Event &event, const Contact &contact, const QString &pgName, const QString &pfName, quint8 adults, quint8 children, Guest::Status status, Guest::Notifications notifications, const QString &note, const QString &comment, const QDateTime &created, const QDateTime &updated, const QDateTime &lockedAt, const SimpleUser &lockedBy);
 
     Guest(const Guest &other);
 

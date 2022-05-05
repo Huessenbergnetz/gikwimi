@@ -19,7 +19,6 @@ class GuestData : public QSharedData
 public:
     Event event;
     Contact contact;
-    Contact partner;
     QString partnerGivenName;
     QString partnerFamilyName;
     QString note;
@@ -39,6 +38,27 @@ public:
 Guest::Guest()
 {
 
+}
+
+Guest::Guest(dbid_t id, const QString &uid, const Event &event, const Contact &contact, const QString &pgName, const QString &pfName, quint8 adults, quint8 children, Guest::Status status, Guest::Notifications notifications, const QString &note, const QString &comment, const QDateTime &created, const QDateTime &updated, const QDateTime &lockedAt, const SimpleUser &lockedBy)
+    : d(new GuestData)
+{
+    d->event = event;
+    d->contact = contact;
+    d->partnerGivenName = pgName;
+    d->partnerFamilyName = pfName;
+    d->note = note;
+    d->comment = comment;
+    d->uid = uid;
+    d->created = created;
+    d->updated = updated;
+    d->lockedAt = lockedAt;
+    d->lockedBy = lockedBy;
+    d->id = id;
+    d->adults = adults;
+    d->children = children;
+    d->status = status;
+    d->notifications = notifications;
 }
 
 Guest::Guest(const Guest &other) = default;
@@ -76,20 +96,12 @@ Contact Guest::contact() const
 
 QString Guest::partnerGivenName() const
 {
-    if (d) {
-        return d->partner.isNull() ? d->partnerGivenName : d->partner.addressee().givenName();
-    } else {
-        return QString();
-    }
+    return d ? d->partnerGivenName : QString();
 }
 
 QString Guest::partnerFamilyName() const
 {
-    if (d) {
-        return d->partner.isNull() ? d->partnerFamilyName : d->partner.addressee().familyName();
-    } else {
-        return QString();
-    }
+    return d ? d->partnerFamilyName : QString();
 }
 
 quint8 Guest::adults() const
@@ -234,7 +246,6 @@ QDataStream &operator<<(QDataStream &stream, const Guest &guest)
 {
     stream << guest.d->event
            << guest.d->contact
-           << guest.d->partner
            << guest.d->partnerGivenName
            << guest.d->partnerFamilyName
            << guest.d->note
@@ -260,7 +271,6 @@ QDataStream &operator>>(QDataStream &stream, Guest &guest)
 
     stream >> guest.d->event;
     stream >> guest.d->contact;
-    stream >> guest.d->partner;
     stream >> guest.d->partnerGivenName;
     stream >> guest.d->partnerFamilyName;
     stream >> guest.d->note;
