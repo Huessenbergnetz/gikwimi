@@ -94,16 +94,6 @@
         <extracomment>CLI option value name</extracomment>
         <translation type="unfinished"/>
     </message>
-    <message id="gikctl-opt-addressbook-add-data-desc">
-        <source>Optional data required by some addressbook types.</source>
-        <extracomment>CLI option description</extracomment>
-        <translation type="unfinished"/>
-    </message>
-    <message id="gikctl-opt-addressbook-add-data-value">
-        <source>data</source>
-        <extracomment>CLI option value name</extracomment>
-        <translation type="unfinished"/>
-    </message>
     <message id="gikctl-addressbook-add-err-empty-name">
         <source>Can not add a new addresbook with an empty name</source>
         <extracomment>CLI error message</extracomment>
@@ -623,6 +613,32 @@
     </message>
     <message id="gikctl-opt-event-add-time-value">
         <source>yyyy-mm-ddThh:mm:ss</source>
+        <extracomment>CLI option value name</extracomment>
+        <translation type="unfinished"/>
+    </message>
+    <message id="gikctl-opt-addressbook-add-settings-desc">
+        <source>Optional settings required by some addressbook types.</source>
+        <extracomment>CLI option description</extracomment>
+        <translation type="unfinished"/>
+    </message>
+    <message id="gikctl-opt-addressbook-add-settings-value">
+        <source>key=value;...</source>
+        <extracomment>CLI option value name</extracomment>
+        <translation type="unfinished"/>
+    </message>
+    <message id="gikctl-opt-event-add-group-defval">
+        <source>default</source>
+        <extracomment>default value for standard event guest group that will be created together with the event</extracomment>
+        <translation type="unfinished"/>
+    </message>
+    <message id="gikctl-opt-event-add-group-desc">
+        <source>Default group to create for the event. Default value: %1</source>
+        <oldsource>Default group to create for the event. Default: %1</oldsource>
+        <extracomment>CLI option description</extracomment>
+        <translation type="unfinished"/>
+    </message>
+    <message id="gikctl-opt-event-add-group-value">
+        <source>group name</source>
         <extracomment>CLI option value name</extracomment>
         <translation type="unfinished"/>
     </message>

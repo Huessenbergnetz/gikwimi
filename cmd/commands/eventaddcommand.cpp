@@ -6,6 +6,7 @@
 #include "eventaddcommand.h"
 
 #include "../../app/objects/event.h"
+#include "../../app/utils.h"
 
 #include <QCoreApplication>
 #include <QCommandLineOption>
@@ -113,6 +114,18 @@ void EventAddCommand::init()
                                            //: CLI option description
                                            //% "The event is all day."
                                            qtTrId("gikctl-opt-event-add-all-day-desc")));
+
+    //: default value for standard event guest group that will be created together with the event
+    //% "default"
+    const QString groupDefVal = qtTrId("gikctl-opt-event-add-group-defval");
+    m_cliOptions.append(QCommandLineOption(QStringList({QStringLiteral("g"), QStringLiteral("group")}),
+                                           //: CLI option description
+                                           //% "Default group to create for the event. Default value: %1"
+                                           qtTrId("gikctl-opt-event-add-group-desc").arg(groupDefVal),
+                                           //: CLI option value name
+                                           //% "group name"
+                                           qtTrId("gikctl-opt-event-add-group-value"),
+                                           groupDefVal));
 }
 
 int EventAddCommand::exec(QCommandLineParser *parser)
@@ -154,6 +167,7 @@ int EventAddCommand::exec(QCommandLineParser *parser)
     const Event::Participation participation    = Event::participationStringToEnum(parser->value(QStringLiteral("participation")).trimmed());
     const QString description                   = parser->value(QStringLiteral("description")).trimmed();
     const bool allDay                           = parser->isSet(QStringLiteral("all-day"));
+    const QString group                         = parser->value(QStringLiteral("group")).trimmed();
 
     //% "Adding new event “%1”"
     printStatus(qtTrId("gikctl-status-add-event").arg(title));
@@ -173,18 +187,7 @@ int EventAddCommand::exec(QCommandLineParser *parser)
     }
 
     if (slug.isEmpty()) {
-        for (const QChar &ch : title) {
-            if (ch.isSpace()) {
-                slug.append(QLatin1Char('-'));
-            } else if (ch.isPunct()) {
-                continue;
-            } else {
-                const char c = ch.toLatin1();
-                if (c != 0) {
-                    slug.append(QChar::fromLatin1(c).toLower());
-                }
-            }
-        }
+        slug = Utils::createSlug(title);
     }
 
     if (start.isEmpty()) {
@@ -242,7 +245,14 @@ int EventAddCommand::exec(QCommandLineParser *parser)
 
     const QDateTime now = QDateTime::currentDateTimeUtc();
 
-    QSqlQuery q(QSqlDatabase::database(QStringLiteral(DBCONNAME)));
+    QSqlDatabase db = QSqlDatabase::database(QStringLiteral(DBCONNAME));
+
+    if (Q_UNLIKELY(!db.transaction())) {
+        printFailed();
+        return dbError(db);
+    }
+
+    QSqlQuery q(db);
 
     bool userIsId = false;
     uint userId = user.toUInt(&userIsId);
@@ -284,6 +294,42 @@ int EventAddCommand::exec(QCommandLineParser *parser)
     if (Q_UNLIKELY(!q.exec())) {
         printFailed();
         return dbError(q);
+    }
+
+    const dbid_t eventId = q.lastInsertId().toUInt();
+
+    if (Q_UNLIKELY(!q.prepare(QStringLiteral("INSERT INTO guestgroups (event_id, name, slug, created_at, updated_at) VALUES (:event_id, :name, :slug, :created_at, :updated_at)")))) {
+        printFailed();
+        return dbError(q);
+    }
+    q.bindValue(QStringLiteral(":event_id"), eventId);
+    q.bindValue(QStringLiteral(":name"), group);
+    q.bindValue(QStringLiteral(":slug"), Utils::createSlug(group));
+    q.bindValue(QStringLiteral(":created_at"), now);
+    q.bindValue(QStringLiteral(":updated_at"), now);
+
+    if (Q_UNLIKELY(!q.exec())) {
+        printFailed();
+        return dbError(q);
+    }
+
+    const dbid_t groupId = q.lastInsertId().toUInt();
+
+    if (Q_UNLIKELY(!q.prepare(QStringLiteral("UPDATE events SET default_group = :default_group WHERE id = :id")))) {
+        printFailed();
+        return dbError(q);
+    }
+    q.bindValue(QStringLiteral(":default_group"), groupId);
+    q.bindValue(QStringLiteral(":id"), eventId);
+
+    if (Q_UNLIKELY(!q.exec())) {
+        printFailed();
+        return dbError(q);
+    }
+
+    if (Q_UNLIKELY(!db.commit())) {
+        printFailed();
+        return dbError(db);
     }
 
     printDone();
