@@ -3,20 +3,20 @@
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
 
-#include "m0007_creategueststable.h"
+#include "m0008_creategueststable.h"
 
-M0007_CreateGuestsTable::M0007_CreateGuestsTable(Firfuorida::Migrator *parent) :
+M0008_CreateGuestsTable::M0008_CreateGuestsTable(Firfuorida::Migrator *parent) :
     Firfuorida::Migration(parent)
 {
 
 }
 
-M0007_CreateGuestsTable::~M0007_CreateGuestsTable()
+M0008_CreateGuestsTable::~M0008_CreateGuestsTable()
 {
 
 }
 
-void M0007_CreateGuestsTable::up()
+void M0008_CreateGuestsTable::up()
 {
     auto t = create(QStringLiteral("guests"));
     t->increments();
@@ -57,10 +57,10 @@ void M0007_CreateGuestsTable::up()
     }
 }
 
-void M0007_CreateGuestsTable::down()
+void M0008_CreateGuestsTable::down()
 {
     drop(QStringLiteral("guests"));
 }
 
-#include "moc_m0007_creategueststable.cpp"
+#include "moc_m0008_creategueststable.cpp"
 
