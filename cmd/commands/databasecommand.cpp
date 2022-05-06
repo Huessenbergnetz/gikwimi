@@ -15,6 +15,7 @@
 #include "../dbmigrations/m0004_createaddressbookstable.h"
 #include "../dbmigrations/m0005_createcontactstable.h"
 #include "../dbmigrations/m0006_createeventstable.h"
+#include "../dbmigrations/m0007_createguestgroupstable.h"
 #include "../dbmigrations/m0008_creategueststable.h"
 
 #include <Firfuorida/Migrator>
@@ -92,6 +93,7 @@ void DatabaseCommand::initMigrations()
     new M0004_CreateAddressBooksTable(m_migrator.get());
     new M0005_CreateContactsTable(m_migrator.get());
     new M0006_CreateEventsTable(m_migrator.get());
+    new M0007_CreateGuestGroupsTable(m_migrator.get());
     new M0008_CreateGuestsTable(m_migrator.get());
 }
 
