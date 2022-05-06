@@ -81,7 +81,9 @@ QString Utils::createSlug(const QString &str)
 {
     QString slug;
 
-    for (const QChar &ch : str) {
+    const QString _str = str.trimmed().simplified();
+
+    for (const QChar &ch : _str) {
         if (ch.isSpace()) {
             slug.append(QLatin1Char('-'));
         } else if (ch.isPunct()) {
