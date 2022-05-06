@@ -76,3 +76,23 @@ QString Utils::settingsHashToString(const QVariantHash &hash)
 
     return str;
 }
+
+QString Utils::createSlug(const QString &str)
+{
+    QString slug;
+
+    for (const QChar &ch : str) {
+        if (ch.isSpace()) {
+            slug.append(QLatin1Char('-'));
+        } else if (ch.isPunct()) {
+            continue;
+        } else {
+            const char c = ch.toLatin1();
+            if (c != 0) {
+                slug.append(QChar::fromLatin1(c).toLower());
+            }
+        }
+    }
+
+    return slug;
+}

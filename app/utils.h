@@ -24,6 +24,8 @@ public:
 
     static QVariantHash settingsHashFromString(const QString &str);
     static QString settingsHashToString(const QVariantHash &hash);
+
+    static QString createSlug(const QString &str);
 };
 
 #endif // GIKWIMI_UTILS_H
