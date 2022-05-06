@@ -9,6 +9,7 @@
 #include "global.h"
 
 #include <QString>
+#include <QVariantHash>
 
 namespace Cutelyst {
 class Context;
@@ -20,6 +21,9 @@ public:
     static bool isCurrentUserAdmin(Cutelyst::Context *c);
 
     static dbid_t strToDbid(const QString &str, bool *ok = nullptr, const QString &errorMsg = QString(), Cutelyst::Context *c = nullptr);
+
+    static QVariantHash settingsHashFromString(const QString &str);
+    static QString settingsHashToString(const QVariantHash &hash);
 };
 
 #endif // GIKWIMI_UTILS_H
