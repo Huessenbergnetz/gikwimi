@@ -7,6 +7,7 @@
 #include "logging.h"
 #include "error.h"
 #include "user.h"
+#include "../utils.h"
 
 #include <Cutelyst/Context>
 #include <Cutelyst/Plugins/Utils/Sql>
@@ -24,6 +25,12 @@ using namespace Cutelyst;
 
 AddressBook::AddressBook()
     : d(new AddressBookData)
+{
+
+}
+
+AddressBook::AddressBook(dbid_t id, AddressBook::Type type, const QString &name, const QVariantHash &settings, const QDateTime &created, const QDateTime &updated, dbid_t userId, const QDateTime &lockedAt, const SimpleUser &lockedBy)
+    : d(new AddressBookData(id, type, name, settings, created, updated, userId, lockedAt, lockedBy))
 {
 
 }
@@ -71,7 +78,15 @@ QVariantHash AddressBook::settings() const
 
 User AddressBook::user() const
 {
-    return d->user;
+    if (d) {
+        if (d->user.isNull() && d->userId > 0) {
+            return User::get(nullptr, nullptr, d->userId);
+        } else {
+            return d->user;
+        }
+    } else {
+        return User();
+    }
 }
 
 QDateTime AddressBook::created() const
@@ -200,17 +215,9 @@ std::vector<AddressBook> AddressBook::list(Cutelyst::Context *c, Error *e, const
 {
     std::vector<AddressBook> addressBooks;
 
-    QSqlQuery q;
-    if (user.isNull()) {
-        q = CPreparedSqlQueryThreadFO(QStringLiteral("SELECT "
-                                                     "a.id, a.type, a.name, a.settings, a.created_at, a.updated_at, a.locked_at, "
-                                                     "u2.id AS locked_by_id, u2.username AS locked_by_username, "
-                                                     "u.id AS user_id, u.type AS user_type, u.username, u.email, u.created_at AS user_created, u.updated_at AS user_updated "
-                                                     "FROM addressbooks a LEFT JOIN users u2 ON u2.id = a.locked_by JOIN users u ON u.id = a.user_id"));
-    } else {
-        q = CPreparedSqlQueryThreadFO(QStringLiteral("SELECT a.id, a.type, a.name, a.settings, a.created_at, a.updated_at, a.locked_at, u.id AS locked_by_id, u.username AS locked_by_username FROM addressbooks a LEFT JOIN users u ON u.id = a.locked_by WHERE a.user_id = :user_id"));
-        q.bindValue(QStringLiteral(":user_id"), user.id());
-    }
+    QSqlQuery q = CPreparedSqlQueryThreadFO(QStringLiteral("SELECT a.id, a.type, a.name, a.settings, a.created_at, a.updated_at, a.locked_at, u.id AS locked_by_id, u.username AS locked_by_username "
+                                                           "FROM addressbooks a LEFT JOIN users u ON u.id = a.locked_by WHERE a.user_id = :user_id"));
+    q.bindValue(QStringLiteral(":user_id"), user.id());
 
     if (Q_LIKELY(q.exec())) {
         if (q.size() > 0) {
@@ -219,23 +226,11 @@ std::vector<AddressBook> AddressBook::list(Cutelyst::Context *c, Error *e, const
 
         while (q.next()) {
 
-            const qlonglong  lockedAt = q.value(6).toLongLong();
-            const SimpleUser lockedBy = lockedAt > 0 ? SimpleUser(q.value(7).toUInt(), q.value(8).toString()) : SimpleUser();
+            const QVariantHash settings = Utils::settingsHashFromString(q.value(3).toString());
 
-            const User _user = user.isNull()
-                    ? User(q.value(9).toUInt(),
-                           static_cast<User::Type>(q.value(10).value<quint8>()),
-                           q.value(11).toString(),
-                           q.value(12).toString(),
-                           q.value(13).toDateTime(),
-                           q.value(14).toDateTime())
-                    : user;
-
-            QVariantHash settings;
-            const QString settingsString = q.value(3).toString();
-            const QJsonDocument settingsJson = QJsonDocument::fromJson(settingsString.toUtf8());
-            const QJsonObject settingsObject = settingsJson.object();
-            settings = settingsObject.toVariantHash();
+            const qlonglong  lat      = q.value(6).toLongLong();
+            const QDateTime  lockedAt = lat > 0 ? QDateTime::fromMSecsSinceEpoch(lat) : QDateTime();
+            const SimpleUser lockedBy = lat > 0 ? SimpleUser(q.value(7).toUInt(), q.value(8).toString()) : SimpleUser();
 
             addressBooks.emplace_back(q.value(0).toUInt(),
                                       static_cast<AddressBook::Type>(q.value(1).value<qint8>()),
@@ -244,7 +239,7 @@ std::vector<AddressBook> AddressBook::list(Cutelyst::Context *c, Error *e, const
                                       q.value(4).toDateTime(),
                                       q.value(5).toDateTime(),
                                       user,
-                                      lockedAt > 0 ? QDateTime::fromMSecsSinceEpoch(lockedAt) : QDateTime(),
+                                      lockedAt,
                                       lockedBy);
         }
 
@@ -261,29 +256,18 @@ AddressBook AddressBook::get(Cutelyst::Context *c, Error *e, dbid_t id)
     AddressBook addressBook;
 
     QSqlQuery q = CPreparedSqlQueryThreadFO(QStringLiteral("SELECT "
-                                                           "a.id, a.type, a.name, a.settings, a.created_at, a.updated_at, a.locked_at, "
-                                                           "u2.id AS locked_by_id, u2.username AS locked_by_username, "
-                                                           "u.id AS user_id, u.type AS user_type, u.username, u.email, u.created_at AS user_created, u.updated_at AS user_updated "
-                                                           "FROM addressbooks a LEFT JOIN users u2 ON u2.id = a.locked_by JOIN users u ON u.id = a.user_id WHERE a.id = :id"));
+                                                           "a.id, a.type, a.name, a.settings, a.created_at, a.updated_at, a.user_id, a.locked_at, "
+                                                           "u.id AS locked_by_id, u.username AS locked_by_username, "
+                                                           "FROM addressbooks a LEFT JOIN users u ON u.id = a.locked_by WHERE a.id = :id"));
     q.bindValue(QStringLiteral(":id"), id);
 
     if (Q_LIKELY(q.exec())) {
         if (Q_LIKELY(q.next())) {
-            const qlonglong  lockedAt = q.value(6).toLongLong();
-            const SimpleUser lockedBy = lockedAt > 0 ? SimpleUser(q.value(7).toUInt(), q.value(8).toString()) : SimpleUser();
+            const QVariantHash settings = Utils::settingsHashFromString(q.value(3).toString());
 
-            User user(q.value(9).toUInt(),
-                      static_cast<User::Type>(q.value(10).value<quint8>()),
-                      q.value(11).toString(),
-                      q.value(12).toString(),
-                      q.value(13).toDateTime(),
-                      q.value(14).toDateTime());
-
-            QVariantHash settings;
-            const QString settingsString = q.value(3).toString();
-            const QJsonDocument settingsJson = QJsonDocument::fromJson(settingsString.toUtf8());
-            const QJsonObject settingsObject = settingsJson.object();
-            settings = settingsObject.toVariantHash();
+            const qlonglong  lat      = q.value(7).toLongLong();
+            const QDateTime  lockedAt = lat > 0 ? QDateTime::fromMSecsSinceEpoch(lat) : QDateTime();
+            const SimpleUser lockedBy = lat > 0 ? SimpleUser(q.value(8).toUInt(), q.value(9).toString()) : SimpleUser();
 
             addressBook = AddressBook(q.value(0).toUInt(),
                                       static_cast<AddressBook::Type>(q.value(1).value<qint8>()),
@@ -291,8 +275,8 @@ AddressBook AddressBook::get(Cutelyst::Context *c, Error *e, dbid_t id)
                                       settings,
                                       q.value(4).toDateTime(),
                                       q.value(5).toDateTime(),
-                                      user,
-                                      lockedAt > 0 ? QDateTime::fromMSecsSinceEpoch(lockedAt) : QDateTime(),
+                                      q.value(6).toUInt(),
+                                      lockedAt,
                                       lockedBy);
         } else {
             if (c && e) *e = Error(Error::NotFound, c->translate("AddressBook", "Can not find addressbook with ID %1.").arg(id));

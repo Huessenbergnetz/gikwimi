@@ -26,7 +26,8 @@ public:
     SimpleUser lockedBy;
     QVariantHash settings;
     QTimeZone timezone;
-    dbid_t id;
+    dbid_t id = 0;
+    dbid_t userId = 0;
     Event::Audience audience = Event::InvalidAudience;
     Event::Participation participation = Event::InvalidParticipation;
     bool allDay = false;

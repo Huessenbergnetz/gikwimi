@@ -77,13 +77,14 @@ dbid_t Contact::id() const
     return d ? d->id : 0;
 }
 
-AddressBook Contact::addressbook()
+AddressBook Contact::addressbook() const
 {
     if (d) {
         if (!d->addressbook.isValid() && d->addressbookId > 0) {
-            d->addressbook = AddressBook::get(nullptr, nullptr, d->addressbookId);
+            return AddressBook::get(nullptr, nullptr, d->addressbookId);
+        } else {
+            return d->addressbook;
         }
-        return d->addressbook;
     } else {
         return AddressBook();
     }

@@ -43,6 +43,8 @@ public:
 
     AddressBook();
 
+    AddressBook(dbid_t id, AddressBook::Type type, const QString &name, const QVariantHash &settings, const QDateTime &created, const QDateTime &updated, dbid_t userId, const QDateTime &lockedAt, const SimpleUser &lockedBy);
+
     AddressBook(dbid_t id, AddressBook::Type type, const QString &name, const QVariantHash &settings, const QDateTime &created, const QDateTime &updated, const User &user, const QDateTime &lockedAt, const SimpleUser &lockedBy);
 
     AddressBook(const AddressBook &other);

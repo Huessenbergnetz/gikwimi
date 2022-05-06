@@ -53,7 +53,7 @@ public:
 
     dbid_t id() const;
 
-    AddressBook addressbook();
+    AddressBook addressbook() const;
 
     KContacts::Addressee addressee() const;
 
