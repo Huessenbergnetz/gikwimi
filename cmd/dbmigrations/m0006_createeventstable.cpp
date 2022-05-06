@@ -31,6 +31,7 @@ void M0006_CreateEventsTable::up()
     t->boolean(QStringLiteral("all_day"))->defaultValue(false);
     t->longText(QStringLiteral("description"))->nullable();
     t->text(QStringLiteral("settings"))->nullable();
+    t->integer(QStringLiteral("default_group"))->nullable();
     t->dateTime(QStringLiteral("created_at"));
     t->dateTime(QStringLiteral("updated_at"));
     t->bigInteger(QStringLiteral("locked_at"))->defaultValue(0)->nullable();
