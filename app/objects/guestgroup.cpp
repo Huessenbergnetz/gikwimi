@@ -14,6 +14,8 @@
 #include <QSqlQuery>
 #include <QSqlError>
 
+#define GUESTGROUP_STASH_KEY "guestgroup"
+
 class GuestGroupData : public QSharedData
 {
 public:
@@ -150,6 +152,42 @@ bool GuestGroup::isNull() const
     return d ? false : true;
 }
 
+bool GuestGroup::toStash(Cutelyst::Context *c) const
+{
+    Q_ASSERT_X(c, "guestgroup to stash", "invalid context pointer");
+
+    if (Q_LIKELY(isValid())) {
+        c->stash({
+                     {QStringLiteral(GUESTGROUP_STASH_KEY), QVariant::fromValue<GuestGroup>(*this)},
+                     {QStringLiteral("site_title"), name()}
+                 });
+        return true;
+    } else {
+        c->res()->setStatus(404);
+        c->detach(c->getAction(QStringLiteral("error")));
+        return false;
+    }
+}
+
+bool GuestGroup::toStash(Cutelyst::Context *c, dbid_t groupId)
+{
+    Q_ASSERT_X(c, "guestgroup to stash", "invalid context pointer");
+
+    Error e;
+    const auto group = GuestGroup::get(c, &e, groupId);
+    if (Q_LIKELY(e.type() == Error::NoError)) {
+        return group.toStash(c);
+    } else {
+        e.toStash(c, true);
+        return false;
+    }
+}
+
+GuestGroup GuestGroup::fromStash(Cutelyst::Context *c)
+{
+    return c->stash(QStringLiteral(GUESTGROUP_STASH_KEY)).value<GuestGroup>();
+}
+
 std::vector<GuestGroup> GuestGroup::list(Cutelyst::Context *c, Error *e, dbid_t eventId)
 {
     std::vector<GuestGroup> groups;
@@ -172,7 +210,7 @@ std::vector<GuestGroup> GuestGroup::list(Cutelyst::Context *c, Error *e, const E
 
     QSqlQuery q = CPreparedSqlQueryThreadFO(QStringLiteral("SELECT g.id, g.name, g.slug, g.note, g.created_at, g.updated_at, g.locked_at, "
                                                            "u.id AS locked_by_id, u.username AS locked_by_username "
-                                                           "FROM guestgroups LEFT JOIN users u ON u.id = g.locked_by WHERE g.event_id = :event_id"));
+                                                           "FROM guestgroups g LEFT JOIN users u ON u.id = g.locked_by WHERE g.event_id = :event_id"));
     q.bindValue(QStringLiteral(":event_id"), event.id());
 
     if (Q_LIKELY(q.exec())) {
@@ -202,6 +240,44 @@ std::vector<GuestGroup> GuestGroup::list(Cutelyst::Context *c, Error *e, const E
     }
 
     return groups;
+}
+
+GuestGroup GuestGroup::get(Cutelyst::Context *c, Error *e, dbid_t id)
+{
+    GuestGroup group;
+
+    QSqlQuery q = CPreparedSqlQueryThreadFO(QStringLiteral("SELECT g.event_id, g.name, g.slug, g.note, g.created_at, g.updated_at, g.locked_at, "
+                                                           "u.id AS locked_by_id, u.username AS locked_by_username "
+                                                           "FROM guestgroups g LEFT JOIN users u ON u.id = g.locked_by WHERE g.id = :id"));
+    q.bindValue(QStringLiteral(":id"), id);
+
+    if (Q_LIKELY(q.exec())) {
+        if (Q_LIKELY(q.next())) {
+
+            const qlonglong lat = q.value(6).toLongLong();
+            const QDateTime lockedAt = lat > 0 ? QDateTime::fromMSecsSinceEpoch(lat) : QDateTime();
+            const SimpleUser lockedBy = lat > 0 ? SimpleUser(q.value(7).toUInt(), q.value(8).toString()) : SimpleUser();
+
+            group = GuestGroup(id,
+                               q.value(0).toUInt(),
+                               q.value(1).toString(),
+                               q.value(2).toString(),
+                               q.value(3).toString(),
+                               q.value(4).toDateTime(),
+                               q.value(5).toDateTime(),
+                               lockedAt,
+                               lockedBy);
+
+        } else {
+            if (c && e) *e = Error(Error::NotFound, c->translate("GuestGroup", "Can not find guest group with ID %1 in the database.").arg(id));
+            qCWarning(GIK_CORE) << "Can not find guest group with ID" << id << "in the database";
+        }
+    } else {
+        if (c && e) *e = Error(q.lastError(), c->translate("GuestGroup", "Failed to get guest group with ID %1 from the database.").arg(id));
+        qCCritical(GIK_CORE) << "Failed to execute database query to get guest group with ID" << id << "from the database:" << q.lastError().text();
+    }
+
+    return group;
 }
 
 QDataStream &operator<<(QDataStream &stream, const GuestGroup &gg)

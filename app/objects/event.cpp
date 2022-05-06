@@ -246,7 +246,7 @@ bool Event::toStash(Cutelyst::Context *c, dbid_t eventId)
 
     Error error;
     const auto event = Event::get(c, &error, eventId);
-    if (Q_LIKELY(error.type() != Error::NoError)) {
+    if (Q_LIKELY(error.type() == Error::NoError)) {
         return event.toStash(c);
     } else {
         error.toStash(c, true);

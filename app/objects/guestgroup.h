@@ -74,9 +74,17 @@ public:
 
     bool isNull() const;
 
+    bool toStash(Cutelyst::Context *c) const;
+
+    static bool toStash(Cutelyst::Context *c, dbid_t groupId);
+
+    static GuestGroup fromStash(Cutelyst::Context *c);
+
     static std::vector<GuestGroup> list(Cutelyst::Context *c, Error *e, dbid_t eventId);
 
     static std::vector<GuestGroup> list(Cutelyst::Context *c, Error *e, const Event &event);
+
+    static GuestGroup get(Cutelyst::Context *c, Error *e, dbid_t id);
 
 private:
     QSharedDataPointer<GuestGroupData> d;

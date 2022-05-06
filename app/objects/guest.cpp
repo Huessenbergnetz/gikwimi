@@ -5,7 +5,8 @@
 
 #include "guest.h"
 #include "error.h"
-#include "logging.h"
+#include "event.h"
+#include "../logging.h"
 
 #include <Cutelyst/Context>
 #include <Cutelyst/Plugins/Utils/Sql>
@@ -22,8 +23,8 @@
 class GuestData : public QSharedData
 {
 public:
-    Event event;
     Contact contact;
+    GuestGroup group;
     QString partnerGivenName;
     QString partnerFamilyName;
     QString note;
@@ -34,6 +35,7 @@ public:
     QDateTime lockedAt;
     SimpleUser lockedBy;
     dbid_t id = 0;
+    dbid_t groupId = 0;
     quint8 adults = 1;
     quint8 children = 0;
     Guest::Status status = Guest::InvalidStatus;
@@ -45,11 +47,32 @@ Guest::Guest()
 
 }
 
-Guest::Guest(dbid_t id, const QString &uid, const Event &event, const Contact &contact, const QString &pgName, const QString &pfName, quint8 adults, quint8 children, Guest::Status status, Guest::Notifications notifications, const QString &note, const QString &comment, const QDateTime &created, const QDateTime &updated, const QDateTime &lockedAt, const SimpleUser &lockedBy)
+Guest::Guest(dbid_t id, const QString &uid, dbid_t groupId, const Contact &contact, const QString &pgName, const QString &pfName, quint8 adults, quint8 children, Guest::Status status, Guest::Notifications notifications, const QString &note, const QString &comment, const QDateTime &created, const QDateTime &updated, const QDateTime &lockedAt, const SimpleUser &lockedBy)
     : d(new GuestData)
 {
-    d->event = event;
     d->contact = contact;
+    d->partnerGivenName = pgName;
+    d->partnerFamilyName = pfName;
+    d->note = note;
+    d->comment = comment;
+    d->uid = uid;
+    d->created = created;
+    d->updated = updated;
+    d->lockedAt = lockedAt;
+    d->lockedBy = lockedBy;
+    d->id = id;
+    d->groupId = groupId;
+    d->adults = adults;
+    d->children = children;
+    d->status = status;
+    d->notifications = notifications;
+}
+
+Guest::Guest(dbid_t id, const QString &uid, const GuestGroup &group, const Contact &contact, const QString &pgName, const QString &pfName, quint8 adults, quint8 children, Guest::Status status, Guest::Notifications notifications, const QString &note, const QString &comment, const QDateTime &created, const QDateTime &updated, const QDateTime &lockedAt, const SimpleUser &lockedBy)
+    : d(new GuestData)
+{
+    d->contact = contact;
+    d->group = group;
     d->partnerGivenName = pgName;
     d->partnerFamilyName = pfName;
     d->note = note;
@@ -89,9 +112,17 @@ QString Guest::uid() const
     return d ? d->uid : QString();
 }
 
-Event Guest::event() const
+GuestGroup Guest::group() const
 {
-    return d ? d->event : Event();
+    if (d) {
+        if (d->group.isNull() && d->groupId > 0) {
+            return GuestGroup::get(nullptr, nullptr, d->groupId);
+        } else {
+            return d->group;
+        }
+    } else {
+        return GuestGroup();
+    }
 }
 
 Contact Guest::contact() const
@@ -240,23 +271,23 @@ QStringList Guest::supportedStatus()
     return lst;
 }
 
-std::vector<Guest> Guest::list(Cutelyst::Context *c, Error *e, dbid_t eventId)
+std::vector<Guest> Guest::list(Cutelyst::Context *c, Error *e, dbid_t groupId)
 {
     std::vector<Guest> guests;
 
-    Event event = Event::fromStash(c);
-    if (event.id() != eventId) {
-        event = Event::get(c, e, eventId);
+    GuestGroup group = GuestGroup::fromStash(c);
+    if (group.id() != groupId) {
+        group = GuestGroup::get(c, e, groupId);
         if (e && e->type() != Error::NoError) {
             return guests;
         }
     }
-    guests = Guest::list(c, e, event);
+    guests = Guest::list(c, e, group);
 
     return guests;
 }
 
-std::vector<Guest> Guest::list(Cutelyst::Context *c, Error *e, const Event &event)
+std::vector<Guest> Guest::list(Cutelyst::Context *c, Error *e, const GuestGroup &group)
 {
     std::vector<Guest> guests;
 
@@ -264,8 +295,8 @@ std::vector<Guest> Guest::list(Cutelyst::Context *c, Error *e, const Event &even
                                                            "g.id, g.uid, g.partner_given_name, g.partner_family_name, g.adults, g.children, g.status, g.notified, g.note, g.comment, g.created_at, g.updated_at, g.locked_at, "
                                                            "u.id AS locked_by_id, u.username AS locked_by_username, "
                                                            "c.id AS contact_id, c.addressbook_id, c.vcard, c.created_at contact_created, c.updated_at AS contact_updated "
-                                                           "FROM guests g LEFT JOIN users u ON u.id = g.locked_by JOIN contacts c ON c.id = g.contact_id WHERE g.event_id = :event_id"));
-    q.bindValue(QStringLiteral(":event_id"), event.id());
+                                                           "FROM guests g LEFT JOIN users u ON u.id = g.locked_by JOIN contacts c ON c.id = g.contact_id WHERE g.group_id = :group_id"));
+    q.bindValue(QStringLiteral(":group_id"), group.id());
 
     if (Q_LIKELY(q.exec())) {
         if (q.size() > 0) {
@@ -296,7 +327,7 @@ std::vector<Guest> Guest::list(Cutelyst::Context *c, Error *e, const Event &even
 
             guests.emplace_back(q.value(0).toUInt(),
                                 q.value(1).toString(),
-                                event,
+                                group,
                                 contact,
                                 q.value(2).toString(),
                                 q.value(3).toString(),
@@ -314,7 +345,73 @@ std::vector<Guest> Guest::list(Cutelyst::Context *c, Error *e, const Event &even
 
     } else {
         if (c && e) *e = Error(q.lastError(), c->translate("Guest", "Failed to query guests from the database."));
-        qCCritical(GIK_CORE) << "Failed to query list of guests for event ID" << event.id() << "from the database:" << q.lastError().text();
+        qCCritical(GIK_CORE) << "Failed to query list of guests for guest group ID" << group.id() << "from the database:" << q.lastError().text();
+    }
+
+    return guests;
+}
+
+std::vector<Guest> Guest::listByEvent(Cutelyst::Context *c, Error *e, const Event &event)
+{
+    std::vector<Guest> guests;
+
+    QSqlQuery q = CPreparedSqlQueryThreadFO(QStringLiteral("SELECT "
+                                                           "g.id, g.uid, g.group_id, g.partner_given_name, g.partner_family_name, g.adults, g.children, g.status, g.notified, g.note, g.comment, g.created_at, g.updated_at, g.locked_at, "
+                                                           "u.id AS locked_by_id, u.username AS locked_by_username, "
+                                                           "c.id AS contact_id, c.addressbook_id, c.vcard, c.created_at contact_created, c.updated_at AS contact_updated "
+                                                           "FROM guests g "
+                                                           "LEFT JOIN users u ON u.id = g.locked_by "
+                                                           "JOIN contacts c ON c.id = g.contact_id "
+                                                           "JOIN guestgroups gg ON g.group_id = gg.id "
+                                                           "WHERE gg.event_id = :event_id"));
+    q.bindValue(QStringLiteral(":event_id"), event.id());
+
+    if (Q_LIKELY(q.exec())) {
+
+        if (q.size() > 0) {
+            guests.reserve(q.size());
+        }
+
+        while (q.next()) {
+            const qlonglong lat = q.value(13).toLongLong();
+            const QDateTime lockedAt = lat > 0 ? QDateTime::fromMSecsSinceEpoch(lat) : QDateTime();
+            const SimpleUser lockedBy = lat > 0 ? SimpleUser(q.value(14).toUInt(), q.value(15).toString()) : SimpleUser();
+
+            const KContacts::VCardConverter converter;
+            const KContacts::Addressee addressee = converter.parseVCard(q.value(18).toString().toUtf8());
+            if (addressee.isEmpty()) {
+                qCWarning(GIK_CORE) << "Failed to parse vCard for contact id" << q.value(16).toUInt();
+            }
+
+            const Contact contact(q.value(16).toUInt(),
+                                  q.value(17).toUInt(),
+                                  addressee,
+                                  q.value(19).toDateTime(),
+                                  q.value(20).toDateTime(),
+                                  QDateTime(),
+                                  SimpleUser());
+
+            guests.emplace_back(q.value(0).toUInt(),
+                                q.value(1).toString(),
+                                q.value(2).toUInt(),
+                                contact,
+                                q.value(3).toString(),
+                                q.value(4).toString(),
+                                static_cast<quint8>(q.value(5).toUInt()),
+                                static_cast<quint8>(q.value(6).toUInt()),
+                                static_cast<Guest::Status>(static_cast<qint8>(q.value(7).toInt())),
+                                static_cast<Guest::Notifications>(q.value(8).toInt()),
+                                q.value(9).toString(),
+                                q.value(10).toString(),
+                                q.value(11).toDateTime(),
+                                q.value(12).toDateTime(),
+                                lockedAt,
+                                lockedBy);
+        }
+
+    } else {
+        if (c && e) *e = Error(q.lastError(), c->translate("Guest", "Failed to query guests from the database."));
+        qCCritical(GIK_CORE) << "Failed to query lists fo guetse for event ID" << event.id() << "from the database:" << q.lastError().text();
     }
 
     return guests;
@@ -322,7 +419,7 @@ std::vector<Guest> Guest::list(Cutelyst::Context *c, Error *e, const Event &even
 
 QDataStream &operator<<(QDataStream &stream, const Guest &guest)
 {
-    stream << guest.d->event
+    stream << guest.d->group
            << guest.d->contact
            << guest.d->partnerGivenName
            << guest.d->partnerFamilyName
@@ -334,6 +431,7 @@ QDataStream &operator<<(QDataStream &stream, const Guest &guest)
            << guest.d->lockedAt
            << guest.d->lockedBy
            << guest.d->id
+           << guest.d->groupId
            << guest.d->adults
            << guest.d->children
            << guest.d->status
@@ -347,7 +445,7 @@ QDataStream &operator>>(QDataStream &stream, Guest &guest)
         guest.d = new GuestData;
     }
 
-    stream >> guest.d->event;
+    stream >> guest.d->group;
     stream >> guest.d->contact;
     stream >> guest.d->partnerGivenName;
     stream >> guest.d->partnerFamilyName;
@@ -359,6 +457,7 @@ QDataStream &operator>>(QDataStream &stream, Guest &guest)
     stream >> guest.d->lockedAt;
     stream >> guest.d->lockedBy;
     stream >> guest.d->id;
+    stream >> guest.d->groupId;
     stream >> guest.d->adults;
     stream >> guest.d->children;
     stream >> guest.d->status;

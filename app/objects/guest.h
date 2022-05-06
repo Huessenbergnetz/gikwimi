@@ -6,7 +6,7 @@
 #ifndef GIKWIMI_GUEST_H
 #define GIKWIMI_GUEST_H
 
-#include "event.h"
+#include "guestgroup.h"
 #include "simpleuser.h"
 #include "global.h"
 #include "contact.h"
@@ -18,6 +18,7 @@ namespace Cutelyst {
 class Context;
 }
 class Error;
+class Event;
 class GuestData;
 
 class Guest
@@ -25,7 +26,7 @@ class Guest
     Q_GADGET
     Q_PROPERTY(dbid_t id READ id CONSTANT)
     Q_PROPERTY(QString uid READ uid CONSTANT)
-    Q_PROPERTY(Event event READ event CONSTANT)
+    Q_PROPERTY(GuestGroup group READ group CONSTANT)
     Q_PROPERTY(Contact contact READ contact CONSTANT)
     Q_PROPERTY(QString partnerGivenName READ partnerGivenName CONSTANT)
     Q_PROPERTY(QString partnerFamilyName READ partnerFamilyName CONSTANT)
@@ -60,7 +61,9 @@ public:
 
     Guest();
 
-    Guest(dbid_t id, const QString &uid, const Event &event, const Contact &contact, const QString &pgName, const QString &pfName, quint8 adults, quint8 children, Guest::Status status, Guest::Notifications notifications, const QString &note, const QString &comment, const QDateTime &created, const QDateTime &updated, const QDateTime &lockedAt, const SimpleUser &lockedBy);
+    Guest(dbid_t id, const QString &uid, dbid_t groupId, const Contact &contact, const QString &pgName, const QString &pfName, quint8 adults, quint8 children, Guest::Status status, Guest::Notifications notifications, const QString &note, const QString &comment, const QDateTime &created, const QDateTime &updated, const QDateTime &lockedAt, const SimpleUser &lockedBy);
+
+    Guest(dbid_t id, const QString &uid, const GuestGroup &group, const Contact &contact, const QString &pgName, const QString &pfName, quint8 adults, quint8 children, Guest::Status status, Guest::Notifications notifications, const QString &note, const QString &comment, const QDateTime &created, const QDateTime &updated, const QDateTime &lockedAt, const SimpleUser &lockedBy);
 
     Guest(const Guest &other);
 
@@ -78,7 +81,7 @@ public:
 
     QString uid() const;
 
-    Event event() const;
+    GuestGroup group() const;
 
     Contact contact() const;
 
@@ -118,9 +121,11 @@ public:
 
     static QStringList supportedStatus();
 
-    static std::vector<Guest> list(Cutelyst::Context *c, Error *e, dbid_t eventId);
+    static std::vector<Guest> list(Cutelyst::Context *c, Error *e, dbid_t groupId);
 
-    static std::vector<Guest> list(Cutelyst::Context *c, Error *e, const Event &event);
+    static std::vector<Guest> list(Cutelyst::Context *c, Error *e, const GuestGroup &group);
+
+    static std::vector<Guest> listByEvent(Cutelyst::Context *c, Error *e, const Event &event);
 
 private:
     QSharedDataPointer<GuestData> d;

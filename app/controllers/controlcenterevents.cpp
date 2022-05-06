@@ -69,7 +69,7 @@ void ControlCenterEvents::guests(Context *c)
 {
     const auto event = Event::fromStash(c);
     Error e;
-    const std::vector<Guest> guests = Guest::list(c, &e, event);
+    const std::vector<Guest> guests = Guest::listByEvent(c, &e, event);
     if (e.type() != Error::NoError) {
         e.toStash(c, true);
         return;
