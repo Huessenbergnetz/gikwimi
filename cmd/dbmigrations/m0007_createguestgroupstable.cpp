@@ -22,7 +22,7 @@ void M0007_CreateGuestGroupsTable::up()
     t->increments();
     t->integer(QStringLiteral("event_id"))->unSigned();
     t->varChar(QStringLiteral("name"), 63);
-    t->varChar(QStringLiteral("slug"), 63);
+    t->varChar(QStringLiteral("slug"), 63)->charset(QStringLiteral("ascii"))->unique();
     t->text(QStringLiteral("note"))->nullable();
     t->dateTime(QStringLiteral("created_at"));
     t->dateTime(QStringLiteral("updated_at"));
