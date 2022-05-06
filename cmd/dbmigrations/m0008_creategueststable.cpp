@@ -21,7 +21,7 @@ void M0008_CreateGuestsTable::up()
     auto t = create(QStringLiteral("guests"));
     t->increments();
     t->charCol(QStringLiteral("uid"), 6)->unique();
-    t->integer(QStringLiteral("event_id"))->unSigned();
+    t->integer(QStringLiteral("group_id"))->unSigned();
     t->integer(QStringLiteral("contact_id"))->unSigned();
     t->varChar(QStringLiteral("partner_given_name"), 63)->nullable();
     t->varChar(QStringLiteral("partner_family_name"), 63)->nullable();
@@ -36,7 +36,7 @@ void M0008_CreateGuestsTable::up()
     t->bigInteger(QStringLiteral("locked_at"))->defaultValue(0)->nullable();
     t->integer(QStringLiteral("locked_by"))->unSigned()->defaultValue(0)->nullable();
 
-    t->foreignKey(QStringLiteral("event_id"), QStringLiteral("events"), QStringLiteral("id"), QStringLiteral("guests_event_id_idx"))->onDelete(QStringLiteral("CASCADE"))->onUpdate(QStringLiteral("CASCADE"));
+    t->foreignKey(QStringLiteral("group_id"), QStringLiteral("guestgroups"), QStringLiteral("id"), QStringLiteral("guests_guestgroups_id_idx"))->onDelete(QStringLiteral("CASCADE"))->onUpdate(QStringLiteral("CASCADE"));
     t->foreignKey(QStringLiteral("contact_id"), QStringLiteral("contacts"), QStringLiteral("id"), QStringLiteral("guests_contact_id_idx"))->onDelete(QStringLiteral("CASCADE"))->onUpdate(QStringLiteral("CASCADE"));
 
     switch(dbType()) {
