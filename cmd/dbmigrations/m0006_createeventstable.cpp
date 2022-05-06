@@ -21,8 +21,8 @@ void M0006_CreateEventsTable::up()
     auto t = create(QStringLiteral("events"));
     t->increments();
     t->integer(QStringLiteral("user_id"))->unSigned();
-    t->varChar(QStringLiteral("title"));
-    t->varChar(QStringLiteral("slug"))->charset(QStringLiteral("ascii"))->unique();
+    t->varChar(QStringLiteral("title"), 127);
+    t->varChar(QStringLiteral("slug"), 63)->charset(QStringLiteral("ascii"))->unique();
     t->dateTime(QStringLiteral("start_time"));
     t->dateTime(QStringLiteral("end_time"));
     t->varChar(QStringLiteral("timezone"), 63)->defaultValue(QStringLiteral("Europe/Berlin"));
