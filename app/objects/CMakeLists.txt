@@ -16,6 +16,8 @@ target_sources(gikwimi
         event_p.h
         guest.cpp
         guest.h
+        guestgroup.cpp
+        guestgroup.h
         menuitem.cpp
         menuitem.h
         menuitem_p.h
