@@ -5,12 +5,10 @@ add_custom_target(defaulttemplate
     SOURCES
         package.json
         webpack.mix.js
-        assets/js/licenseheader.js
-        assets/sass/style.scss
-        site/wrapper.tmpl
-        site/base.tmpl
-        site/login/index.tmpl
 )
+
+add_subdirectory(assets)
+add_subdirectory(site)
 
 install(DIRECTORY site static
         DESTINATION ${GIKWIMI_TEMPLATESDIR}
