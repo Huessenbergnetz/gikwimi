@@ -26,7 +26,9 @@ void M0008_CreateGuestsTable::up()
     t->varChar(QStringLiteral("partner_given_name"), 63)->nullable();
     t->varChar(QStringLiteral("partner_family_name"), 63)->nullable();
     t->tinyInteger(QStringLiteral("adults"))->unSigned()->defaultValue(1);
+    t->tinyInteger(QStringLiteral("adults_accepted"))->unSigned()->defaultValue(0);
     t->tinyInteger(QStringLiteral("children"))->unSigned()->defaultValue(0);
+    t->tinyInteger(QStringLiteral("children_accepted"))->unSigned()->defaultValue(0);
     t->tinyInteger(QStringLiteral("status"))->defaultValue(0);
     t->tinyInteger(QStringLiteral("notified"))->unSigned()->defaultValue(0);
     t->text(QStringLiteral("note"))->nullable();
