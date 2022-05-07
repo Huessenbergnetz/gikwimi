@@ -31,7 +31,9 @@ class Guest
     Q_PROPERTY(QString partnerGivenName READ partnerGivenName CONSTANT)
     Q_PROPERTY(QString partnerFamilyName READ partnerFamilyName CONSTANT)
     Q_PROPERTY(quint8 adults READ adults CONSTANT)
+    Q_PROPERTY(quint8 adultsAccepted READ adultsAccepted CONSTANT)
     Q_PROPERTY(quint8 children READ children CONSTANT)
+    Q_PROPERTY(quint8 childrenAccepted READ childrenAccepted CONSTANT)
     Q_PROPERTY(Guest::Status status READ status CONSTANT)
     Q_PROPERTY(Guest::Notifications notifications READ notifications CONSTANT)
     Q_PROPERTY(QString note READ note CONSTANT)
@@ -61,9 +63,9 @@ public:
 
     Guest();
 
-    Guest(dbid_t id, const QString &uid, dbid_t groupId, const Contact &contact, const QString &pgName, const QString &pfName, quint8 adults, quint8 children, Guest::Status status, Guest::Notifications notifications, const QString &note, const QString &comment, const QDateTime &created, const QDateTime &updated, const QDateTime &lockedAt, const SimpleUser &lockedBy);
+    Guest(dbid_t id, const QString &uid, dbid_t groupId, const Contact &contact, const QString &pgName, const QString &pfName, quint8 adults, quint8 adultsAccepted, quint8 children, quint8 childrenAccepted, Guest::Status status, Guest::Notifications notifications, const QString &note, const QString &comment, const QDateTime &created, const QDateTime &updated, const QDateTime &lockedAt, const SimpleUser &lockedBy);
 
-    Guest(dbid_t id, const QString &uid, const GuestGroup &group, const Contact &contact, const QString &pgName, const QString &pfName, quint8 adults, quint8 children, Guest::Status status, Guest::Notifications notifications, const QString &note, const QString &comment, const QDateTime &created, const QDateTime &updated, const QDateTime &lockedAt, const SimpleUser &lockedBy);
+    Guest(dbid_t id, const QString &uid, const GuestGroup &group, const Contact &contact, const QString &pgName, const QString &pfName, quint8 adults, quint8 adultsAccepted, quint8 children, quint8 childrenAccepted, Guest::Status status, Guest::Notifications notifications, const QString &note, const QString &comment, const QDateTime &created, const QDateTime &updated, const QDateTime &lockedAt, const SimpleUser &lockedBy);
 
     Guest(const Guest &other);
 
@@ -91,7 +93,11 @@ public:
 
     quint8 adults() const;
 
+    quint8 adultsAccepted() const;
+
     quint8 children() const;
+
+    quint8 childrenAccepted() const;
 
     Guest::Status status() const;
 
