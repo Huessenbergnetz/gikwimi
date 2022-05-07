@@ -44,8 +44,8 @@ void Login::index(Context *c)
     }
 
     c->stash({
-                 {QStringLiteral("no_wrapper"), 1},
-                 {QStringLiteral("template"), QStringLiteral("login/index.tmpl")},
+                 {QStringLiteral("no_wrapper"), true},
+                 {QStringLiteral("template"), QStringLiteral("login.tmpl")},
                  {QStringLiteral("site_title"), c->translate("Login", "Login", "site title")},
                  {QStringLiteral("login_field_label_username"), c->translate("Login", "Username")},
                  {QStringLiteral("login_field_label_password"), c->translate("Login", "Password")},
