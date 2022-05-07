@@ -80,6 +80,15 @@ void Root::error(Context *c)
     }
 }
 
+void Root::csrfDenied(Context *c)
+{
+    qCDebug(GIK_CORE) << "Entering Root::csrfDenied()";
+
+    c->response()->setBody(QStringLiteral("CSRF check failed"));
+    c->response()->setContentType(QLatin1String("text/html; charset=utf-8"));
+    c->detach();
+}
+
 bool Root::Auto(Context *c)
 {
     qCDebug(GIK_CORE) << "Entering Root::Auto()";

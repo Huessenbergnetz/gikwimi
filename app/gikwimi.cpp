@@ -33,6 +33,7 @@
 #include <Cutelyst/Plugins/StatusMessage>
 #include <Cutelyst/Plugins/Memcached/Memcached>
 #include <Cutelyst/Plugins/MemcachedSessionStore/MemcachedSessionStore>
+#include <Cutelyst/Plugins/CSRFProtection/CSRFProtection>
 
 #include <cutelee/engine.h>
 
@@ -115,6 +116,9 @@ bool Gikwimi::init()
             sess->setStorage(new MemcachedSessionStore(this, this));
         }
     }
+
+    auto csrf = new CSRFProtection(this);
+    csrf->setDefaultDetachTo(QStringLiteral("/csrfDenied"));
 
     new StatusMessage(this);
 

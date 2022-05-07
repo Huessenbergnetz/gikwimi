@@ -27,6 +27,9 @@ public:
     C_ATTR(error, :Local :Private :AutoArgs :ActionClass("RenderView"))
     void error(Context *c);
 
+    C_ATTR(csrfDenied, :Local :Private :AutoArgs :ActionClass("RenderView"))
+    void csrfDenied(Context *c);
+
 private:
     C_ATTR(End, :ActionClass("RenderView"))
     void End(Context *c) { Q_UNUSED(c); }

@@ -18,6 +18,7 @@
             <div class="card-header">{{ site_title }} – {{ site_name }}</div>
             <div class="card-body">
               <form method="post" autocomplete="on">
+                {% c_csrf_token %}
 
                 <div class="input-group mb-3">
                   <div class="input-group-text"><i class="bi-person"></i></div>
