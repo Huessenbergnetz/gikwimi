@@ -46,6 +46,10 @@ class Event
     Q_PROPERTY(QDateTime updated READ updated CONSTANT)
     Q_PROPERTY(QDateTime lockedAt READ lockedAt CONSTANT)
     Q_PROPERTY(SimpleUser lockedBy READ lockedBy CONSTANT)
+    Q_PROPERTY(uint adultsInvited READ adultsInvited CONSTANT)
+    Q_PROPERTY(uint adultsAccepted READ adultsAccepted CONSTANT)
+    Q_PROPERTY(uint childrenInvited READ childrenInvited CONSTANT)
+    Q_PROPERTY(uint childrenAccepted READ childrenAccepted CONSTANT)
 public:
     /*!
      * \brief Audience for this event.
@@ -69,9 +73,9 @@ public:
 
     Event();
 
-    Event(dbid_t id, dbid_t userId, const QString &title, const QString &slug, const QDateTime &start, const QDateTime &end, const QTimeZone &tz, Audience audience, Participation participation, const QString &description, const QVariantHash settings, bool allDay, const QDateTime &created, const QDateTime &updated, const QDateTime &lockedAt, const SimpleUser &lockedBy);
+    Event(dbid_t id, dbid_t userId, const QString &title, const QString &slug, const QDateTime &start, const QDateTime &end, const QTimeZone &tz, Audience audience, Participation participation, const QString &description, const QVariantHash settings, bool allDay, const QDateTime &created, const QDateTime &updated, const QDateTime &lockedAt, const SimpleUser &lockedBy, uint adultsInvited, uint adultsAccepted, uint childrenInvited, uint childrenAccepted);
 
-    Event(dbid_t id, const User &user, const QString &title, const QString &slug, const QDateTime &start, const QDateTime &end, const QTimeZone &tz, Audience audience, Participation participation, const QString &description, const QVariantHash settings, bool allDay, const QDateTime &created, const QDateTime &updated, const QDateTime &lockedAt, const SimpleUser &lockedBy);
+    Event(dbid_t id, const User &user, const QString &title, const QString &slug, const QDateTime &start, const QDateTime &end, const QTimeZone &tz, Audience audience, Participation participation, const QString &description, const QVariantHash settings, bool allDay, const QDateTime &created, const QDateTime &updated, const QDateTime &lockedAt, const SimpleUser &lockedBy, uint adultsInvited, uint adultsAccepted, uint childrenInvited, uint childrenAccepted);
 
     Event(const Event &other);
 
@@ -120,6 +124,14 @@ public:
     QDateTime lockedAt() const;
 
     SimpleUser lockedBy() const;
+
+    uint adultsInvited() const;
+
+    uint adultsAccepted() const;
+
+    uint childrenInvited() const;
+
+    uint childrenAccepted() const;
 
     bool isValid() const;
 

@@ -26,7 +26,7 @@ Event::Event()
 
 }
 
-Event::Event(dbid_t id, dbid_t userId, const QString &title, const QString &slug, const QDateTime &start, const QDateTime &end, const QTimeZone &tz, Audience audience, Participation participation, const QString &description, const QVariantHash settings, bool allDay, const QDateTime &created, const QDateTime &updated, const QDateTime &lockedAt, const SimpleUser &lockedBy)
+Event::Event(dbid_t id, dbid_t userId, const QString &title, const QString &slug, const QDateTime &start, const QDateTime &end, const QTimeZone &tz, Audience audience, Participation participation, const QString &description, const QVariantHash settings, bool allDay, const QDateTime &created, const QDateTime &updated, const QDateTime &lockedAt, const SimpleUser &lockedBy, uint adultsInvited, uint adultsAccepted, uint childrenInvited, uint childrenAccepted)
     : d(new EventData)
 {
     d->id = id;
@@ -52,10 +52,14 @@ Event::Event(dbid_t id, dbid_t userId, const QString &title, const QString &slug
         d->lockedAt.setTimeSpec(Qt::UTC);
     }
     d->lockedBy = lockedBy;
+    d->adultsInvited = adultsInvited;
+    d->adultsAccepted = adultsAccepted;
+    d->childrenInvited = childrenInvited;
+    d->childrenAccepted = childrenAccepted;
     d->startOnly = start == end;
 }
 
-Event::Event(dbid_t id, const User &user, const QString &title, const QString &slug, const QDateTime &start, const QDateTime &end, const QTimeZone &tz, Audience audience, Participation participation, const QString &description, const QVariantHash settings, bool allDay, const QDateTime &created, const QDateTime &updated, const QDateTime &lockedAt, const SimpleUser &lockedBy)
+Event::Event(dbid_t id, const User &user, const QString &title, const QString &slug, const QDateTime &start, const QDateTime &end, const QTimeZone &tz, Audience audience, Participation participation, const QString &description, const QVariantHash settings, bool allDay, const QDateTime &created, const QDateTime &updated, const QDateTime &lockedAt, const SimpleUser &lockedBy, uint adultsInvited, uint adultsAccepted, uint childrenInvited, uint childrenAccepted)
     : d(new EventData)
 {
     d->id = id;
@@ -81,6 +85,10 @@ Event::Event(dbid_t id, const User &user, const QString &title, const QString &s
         d->lockedAt.setTimeSpec(Qt::UTC);
     }
     d->lockedBy = lockedBy;
+    d->adultsInvited = adultsInvited;
+    d->adultsAccepted = adultsAccepted;
+    d->childrenInvited = childrenInvited;
+    d->childrenAccepted = childrenAccepted;
     d->startOnly = start == end;
 }
 
@@ -211,6 +219,26 @@ QDateTime Event::lockedAt() const
 SimpleUser Event::lockedBy() const
 {
     return d ? d->lockedBy : SimpleUser();
+}
+
+uint Event::adultsInvited() const
+{
+    return d ? d->adultsInvited : 0;
+}
+
+uint Event::adultsAccepted() const
+{
+    return d ? d->adultsAccepted : 0;
+}
+
+uint Event::childrenInvited() const
+{
+    return d ? d->childrenInvited : 0;
+}
+
+uint Event::childrenAccepted() const
+{
+    return d ? d->childrenAccepted : 0;
 }
 
 bool Event::isValid() const
@@ -374,13 +402,28 @@ std::vector<Event> Event::list(Cutelyst::Context *c, Error *e, const User &user)
 
         while (q.next()) {
 
+            const dbid_t eventId = q.value(0).toUInt();
+
+            QSqlQuery q2 = CPreparedSqlQueryThreadFO(QStringLiteral("SELECT SUM(g.adults), SUM(g.adults_accepted), SUM(g.children), SUM(g.children_accepted) FROM guests g JOIN guestgroups gg ON g.group_id = gg.id WHERE gg.event_id = :event_id"));
+            q2.bindValue(QStringLiteral(":event_id"), eventId);
+
+            uint adults, adultsAccepted, children, childrenAccepted;
+            if (q2.exec() && q2.next()) {
+                adults              = q2.value(0).toUInt();
+                adultsAccepted      = q2.value(1).toUInt();
+                children            = q2.value(2).toUInt();
+                childrenAccepted    = q2.value(3).toUInt();
+            } else {
+                qCWarning(GIK_CORE) << "Failed to query guest counts for event ID" << eventId << "from the database:" << q.lastError().text();
+            }
+
             const QVariantHash settings = Utils::settingsHashFromString(q.value(9).toString());
 
             const qlonglong  lat        = q.value(13).toLongLong();
             const QDateTime  lockedAt   = lat > 0 ? QDateTime::fromMSecsSinceEpoch(lat) : QDateTime();
             const SimpleUser lockedBy   = lat > 0 ? SimpleUser(q.value(14).toUInt(), q.value(15).toString()) : SimpleUser();
 
-            events.emplace_back(q.value(0).toUInt(),
+            events.emplace_back(eventId,
                                 user,
                                 q.value(1).toString(),
                                 q.value(2).toString(),
@@ -395,7 +438,11 @@ std::vector<Event> Event::list(Cutelyst::Context *c, Error *e, const User &user)
                                 q.value(11).toDateTime(),
                                 q.value(12).toDateTime(),
                                 lockedAt,
-                                lockedBy);
+                                lockedBy,
+                                adults,
+                                adultsAccepted,
+                                children,
+                                childrenAccepted);
         }
 
     } else {
@@ -419,6 +466,19 @@ Event Event::get(Cutelyst::Context *c, Error *e, dbid_t eventId)
     if (Q_LIKELY(q.exec())) {
         if (Q_LIKELY(q.next())) {
 
+            QSqlQuery q2 = CPreparedSqlQueryThreadFO(QStringLiteral("SELECT SUM(g.adults), SUM(g.adults_accepted), SUM(g.children), SUM(g.children_accepted) FROM guests g JOIN guestgroups gg ON g.group_id = gg.id WHERE gg.event_id = :event_id"));
+            q2.bindValue(QStringLiteral(":event_id"), eventId);
+
+            uint adults, adultsAccepted, children, childrenAccepted;
+            if (q2.exec() && q2.next()) {
+                adults              = q2.value(0).toUInt();
+                adultsAccepted      = q2.value(1).toUInt();
+                children            = q2.value(2).toUInt();
+                childrenAccepted    = q2.value(3).toUInt();
+            } else {
+                qCWarning(GIK_CORE) << "Failed to query guest counts for event ID" << eventId << "from the database:" << q.lastError().text();
+            }
+
             const QVariantHash settings = Utils::settingsHashFromString(q.value(10).toString());
 
             const qlonglong  lat        = q.value(14).toLongLong();
@@ -440,7 +500,11 @@ Event Event::get(Cutelyst::Context *c, Error *e, dbid_t eventId)
                           q.value(12).toDateTime(),
                           q.value(13).toDateTime(),
                           lockedAt,
-                          lockedBy);
+                          lockedBy,
+                          adults,
+                          adultsAccepted,
+                          children,
+                          childrenAccepted);
 
         } else {
             if (c && e ) *e = Error(Error::NotFound, c->translate("Event", "Can not find event with ID %1").arg(eventId));
