@@ -43,6 +43,8 @@ void ControlCenterAddressBooks::index(Context *c)
     addressbooksTableHeaders.insert(QStringLiteral("type"), c->translate("ControlCenterAddressBooks", "type"));
     //: table header
     addressbooksTableHeaders.insert(QStringLiteral("name"), c->translate("ControlCenterAddressBooks", "name"));
+    //: table header
+    addressbooksTableHeaders.insert(QStringLiteral("size"), c->translate("ControlCenterAddressBooks", "size"));
 
     c->stash({
                  {QStringLiteral("site_title"), c->translate("ControlCenterAddressBook", "Addressbooks")},

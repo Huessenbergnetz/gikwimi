@@ -14,7 +14,7 @@ class AddressBookData : public QSharedData
 public:
     AddressBookData() = default;
 
-    AddressBookData(dbid_t _id, AddressBook::Type _type, const QString &_name, const QVariantHash &_settings, const QDateTime &_created, const QDateTime &_updated, const User &_user, const QDateTime &_lockedAt, const SimpleUser &_lockedBy)
+    AddressBookData(dbid_t _id, AddressBook::Type _type, const QString &_name, const QVariantHash &_settings, const QDateTime &_created, const QDateTime &_updated, const User &_user, const QDateTime &_lockedAt, const SimpleUser &_lockedBy, uint _size)
         : QSharedData(),
           name{_name},
           user{_user},
@@ -24,13 +24,14 @@ public:
           lockedAt{_lockedAt},
           lockedBy{_lockedBy},
           id{_id},
+          size{_size},
           type{_type}
     {
         created.setTimeSpec(Qt::UTC);
         updated.setTimeSpec(Qt::UTC);
     }
 
-    AddressBookData(dbid_t _id, AddressBook::Type _type, const QString &_name, const QVariantHash &_settings, const QDateTime &_created, const QDateTime &_updated, dbid_t _userId, const QDateTime &_lockedAt, const SimpleUser &_lockedBy)
+    AddressBookData(dbid_t _id, AddressBook::Type _type, const QString &_name, const QVariantHash &_settings, const QDateTime &_created, const QDateTime &_updated, dbid_t _userId, const QDateTime &_lockedAt, const SimpleUser &_lockedBy, uint _size)
         : QSharedData(),
           name{_name},
           settings{_settings},
@@ -40,6 +41,7 @@ public:
           lockedBy{_lockedBy},
           id{_id},
           userId{_userId},
+          size{_size},
           type{_type}
     {
         created.setTimeSpec(Qt::UTC);
@@ -57,6 +59,7 @@ public:
     SimpleUser lockedBy;
     dbid_t id = 0;
     dbid_t userId = 0;
+    uint size = 0;
     AddressBook::Type type = AddressBook::Local;
 };
 

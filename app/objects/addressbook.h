@@ -34,6 +34,7 @@ class AddressBook
     Q_PROPERTY(QDateTime updated READ updated CONSTANT)
     Q_PROPERTY(QDateTime lockedAt READ lockedAt CONSTANT)
     Q_PROPERTY(SimpleUser lockedBy READ lockedBy CONSTANT)
+    Q_PROPERTY(uint size READ size CONSTANT)
 public:
     enum Type : quint8 {
         Invalid = 0,
@@ -43,9 +44,9 @@ public:
 
     AddressBook();
 
-    AddressBook(dbid_t id, AddressBook::Type type, const QString &name, const QVariantHash &settings, const QDateTime &created, const QDateTime &updated, dbid_t userId, const QDateTime &lockedAt, const SimpleUser &lockedBy);
+    AddressBook(dbid_t id, AddressBook::Type type, const QString &name, const QVariantHash &settings, const QDateTime &created, const QDateTime &updated, dbid_t userId, const QDateTime &lockedAt, const SimpleUser &lockedBy, uint size);
 
-    AddressBook(dbid_t id, AddressBook::Type type, const QString &name, const QVariantHash &settings, const QDateTime &created, const QDateTime &updated, const User &user, const QDateTime &lockedAt, const SimpleUser &lockedBy);
+    AddressBook(dbid_t id, AddressBook::Type type, const QString &name, const QVariantHash &settings, const QDateTime &created, const QDateTime &updated, const User &user, const QDateTime &lockedAt, const SimpleUser &lockedBy, uint size);
 
     AddressBook(const AddressBook &other);
 
@@ -76,6 +77,8 @@ public:
     QDateTime lockedAt() const;
 
     SimpleUser lockedBy() const;
+
+    uint size() const;
 
     bool isValid() const;
 
