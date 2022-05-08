@@ -52,15 +52,17 @@ QVariantHash Utils::settingsHashFromString(const QString &str)
 {
     QVariantHash hash;
 
-    QJsonParseError jsonError;
-    const QJsonDocument doc = QJsonDocument::fromJson(str.toUtf8(), &jsonError);
-    if (jsonError.error == QJsonParseError::NoError) {
-        if (!doc.isEmpty()) {
-            const QJsonObject obj = doc.object();
-            hash = obj.toVariantHash();
+    if (!str.isEmpty()) {
+        QJsonParseError jsonError;
+        const QJsonDocument doc = QJsonDocument::fromJson(str.toUtf8(), &jsonError);
+        if (jsonError.error == QJsonParseError::NoError) {
+            if (!doc.isEmpty()) {
+                const QJsonObject obj = doc.object();
+                hash = obj.toVariantHash();
+            }
+        } else {
+            qCCritical(GIK_CORE) << "Failed to parse JSON settings:" << jsonError.error << jsonError.errorString();
         }
-    } else {
-        qCCritical(GIK_CORE) << "Failed to parse JSON settings:" << jsonError.error << jsonError.errorString();
     }
 
     return hash;
@@ -70,9 +72,11 @@ QString Utils::settingsHashToString(const QVariantHash &hash)
 {
     QString str;
 
-    const QJsonObject obj = QJsonObject::fromVariantHash(hash);
-    const QJsonDocument doc(obj);
-    str = QString::fromUtf8(doc.toJson(QJsonDocument::Compact));
+    if (!hash.isEmpty()) {
+        const QJsonObject obj = QJsonObject::fromVariantHash(hash);
+        const QJsonDocument doc(obj);
+        str = QString::fromUtf8(doc.toJson(QJsonDocument::Compact));
+    }
 
     return str;
 }
