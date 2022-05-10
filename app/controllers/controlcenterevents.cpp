@@ -36,9 +36,9 @@ void ControlCenterEvents::index(Context *c)
     //: table header
     eventsTableHeaders.insert(QStringLiteral("title"), c->translate("ControlCenterEvents", "title"));
     //: table header
-    eventsTableHeaders.insert(QStringLiteral("start"), c->translate("ControlCenterEvents", "start"));
+    eventsTableHeaders.insert(QStringLiteral("schedule"), c->translate("ControlCenterEvents", "schedule"));
     //: table header
-    eventsTableHeaders.insert(QStringLiteral("end"), c->translate("ControlCenterEvents", "end"));
+    eventsTableHeaders.insert(QStringLiteral("guests"), c->translate("ControlCenterEvents", "guests"));
 
     c->stash({
                  {QStringLiteral("site_title"), c->translate("ControlCenterEvents", "Events")},

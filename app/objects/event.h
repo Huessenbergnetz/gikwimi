@@ -50,6 +50,8 @@ class Event
     Q_PROPERTY(uint adultsAccepted READ adultsAccepted CONSTANT)
     Q_PROPERTY(uint childrenInvited READ childrenInvited CONSTANT)
     Q_PROPERTY(uint childrenAccepted READ childrenAccepted CONSTANT)
+    Q_PROPERTY(uint totalInvited READ totalInvited CONSTANT)
+    Q_PROPERTY(uint totalAccepted READ totalAccepted CONSTANT)
 public:
     /*!
      * \brief Audience for this event.
@@ -132,6 +134,10 @@ public:
     uint childrenInvited() const;
 
     uint childrenAccepted() const;
+
+    uint totalInvited() const;
+
+    uint totalAccepted() const;
 
     bool isValid() const;
 

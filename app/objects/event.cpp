@@ -241,6 +241,24 @@ uint Event::childrenAccepted() const
     return d ? d->childrenAccepted : 0;
 }
 
+uint Event::totalInvited() const
+{
+    if (d) {
+        return d->adultsInvited + d->childrenInvited;
+    } else {
+        return 0;
+    }
+}
+
+uint Event::totalAccepted() const
+{
+    if (d) {
+        return d->adultsAccepted + d->childrenAccepted;
+    } else {
+        return 0;
+    }
+}
+
 bool Event::isValid() const
 {
     return d && d->id > 0;

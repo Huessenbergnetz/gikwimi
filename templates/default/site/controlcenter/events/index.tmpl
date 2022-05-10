@@ -7,8 +7,8 @@
     <thead>
         <tr>
             <th scope="col" class="text-capitalize">{{ events_table_headers.title }}</th>
-            <th scope="col" class="text-capitalize">{{ events_table_headers.start }}</th>
-            <th scope="col" class="text-capitalize">{{ events_table_headers.end }}</th>
+            <th scope="col" class="text-capitalize">{{ events_table_headers.schedule }}</th>
+            <th scope="col" class="text-capitalize">{{ events_table_headers.guests }}</th>
             <th scope="col" class="text-capitalize">{{ events_table_headers.id }}</th>
         </tr>
     </thead>
@@ -16,8 +16,8 @@
         {% for event in events %}
         <tr>
             <td>{{ event.title }}</td>
-            <td>{{ event.start }}</td>
-            <td>{{ event.end }}</td>
+            <td>{{ event.start }}{% if not event.startTimeOnly %}<br>{{ event.end }}{% endif %}</td>
+            <td>{{ event.totalInvited }}/{{ event.totalAccepted }}</td>
             <td>{{ event.id }}</td>
         </tr>
         {% endfor %}
