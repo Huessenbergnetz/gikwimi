@@ -68,19 +68,30 @@ void ControlCenterEvents::edit(Context *c)
 void ControlCenterEvents::guests(Context *c)
 {
     const auto event = Event::fromStash(c);
+
     Error e;
-    const std::vector<Guest> guests = Guest::listByEvent(c, &e, event);
+    const auto groups = GuestGroup::list(c, &e, event);
     if (e.type() != Error::NoError) {
         e.toStash(c, true);
         return;
     }
 
     QMap<QString,QString> guestsTableHeaders;
+    //: table header
+    guestsTableHeaders.insert(QStringLiteral("name"), c->translate("ControlCenterEvents", "name"));
+    //: table header
+    guestsTableHeaders.insert(QStringLiteral("guests"), c->translate("ControlCenterEvents", "guests"));
+    //: table header
+    guestsTableHeaders.insert(QStringLiteral("address"), c->translate("ControlCenterEvents", "address"));
+    //: table data description, number of adult guests
+    guestsTableHeaders.insert(QStringLiteral("adults"), c->translate("ControlCenterEvents", "adults"));
+    //: table data description, number of child guests
+    guestsTableHeaders.insert(QStringLiteral("children"), c->translate("ControlCenterEvents", "children"));
 
     c->stash({
                  {QStringLiteral("site_subtitle"), c->translate("ControlCenterEvents", "Guests")},
                  {QStringLiteral("template"), QStringLiteral("controlcenter/events/guests/index.tmpl")},
-                 {QStringLiteral("guests"), QVariant::fromValue<std::vector<Guest>>(guests)},
+                 {QStringLiteral("groups"), QVariant::fromValue<std::vector<GuestGroup>>(groups)},
                  {QStringLiteral("guests_table_headers"), QVariant::fromValue<QMap<QString,QString>>(guestsTableHeaders)}
              });
 }

@@ -1,1 +1,52 @@
- 
+{% with site_subtitle as page_header %}
+{% with site_title as page_subheader %}
+{% include "inc/page_header.tmpl" %}
+{% endwith %}
+{% endwith %}
+
+{% for group in groups %}
+<h2>{{ group.name }}</h2>
+{% with group.guests as guests %}
+<table id="group_{{ group.id }}" class="table">
+    <thead>
+        <tr>
+            <th scope="col" class="text-capitalize">{{ guests_table_headers.name }}</th>
+            <th scope="col" class="text-capitalize">{{ guests_table_headers.guests }}</th>
+            <th scope="col" class="text-capitalize">{{ guests_table_headers.address }}</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for guest in guests %}
+        <tr>
+            {% with guest.contact.addressee as addressee %}
+            <td>
+            {% if guest.contact.addressee.familyName == guest.partnerFamilyName %}
+            {% i18nc "A couples name like Alice and Bob Miller" "%1 and %2 %3" addressee.givenName guest.partnerGivenName addressee.familyName %}
+            {% else %}
+            {{ addressee.givenName }} {{ addressee.familyName }}{% if guest.partnerGivenName %}<br>{{ guest.partnerGivenName }} {{ guest.partnerFamilyName }}{% endif %}
+            {% endif %}
+            </td>
+
+            <td>
+            <span class="text-capitalize">{{ guests_table_headers.adults }}</span>:&nbsp;{{ guest.adultsAccepted }}/{{ guest.adults }}<br>
+            <span class="text-capitalize">{{ guests_table_headers.children }}</span>:&nbsp;{{ guest.childrenAccepted }}/{{ guest.children }}
+            </td>
+
+            <td>
+            {% if addressee.addresses.size %}
+                {% with addressee.addresses.0 as address %}
+                {% if address.street %}{{ address.street }}<br>{% endif %}
+                {% if address.postalCode %}{{ address.postalCode }} {% endif %}{% if address.locality %}{{ address.locality }}{% endif %}{% if address.postalCode or address.locality %}<br>{% endif %}
+                {{ address.region }}{% if address.region and address.country %}, {% endif %}{{ address.country }}
+                {% endwith %}
+            {% endif %}
+            </td>
+
+            {% endwith %}
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endwith %}
+{% empty %}
+{% endfor %}
