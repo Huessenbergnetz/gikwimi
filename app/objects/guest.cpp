@@ -67,10 +67,10 @@ Guest::Guest(dbid_t id, const QString &uid, dbid_t groupId, const Contact &conta
     d->lockedBy = lockedBy;
     d->id = id;
     d->groupId = groupId;
-    d->adults = std::min(adults, std::numeric_limits<quint8>::max());
-    d->adultsAccepted = std::min(adultsAccepted, std::numeric_limits<quint8>::max());
-    d->children = std::min(children, std::numeric_limits<quint8>::max());
-    d->childrenAccepted = std::min(childrenAccepted, std::numeric_limits<quint8>::max());
+    d->adults = static_cast<quint8>(std::min(adults, static_cast<uint>(std::numeric_limits<quint8>::max())));
+    d->adultsAccepted = static_cast<quint8>(std::min(adultsAccepted, static_cast<uint>(std::numeric_limits<quint8>::max())));
+    d->children = static_cast<quint8>(std::min(children, static_cast<uint>(std::numeric_limits<quint8>::max())));
+    d->childrenAccepted = static_cast<quint8>(std::min(childrenAccepted, static_cast<uint>(std::numeric_limits<quint8>::max())));
     d->status = status;
     d->notifications = notifications;
 }
@@ -90,10 +90,10 @@ Guest::Guest(dbid_t id, const QString &uid, const GuestGroup &group, const Conta
     d->lockedAt = lockedAt;
     d->lockedBy = lockedBy;
     d->id = id;
-    d->adults = std::min(adults, std::numeric_limits<quint8>::max());
-    d->adultsAccepted = std::min(adultsAccepted, std::numeric_limits<quint8>::max());
-    d->children = std::min(children, std::numeric_limits<quint8>::max());
-    d->childrenAccepted = std::min(childrenAccepted, std::numeric_limits<quint8>::max());
+    d->adults = static_cast<quint8>(std::min(adults, static_cast<uint>(std::numeric_limits<quint8>::max())));
+    d->adultsAccepted = static_cast<quint8>(std::min(adultsAccepted, static_cast<uint>(std::numeric_limits<quint8>::max())));
+    d->children = static_cast<quint8>(std::min(children, static_cast<uint>(std::numeric_limits<quint8>::max())));
+    d->childrenAccepted = static_cast<quint8>(std::min(childrenAccepted, static_cast<uint>(std::numeric_limits<quint8>::max())));
     d->status = status;
     d->notifications = notifications;
 }
