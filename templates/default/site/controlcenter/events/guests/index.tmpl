@@ -1,52 +1,94 @@
-{% with site_subtitle as page_header %}
-{% with site_title as page_subheader %}
-{% include "inc/page_header.tmpl" %}
-{% endwith %}
-{% endwith %}
+<div class="d-flex">
+    <h1>{{ site_subtitle }} <small class="text-muted">{{ site_title }}</small></h1>
+    <div class="ms-auto">
+        <button type="button" class="btn btn-outline-secondary text-capitalize" data-bs-toggle="modal" data-bs-target="#addGroupModal">{{ _("add group") }}</button>
+    </div>
+</div>
 
 {% for group in groups %}
-<h2>{{ group.name }}</h2>
-{% with group.guests as guests %}
-<table id="group_{{ group.id }}" class="table">
-    <thead>
-        <tr>
-            <th scope="col" class="text-capitalize">{{ guests_table_headers.name }}</th>
-            <th scope="col" class="text-capitalize">{{ guests_table_headers.guests }}</th>
-            <th scope="col" class="text-capitalize">{{ guests_table_headers.address }}</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for guest in guests %}
-        <tr>
-            {% with guest.contact.addressee as addressee %}
-            <td>
-            {% if guest.contact.addressee.familyName == guest.partnerFamilyName %}
-            {% i18nc "A couple’s name like Alice and Bob Miller" "%1 and %2 %3" addressee.givenName guest.partnerGivenName addressee.familyName %}
-            {% else %}
-            {{ addressee.givenName }} {{ addressee.familyName }}{% if guest.partnerGivenName %}<br>{{ guest.partnerGivenName }} {{ guest.partnerFamilyName }}{% endif %}
-            {% endif %}
-            </td>
+<section id="group_{{ group.id }}">
+    <div class="d-flex">
+        <h2>{{ group.name }}</h2>
+        <div class="ms-auto">
+            <button type="button" class="btn btn-outline-secondary text-capitalize add-guest-to-group" value="{{ group.id }}">{{ _("add guest") }}</button>
+        </div>
+    </div>
+    {% with group.guests as guests %}
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col" class="text-capitalize">{{ guests_table_headers.name }}</th>
+                <th scope="col" class="text-capitalize">{{ guests_table_headers.guests }}</th>
+                <th scope="col" class="text-capitalize">{{ guests_table_headers.address }}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for guest in guests %}
+            <tr>
+                {% with guest.contact.addressee as addressee %}
+                <td>
+                {% if guest.contact.addressee.familyName == guest.partnerFamilyName %}
+                {% i18nc "A couple’s name like Alice and Bob Miller" "%1 and %2 %3" addressee.givenName guest.partnerGivenName addressee.familyName %}
+                {% else %}
+                {{ addressee.givenName }} {{ addressee.familyName }}{% if guest.partnerGivenName %}<br>{{ guest.partnerGivenName }} {{ guest.partnerFamilyName }}{% endif %}
+                {% endif %}
+                </td>
 
-            <td>
-            <span class="text-capitalize">{{ guests_table_headers.adults }}</span>:&nbsp;{{ guest.adultsAccepted }}/{{ guest.adults }}<br>
-            <span class="text-capitalize">{{ guests_table_headers.children }}</span>:&nbsp;{{ guest.childrenAccepted }}/{{ guest.children }}
-            </td>
+                <td>
+                <span class="text-capitalize">{{ guests_table_headers.adults }}</span>:&nbsp;{{ guest.adultsAccepted }}/{{ guest.adults }}<br>
+                <span class="text-capitalize">{{ guests_table_headers.children }}</span>:&nbsp;{{ guest.childrenAccepted }}/{{ guest.children }}
+                </td>
 
-            <td>
-            {% if addressee.addresses.size %}
-                {% with addressee.addresses.0 as address %}
-                {% if address.street %}{{ address.street }}<br>{% endif %}
-                {% if address.postalCode %}{{ address.postalCode }} {% endif %}{% if address.locality %}{{ address.locality }}{% endif %}{% if address.postalCode or address.locality %}<br>{% endif %}
-                {{ address.region }}{% if address.region and address.country %}, {% endif %}{{ address.country }}
+                <td>
+                {% if addressee.addresses.size %}
+                    {% with addressee.addresses.0 as address %}
+                    {% if address.street %}{{ address.street }}<br>{% endif %}
+                    {% if address.postalCode %}{{ address.postalCode }} {% endif %}{% if address.locality %}{{ address.locality }}{% endif %}{% if address.postalCode or address.locality %}<br>{% endif %}
+                    {{ address.region }}{% if address.region and address.country %}, {% endif %}{{ address.country }}
+                    {% endwith %}
+                {% endif %}
+                </td>
+
                 {% endwith %}
-            {% endif %}
-            </td>
-
-            {% endwith %}
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</section>
 {% endwith %}
 {% empty %}
 {% endfor %}
+
+<!-- start add group modal -->
+<div class="modal fade" id="addGroupModal" tabindex="-1" aria-labelledby="addGroupModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addGroupModalLabel">{% i18n "Add new group" %}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="close"></button>
+            </div>
+
+            <div class="modal-body">
+                <form>
+                    <div>
+                        <label for="newGroupName" class="form-label">{{ _("Name") }}</label>
+                        <input type="text" class="form-control" id="newGroupName" name="name" aria-describedby="newGroupNameHelp" required="required">
+                        <div id="newGroupNameHelp" class="form-text"></div>
+                    </div>
+
+                    <div>
+                        <label for="newGroupSlug" class="form-label">{{ _("Slug") }}</label>
+                        <input type="text" class="form-control" id="newGroupSlug" name="slug" aria-describedby="newGroupSlugHelp">
+                        <div id="newGroupSlugHelp" class="form-text"></div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary text-capitalize" data-bs-dismiss="modal">{{ _("cancel") }}</button>
+                <button id="createGroupButton" type="button" class="btn btn-primary text-capitalize">{{ _("create group") }}</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end add group modal -->
