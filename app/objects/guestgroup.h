@@ -29,6 +29,7 @@ class GuestGroup
     Q_PROPERTY(QString name READ name CONSTANT)
     Q_PROPERTY(QString slug READ slug CONSTANT)
     Q_PROPERTY(QString note READ note CONSTANT)
+    Q_PROPERTY(QVariantList guests READ guests CONSTANT)
     Q_PROPERTY(QDateTime created READ created CONSTANT)
     Q_PROPERTY(QDateTime updated READ updated CONSTANT)
     Q_PROPERTY(QDateTime lockedAt READ lockedAt CONSTANT)
@@ -61,6 +62,8 @@ public:
     QString slug() const;
 
     QString note() const;
+
+    QVariantList guests() const;
 
     QDateTime created() const;
 

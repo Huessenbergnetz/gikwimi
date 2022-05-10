@@ -6,6 +6,7 @@
 #include "guestgroup.h"
 #include "../logging.h"
 #include "error.h"
+#include "guest.h"
 
 #include <Cutelyst/Context>
 #include <Cutelyst/Plugins/Utils/Sql>
@@ -120,6 +121,19 @@ QString GuestGroup::slug() const
 QString GuestGroup::note() const
 {
     return d ? d->note : QString();
+}
+
+QVariantList GuestGroup::guests() const
+{
+    QVariantList list;
+    if (d) {
+        const auto guests = Guest::list(nullptr, nullptr, *this);
+        list.reserve(guests.size());
+        for (const Guest &guest : guests) {
+            list << QVariant::fromValue<Guest>(guest);
+        }
+    }
+    return list;
 }
 
 QDateTime GuestGroup::created() const
