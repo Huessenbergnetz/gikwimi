@@ -24,7 +24,7 @@
             {% if contact.addressee.addresses.size %}
                 {% with contact.addressee.addresses.0 as address %}
                 {% if address.street %}{{ address.street }}<br>{% endif %}
-                {% if address.street %}{{ address.postalCode }} {% endif %}{% if address.locality %}{{ address.locality }}{% endif %}{% if address.postalCode or address.locality %}<br>{% endif %}
+                {% if address.postalCode %}{{ address.postalCode }} {% endif %}{% if address.locality %}{{ address.locality }}{% endif %}{% if address.postalCode or address.locality %}<br>{% endif %}
                 {{ address.region }}{% if address.region and address.country %}, {% endif %}{{ address.country }}
                 {% endwith %}
             {% endif %}
