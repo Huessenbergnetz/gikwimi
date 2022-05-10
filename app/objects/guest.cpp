@@ -36,10 +36,10 @@ public:
     SimpleUser lockedBy;
     dbid_t id = 0;
     dbid_t groupId = 0;
-    quint8 adults = 0;
-    quint8 adultsAccepted = 0;
-    quint8 children = 0;
-    quint8 childrenAccepted = 0;
+    uint adults = 0;
+    uint adultsAccepted = 0;
+    uint children = 0;
+    uint childrenAccepted = 0;
     Guest::Status status = Guest::InvalidStatus;
     Guest::Notifications notifications = Guest::NotNotified;
 };
@@ -49,7 +49,7 @@ Guest::Guest()
 
 }
 
-Guest::Guest(dbid_t id, const QString &uid, dbid_t groupId, const Contact &contact, const QString &pgName, const QString &pfName, quint8 adults, quint8 adultsAccepted, quint8 children, quint8 childrenAccepted, Guest::Status status, Guest::Notifications notifications, const QString &note, const QString &comment, const QDateTime &created, const QDateTime &updated, const QDateTime &lockedAt, const SimpleUser &lockedBy)
+Guest::Guest(dbid_t id, const QString &uid, dbid_t groupId, const Contact &contact, const QString &pgName, const QString &pfName, uint adults, uint adultsAccepted, uint children, uint childrenAccepted, Guest::Status status, Guest::Notifications notifications, const QString &note, const QString &comment, const QDateTime &created, const QDateTime &updated, const QDateTime &lockedAt, const SimpleUser &lockedBy)
     : d(new GuestData)
 {
     d->contact = contact;
@@ -72,7 +72,7 @@ Guest::Guest(dbid_t id, const QString &uid, dbid_t groupId, const Contact &conta
     d->notifications = notifications;
 }
 
-Guest::Guest(dbid_t id, const QString &uid, const GuestGroup &group, const Contact &contact, const QString &pgName, const QString &pfName, quint8 adults, quint8 adultsAccepted, quint8 children, quint8 childrenAccepted, Guest::Status status, Guest::Notifications notifications, const QString &note, const QString &comment, const QDateTime &created, const QDateTime &updated, const QDateTime &lockedAt, const SimpleUser &lockedBy)
+Guest::Guest(dbid_t id, const QString &uid, const GuestGroup &group, const Contact &contact, const QString &pgName, const QString &pfName, uint adults, uint adultsAccepted, uint children, uint childrenAccepted, Guest::Status status, Guest::Notifications notifications, const QString &note, const QString &comment, const QDateTime &created, const QDateTime &updated, const QDateTime &lockedAt, const SimpleUser &lockedBy)
     : d(new GuestData)
 {
     d->contact = contact;
@@ -146,22 +146,22 @@ QString Guest::partnerFamilyName() const
     return d ? d->partnerFamilyName : QString();
 }
 
-quint8 Guest::adults() const
+uint Guest::adults() const
 {
     return d ? d->adults : 0;
 }
 
-quint8 Guest::adultsAccepted() const
+uint Guest::adultsAccepted() const
 {
     return d ? d->adultsAccepted : 0;
 }
 
-quint8 Guest::children() const
+uint Guest::children() const
 {
     return d ? d->children : 0;
 }
 
-quint8 Guest::childrenAccepted() const
+uint Guest::childrenAccepted() const
 {
     return d ? d->childrenAccepted : 0;
 }
@@ -307,7 +307,7 @@ std::vector<Guest> Guest::list(Cutelyst::Context *c, Error *e, const GuestGroup 
 {
     std::vector<Guest> guests;
 
-    QSqlQuery q = CPreparedSqlQueryThreadFO(QStringLiteral("SELECT"
+    QSqlQuery q = CPreparedSqlQueryThreadFO(QStringLiteral("SELECT "
                                                            "g.id, g.uid, g.partner_given_name, g.partner_family_name, g.adults, g.adults_accepted, g.children, g.children_accepted, g.status, g.notified, g.note, g.comment, g.created_at, g.updated_at, g.locked_at, "
                                                            "u.id AS locked_by_id, u.username AS locked_by_username, "
                                                            "c.id AS contact_id, c.addressbook_id, c.vcard, c.created_at contact_created, c.updated_at AS contact_updated "
