@@ -15,7 +15,7 @@
     <tbody>
         {% for event in events %}
         <tr>
-            <td>{{ event.title }}</td>
+            <td><a href="/controlcenter/events/{{ event.id }}/guests">{{ event.title }}</a></td>
             <td>{{ event.start }}{% if not event.startTimeOnly %}<br>{{ event.end }}{% endif %}</td>
             <td>{{ event.totalInvited }}/{{ event.totalAccepted }}</td>
             <td>{{ event.id }}</td>
