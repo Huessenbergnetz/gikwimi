@@ -21,6 +21,9 @@ public:
     C_ATTR(index, :Path :Args(0))
     void index(Context *);
 
+    C_ATTR(add, :Path("add") :Args(0))
+    void add(Context *c);
+
     C_ATTR(base, :Chained("/") :PathPart("controlcenter/events") :CaptureArgs(1))
     void base(Context *c, const QString &id);
 
@@ -36,8 +39,14 @@ public:
     C_ATTR(editGuest, :Chained("base") :PathPart("guests/edit") :Args(1))
     void editGuest(Context *c, const QString &id);
 
-    C_ATTR(add, :Path("add") :Args(0))
-    void add(Context *c);
+    C_ATTR(guestGroups, :Chained("base") :PathPart("guestgroups") :Args(0))
+    void guestGroups(Context *c);
+
+    C_ATTR(addGuestGroup, :Chained("base") :PathPart("guestgroups/add") :Args(0))
+    void addGuestGroup(Context *c);
+
+    C_ATTR(editGuestGroups, :Chained("base") :PathPart("guestgroups/edit") :Args(1))
+    void editGuestGroups(Context *c, const QString &id);
 };
 
 #endif // CONTROLCENTEREVENTS_H

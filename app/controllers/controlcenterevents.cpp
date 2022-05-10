@@ -119,3 +119,26 @@ void ControlCenterEvents::add(Context *c)
                  {QStringLiteral("template"), QStringLiteral("controlcenter/events/add.tmpl")}
              });
 }
+
+void ControlCenterEvents::guestGroups(Context *c)
+{
+    c->stash({
+                 {QStringLiteral("template"), QStringLiteral("controlcenter/events/guestgroups/index.tmpl")}
+             });
+}
+
+void ControlCenterEvents::addGuestGroup(Context *c)
+{
+    c->stash({
+                 {QStringLiteral("template"), QStringLiteral("controlcenter/events/guestgroups/add.tmpl")}
+             });
+}
+
+void ControlCenterEvents::editGuestGroups(Context *c, const QString &id)
+{
+    c->stash({
+                 {QStringLiteral("template"), QStringLiteral("controlcenter/events/guestgroups/edit.tmpl")}
+             });
+}
+
+#include "moc_controlcenterevents.cpp"
