@@ -20,6 +20,9 @@
 #include <QMetaObject>
 #include <QMetaEnum>
 
+#include <limits>
+#include <algorithm>
+
 class GuestData : public QSharedData
 {
 public:
@@ -36,10 +39,10 @@ public:
     SimpleUser lockedBy;
     dbid_t id = 0;
     dbid_t groupId = 0;
-    uint adults = 0;
-    uint adultsAccepted = 0;
-    uint children = 0;
-    uint childrenAccepted = 0;
+    quint8 adults = 0;
+    quint8 adultsAccepted = 0;
+    quint8 children = 0;
+    quint8 childrenAccepted = 0;
     Guest::Status status = Guest::InvalidStatus;
     Guest::Notifications notifications = Guest::NotNotified;
 };
@@ -64,10 +67,10 @@ Guest::Guest(dbid_t id, const QString &uid, dbid_t groupId, const Contact &conta
     d->lockedBy = lockedBy;
     d->id = id;
     d->groupId = groupId;
-    d->adults = adults;
-    d->adultsAccepted = adultsAccepted;
-    d->children = children;
-    d->childrenAccepted = childrenAccepted;
+    d->adults = std::min(adults, std::numeric_limits<quint8>::max());
+    d->adultsAccepted = std::min(adultsAccepted, std::numeric_limits<quint8>::max());
+    d->children = std::min(children, std::numeric_limits<quint8>::max());
+    d->childrenAccepted = std::min(childrenAccepted, std::numeric_limits<quint8>::max());
     d->status = status;
     d->notifications = notifications;
 }
@@ -87,10 +90,10 @@ Guest::Guest(dbid_t id, const QString &uid, const GuestGroup &group, const Conta
     d->lockedAt = lockedAt;
     d->lockedBy = lockedBy;
     d->id = id;
-    d->adults = adults;
-    d->adultsAccepted = adultsAccepted;
-    d->children = children;
-    d->childrenAccepted = childrenAccepted;
+    d->adults = std::min(adults, std::numeric_limits<quint8>::max());
+    d->adultsAccepted = std::min(adultsAccepted, std::numeric_limits<quint8>::max());
+    d->children = std::min(children, std::numeric_limits<quint8>::max());
+    d->childrenAccepted = std::min(childrenAccepted, std::numeric_limits<quint8>::max());
     d->status = status;
     d->notifications = notifications;
 }
