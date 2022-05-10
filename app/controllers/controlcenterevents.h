@@ -36,6 +36,9 @@ public:
     C_ATTR(addGuest, :Chained("base") :PathPart("guests/add") :Args(0))
     void addGuest(Context *c);
 
+    C_ATTR(addGuestToGroup, :Chained("base") :PathPart("guests/addtogroup") :Args(1))
+    void addGuestToGroup(Context *c, const QString &groupId);
+
     C_ATTR(editGuest, :Chained("base") :PathPart("guests/edit") :Args(1))
     void editGuest(Context *c, const QString &id);
 

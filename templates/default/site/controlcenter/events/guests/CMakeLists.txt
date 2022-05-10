@@ -3,6 +3,7 @@
 
 set(CONTROLCENTER_EVENTS_GUESTS_FILES
     add.tmpl
+    addtogroup.tmpl
     edit.tmpl
     index.tmpl
 )

@@ -99,8 +99,16 @@ void ControlCenterEvents::guests(Context *c)
 void ControlCenterEvents::addGuest(Context *c)
 {
     c->stash({
-                 {QStringLiteral("site_subtitle"), c->translate("ControlCenterEvents", "Add guests")},
+                 {QStringLiteral("site_subtitle"), c->translate("ControlCenterEvents", "Add guest")},
                  {QStringLiteral("template"), QStringLiteral("controlcenter/events/guests/add.tmpl")}
+             });
+}
+
+void ControlCenterEvents::addGuestToGroup(Context *c, const QString &groupId)
+{
+    c->stash({
+                 {QStringLiteral("site_subtitle"), c->translate("ControlCenterEvents", "Add guest")},
+                 {QStringLiteral("template"), QStringLiteral("controlcenter/events/guests/addtogroup.tmpl")}
              });
 }
 
