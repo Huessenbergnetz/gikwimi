@@ -21,7 +21,7 @@
             {% with guest.contact.addressee as addressee %}
             <td>
             {% if guest.contact.addressee.familyName == guest.partnerFamilyName %}
-            {% i18nc "A couples name like Alice and Bob Miller" "%1 and %2 %3" addressee.givenName guest.partnerGivenName addressee.familyName %}
+            {% i18nc "A couple’s name like Alice and Bob Miller" "%1 and %2 %3" addressee.givenName guest.partnerGivenName addressee.familyName %}
             {% else %}
             {{ addressee.givenName }} {{ addressee.familyName }}{% if guest.partnerGivenName %}<br>{{ guest.partnerGivenName }} {{ guest.partnerFamilyName }}{% endif %}
             {% endif %}
