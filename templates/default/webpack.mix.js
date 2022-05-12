@@ -18,6 +18,7 @@ mix.scripts([
     'node_modules/@popperjs/core/dist/umd/popper.js',
     'node_modules/bootstrap/dist/js/bootstrap.js',
     'assets/js/general.js',
+    'assets/js/addguest.js',
     'assets/js/addgroup.js'
 ], 'static/js/scripts.js');
 

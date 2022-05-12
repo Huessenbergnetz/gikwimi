@@ -14,6 +14,9 @@
 #include <Cutelyst/Plugins/Utils/ValidatorResult> // includes the validator result
 #include <Cutelyst/Plugins/Utils/validatorrequired.h>
 #include <Cutelyst/Plugins/Utils/validatoralphadash.h>
+#include <Cutelyst/Plugins/Utils/validatorbetween.h>
+
+#include <limits>
 
 ControlCenterEvents::ControlCenterEvents(QObject *parent)
     : Controller{parent}
@@ -103,6 +106,41 @@ void ControlCenterEvents::guests(Context *c)
 
 void ControlCenterEvents::addGuest(Context *c)
 {
+    const auto req = c->req();
+
+    if (req->isPost()) {
+        static Validator v({
+                               new ValidatorRequired(QStringLiteral("group")),
+                               new ValidatorBetween(QStringLiteral("group"), QMetaType::UInt, std::numeric_limits<uint>::min(), std::numeric_limits<uint>::max()),
+                               new ValidatorRequired(QStringLiteral("contact")),
+                               new ValidatorBetween(QStringLiteral("contact"), QMetaType::UInt, std::numeric_limits<uint>::min(), std::numeric_limits<uint>::max()),
+                               new ValidatorRequired(QStringLiteral("expectedAdults")),
+                               new ValidatorBetween(QStringLiteral("expectedAdults"), QMetaType::UInt, 0, 10),
+                               new ValidatorRequired(QStringLiteral("expectedChildren")),
+                               new ValidatorBetween(QStringLiteral("expectedChildren"), QMetaType::UInt, 0, 10)
+                           });
+        const ValidatorResult vr = v.validate(c, Validator::FillStashOnError|Validator::BodyParamsOnly);
+        if (vr) {
+            QVariantHash values = vr.values();
+            values.insert(QStringLiteral("partnerGivenName"), req->bodyParam(QStringLiteral("partnerGivenName")));
+            values.insert(QStringLiteral("partnerFamilyName"), req->bodyParam(QStringLiteral("partnerFamilyName")));
+
+            Error e;
+            const Guest guest = Guest::create(c, &e, Event::fromStash(c), values);
+            if (guest.isValid()) {
+                if (req->xhr()) {
+                    c->res()->setJsonObjectBody(guest.toJson());
+                }
+                c->res()->setStatus(201);
+            } else {
+                e.toStash(c, true);
+                return;
+            }
+        } else {
+            c->res()->setStatus(400);
+        }
+    }
+
     c->stash({
                  {QStringLiteral("site_subtitle"), c->translate("ControlCenterEvents", "Add guest")},
                  {QStringLiteral("template"), QStringLiteral("controlcenter/events/guests/add.tmpl")}
@@ -161,8 +199,8 @@ void ControlCenterEvents::addGuestGroup(Context *c)
                 c->res()->setStatus(201);
                 return;
             } else {
-                c->setStash(QStringLiteral("error_msg"), e.text());
-                c->res()->setStatus(500);
+                e.toStash(c, true);
+                return;
             }
         } else {
             c->res()->setStatus(400);
