@@ -138,6 +138,8 @@ public:
 
     static std::vector<Guest> listByEvent(Cutelyst::Context *c, Error *e, const Event &event);
 
+    static Guest create(Cutelyst::Context *c, Error *e, const Event &event, const QVariantHash &p);
+
 private:
     QSharedDataPointer<GuestData> d;
 

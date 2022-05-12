@@ -267,25 +267,13 @@ QString Guest::generateUid()
     QString uid;
 
     static int length = 6;
-    static std::vector<int> ascii = ([]() -> std::vector<int> {
-                                         std::vector<int> vec;
-                                         vec.reserve(36);
-                                         // decimal ascii codes for 0-9
-                                         for (int i = 48; i < 58; ++i) {
-                                             vec.push_back(i);
-                                         }
-                                         // decimal ascii codes for a-z
-                                         for (int i = 97; i < 123; ++i) {
-                                             vec.push_back(i);
-                                         }
-                                         return vec;
-                                     }());
+    static QString allowedChars = QStringLiteral("abcdefghijklmnopqrstuvwxyz0123456789");
 
     auto rand = QRandomGenerator::global();
     uid.reserve(length);
 
     for (int i = 0; i < length; ++i) {
-        uid.append(QChar(rand->bounded(0, ascii.size() - 1)));
+        uid.append(allowedChars.at(rand->bounded(0, allowedChars.size() - 1)));
     }
 
     return uid;
@@ -479,6 +467,71 @@ std::vector<Guest> Guest::listByEvent(Cutelyst::Context *c, Error *e, const Even
     }
 
     return guests;
+}
+
+Guest Guest::create(Cutelyst::Context *c, Error *e, const Event &event, const QVariantHash &p)
+{
+    Guest guest;
+
+    Q_ASSERT(event.isValid());
+
+    const dbid_t groupId = p.value(QStringLiteral("group")).toUInt();
+    const GuestGroup group = GuestGroup::get(c, e, groupId);
+    if (!group.isValid()) {
+        return guest;
+    }
+
+    const dbid_t contactId = p.value(QStringLiteral("contact")).toUInt();
+    const Contact contact = Contact::get(c, e, contactId);
+    if (!contact.isValid()) {
+        return guest;
+    }
+
+    if (group.event().id() != event.id()) {
+        if (c && e) *e = Error(Error::ApplicationError, c->translate("Guest", "Can not create new guest for group “%1” (ID: %2) that does not belong to event “%3” (ID: %4).").arg(group.name(), QString::number(group.id()), event.title(), QString::number(event.id())));
+        qCCritical(GIK_CORE) << "Failed to create new guest for group" << group.name() << "ID:" << group.id() << "that does not belong to event" << event.title() << "ID:" << event.id();
+        return guest;
+    }
+
+    const QString pgName = p.value(QStringLiteral("partnerGivenName")).toString().trimmed();
+    QString pfName = p.value(QStringLiteral("partnerFamilyName")).toString().trimmed();
+    if (pfName.isEmpty() && !pgName.isEmpty()) {
+        pfName = contact.addressee().familyName();
+    }
+
+    const uint expectedAdults = p.value(QStringLiteral("expectedAdults")).toUInt();
+    const uint acceptedAdults = event.participation() == Event::Refusal ? expectedAdults : 0;
+    const uint expectedChildren = p.value(QStringLiteral("expectedChildren")).toUInt();
+    const uint acceptedChildren = event.participation() == Event::Refusal ? expectedChildren : 0;
+    const QString note = p.value(QStringLiteral("note")).toString();
+    const QDateTime now = QDateTime::currentDateTimeUtc();
+    const QString uid = Guest::generateUid();
+
+    QSqlQuery q = CPreparedSqlQueryThread(QStringLiteral("INSERT INTO guests (uid, group_id, contact_id, partner_given_name, partner_family_name, adults, adults_accepted, children, children_accepted, status, note, created_at, updated_at) "
+                                                         "VALUES (:uid, :group_id, :contact_id, :partner_given_name, :partner_family_name, :adults, :adults_accepted, :children, :children_accepted, :status, :note, :created_at, :updated_at)"));
+    q.bindValue(QStringLiteral(":uid"), uid);
+    q.bindValue(QStringLiteral(":group_id"), group.id());
+    q.bindValue(QStringLiteral(":contact_id"), contact.id());
+    q.bindValue(QStringLiteral(":partner_given_name"), pgName);
+    q.bindValue(QStringLiteral(":partner_family_name"), pfName);
+    q.bindValue(QStringLiteral(":adults"), expectedAdults);
+    q.bindValue(QStringLiteral(":adults_accepted"), acceptedAdults);
+    q.bindValue(QStringLiteral(":children"), expectedChildren);
+    q.bindValue(QStringLiteral(":children_accepted"), acceptedChildren);
+    q.bindValue(QStringLiteral(":status"), static_cast<int>(Guest::DefaultStaus));
+    q.bindValue(QStringLiteral(":note"), note);
+    q.bindValue(QStringLiteral(":created_at"), now);
+    q.bindValue(QStringLiteral(":updated_at"), now);
+
+    if (Q_LIKELY(q.exec())) {
+        const dbid_t id = q.lastInsertId().toUInt();
+        guest = Guest(id, uid, group, contact, pgName, pfName, expectedAdults, acceptedAdults, expectedChildren, acceptedChildren, Guest::DefaultStaus, Guest::NotNotified, note, QString(), now, now, QDateTime(), SimpleUser());
+    } else {
+        if (c && e) *e = Error(q.lastError(), c->translate("Guest", "Failed to create new guest “%1” for group “%2” in event “%3” in the database.").arg(contact.addressee().formattedName(), group.name(), event.title()));
+        qCCritical(GIK_CORE) << "Failed to execute database query to create new guest for group id" << groupId << "in event id" << event.id() << "in the database:" << q.lastError().text();
+    }
+
+    return guest;
 }
 
 QDataStream &operator<<(QDataStream &stream, const Guest &guest)
