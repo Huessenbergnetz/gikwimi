@@ -374,6 +374,8 @@ QJsonObject Contact::toJson() const
         }
     }
 
+    o.insert(QStringLiteral("addressee"), ao);
+
     return o;
 }
 
