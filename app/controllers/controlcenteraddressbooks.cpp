@@ -14,6 +14,8 @@
 
 #include <Cutelyst/Plugins/Authentication/authenticationuser.h>
 
+#include <QJsonArray>
+
 ControlCenterAddressBooks::ControlCenterAddressBooks(QObject *parent)
     : Controller{parent}
 {
@@ -34,24 +36,33 @@ void ControlCenterAddressBooks::index(Context *c)
         return;
     }
 
-    buildMenu(c);
+    if (c->req()->xhr()) {
+        QJsonArray array;
+        for (const AddressBook &book : addressBooks) {
+            array.push_back(book.toJson());
+        }
+        c->res()->setJsonArrayBody(array);
+    } else {
 
-    QMap<QString,QString> addressbooksTableHeaders;
-    //: table header
-    addressbooksTableHeaders.insert(QStringLiteral("id"), c->translate("ControlCenterAddressBooks", "ID"));
-    //: table header
-    addressbooksTableHeaders.insert(QStringLiteral("type"), c->translate("ControlCenterAddressBooks", "type"));
-    //: table header
-    addressbooksTableHeaders.insert(QStringLiteral("name"), c->translate("ControlCenterAddressBooks", "name"));
-    //: table header
-    addressbooksTableHeaders.insert(QStringLiteral("size"), c->translate("ControlCenterAddressBooks", "size"));
+        buildMenu(c);
 
-    c->stash({
-                 {QStringLiteral("site_title"), c->translate("ControlCenterAddressBook", "Addressbooks")},
-                 {QStringLiteral("template"), QStringLiteral("controlcenter/addressbooks/index.tmpl")},
-                 {QStringLiteral("addressbooks"), QVariant::fromValue<std::vector<AddressBook>>(addressBooks)},
-                 {QStringLiteral("addressbooks_table_headers"), QVariant::fromValue<QMap<QString,QString>>(addressbooksTableHeaders)}
-             });
+        QMap<QString,QString> addressbooksTableHeaders;
+        //: table header
+        addressbooksTableHeaders.insert(QStringLiteral("id"), c->translate("ControlCenterAddressBooks", "ID"));
+        //: table header
+        addressbooksTableHeaders.insert(QStringLiteral("type"), c->translate("ControlCenterAddressBooks", "type"));
+        //: table header
+        addressbooksTableHeaders.insert(QStringLiteral("name"), c->translate("ControlCenterAddressBooks", "name"));
+        //: table header
+        addressbooksTableHeaders.insert(QStringLiteral("size"), c->translate("ControlCenterAddressBooks", "size"));
+
+        c->stash({
+                     {QStringLiteral("site_title"), c->translate("ControlCenterAddressBook", "Addressbooks")},
+                     {QStringLiteral("template"), QStringLiteral("controlcenter/addressbooks/index.tmpl")},
+                     {QStringLiteral("addressbooks"), QVariant::fromValue<std::vector<AddressBook>>(addressBooks)},
+                     {QStringLiteral("addressbooks_table_headers"), QVariant::fromValue<QMap<QString,QString>>(addressbooksTableHeaders)}
+                 });
+    }
 }
 
 void ControlCenterAddressBooks::base(Context *c, const QString &id)
@@ -81,24 +92,32 @@ void ControlCenterAddressBooks::contacts(Context *c)
         return;
     }
 
-    QMap<QString,QString> contactsTableHeaders;
-    //: table header
-    contactsTableHeaders.insert(QStringLiteral("id"), c->translate("ControlCenterAddressBooks", "ID"));
-    //: table header
-    contactsTableHeaders.insert(QStringLiteral("given_name"), c->translate("ControlCenterAddressBooks", "given name"));
-    //: table header
-    contactsTableHeaders.insert(QStringLiteral("family_name"), c->translate("ControlCenterAddressBooks", "family name"));
-    //: table header
-    contactsTableHeaders.insert(QStringLiteral("email"), c->translate("ControlCenterAddressBooks", "email"));
-    //: table header
-    contactsTableHeaders.insert(QStringLiteral("address"), c->translate("ControlCenterAddressBooks", "address"));
+    if (c->req()->xhr()) {
+        QJsonArray array;
+        for (const Contact &cont : contacts) {
+            array.push_back(cont.toJson());
+        }
+        c->res()->setJsonArrayBody(array);
+    } else {
+        QMap<QString,QString> contactsTableHeaders;
+        //: table header
+        contactsTableHeaders.insert(QStringLiteral("id"), c->translate("ControlCenterAddressBooks", "ID"));
+        //: table header
+        contactsTableHeaders.insert(QStringLiteral("given_name"), c->translate("ControlCenterAddressBooks", "given name"));
+        //: table header
+        contactsTableHeaders.insert(QStringLiteral("family_name"), c->translate("ControlCenterAddressBooks", "family name"));
+        //: table header
+        contactsTableHeaders.insert(QStringLiteral("email"), c->translate("ControlCenterAddressBooks", "email"));
+        //: table header
+        contactsTableHeaders.insert(QStringLiteral("address"), c->translate("ControlCenterAddressBooks", "address"));
 
-    c->stash({
-                 {QStringLiteral("site_subtitle"), c->translate("ControlCenterAddressBook", "Contacts")},
-                 {QStringLiteral("template"), QStringLiteral("controlcenter/addressbooks/contacts/index.tmpl")},
-                 {QStringLiteral("contacts"), QVariant::fromValue<std::vector<Contact>>(contacts)},
-                 {QStringLiteral("contacts_table_headers"), QVariant::fromValue<QMap<QString,QString>>(contactsTableHeaders)}
-             });
+        c->stash({
+                     {QStringLiteral("site_subtitle"), c->translate("ControlCenterAddressBook", "Contacts")},
+                     {QStringLiteral("template"), QStringLiteral("controlcenter/addressbooks/contacts/index.tmpl")},
+                     {QStringLiteral("contacts"), QVariant::fromValue<std::vector<Contact>>(contacts)},
+                     {QStringLiteral("contacts_table_headers"), QVariant::fromValue<QMap<QString,QString>>(contactsTableHeaders)}
+                 });
+    }
 }
 
 void ControlCenterAddressBooks::addContact(Context *c)
