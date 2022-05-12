@@ -37,6 +37,8 @@
 
 #include <cutelee/engine.h>
 
+#include <KContacts/Picture>
+
 #include <QCoreApplication>
 #include <QMutexLocker>
 #include <QSqlDatabase>
@@ -80,6 +82,7 @@ bool Gikwimi::init()
 
     qCDebug(GIK_CORE) << "Registering meta types";
     qRegisterMetaType<dbid_t>("dbid_t");
+    qRegisterMetaType<KContacts::Picture>("KContacts::Picture");
 
     qCDebug(GIK_CORE) << "Registering Cutelee view";
     auto view = new CuteleeView(this);
