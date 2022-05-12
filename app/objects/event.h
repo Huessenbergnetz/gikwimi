@@ -37,6 +37,7 @@ class Event
     Q_PROPERTY(QDateTime startUtc READ startUtc CONSTANT)
     Q_PROPERTY(QDateTime end READ end CONSTANT)
     Q_PROPERTY(QDateTime endUtc READ endUtc CONSTANT)
+    Q_PROPERTY(QString timezone READ ianaTimezone CONSTANT)
     Q_PROPERTY(Event::Audience audience READ audience CONSTANT)
     Q_PROPERTY(Event::Participation participation READ participation CONSTANT)
     Q_PROPERTY(QString description READ description CONSTANT)
@@ -107,6 +108,8 @@ public:
     QDateTime end() const;
 
     QDateTime endUtc() const;
+
+    QString ianaTimezone() const;
 
     Event::Audience audience() const;
 

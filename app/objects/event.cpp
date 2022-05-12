@@ -171,6 +171,11 @@ QDateTime Event::endUtc() const
     return d ? d->end : QDateTime();
 }
 
+QString Event::ianaTimezone() const
+{
+    return d ? QString::fromUtf8(d->timezone.id()) : QString();
+}
+
 Event::Audience Event::audience() const
 {
     return d ? d->audience : InvalidAudience;
