@@ -416,6 +416,48 @@ std::vector<Contact> Contact::list(Cutelyst::Context *c, Error *e, const Address
     return contacts;
 }
 
+Contact Contact::get(Cutelyst::Context *c, Error *e, dbid_t id)
+{
+    Contact contact;
+
+    QSqlQuery q = CPreparedSqlQueryThreadFO(QStringLiteral("SELECT c.addressbook_id, c.vcard, c.created_at, c.updated_at, c.locked_at, u.id AS locked_by_id, u.username AS locked_by_username "
+                                                           "FROM contacts c LEFT JOIN users u ON u.id = c.locked_by WHERE c.id = :id"));
+    q.bindValue(QStringLiteral(":id"), id);
+
+    if (Q_LIKELY(q.exec())) {
+
+        if (q.next()) {
+            const QByteArray vcard = q.value(1).toString().toUtf8();
+            KContacts::VCardConverter converter;
+            const KContacts::Addressee addressee = converter.parseVCard(vcard);
+            if (addressee.isEmpty()) {
+                qCWarning(GIK_CORE) << "Failed to parse vCard data for contact ID" <<id;
+            }
+
+            const qlonglong  lat      = q.value(4).toLongLong();
+            const QDateTime  lockedAt = lat > 0 ? QDateTime::fromMSecsSinceEpoch(lat) : QDateTime();
+            const SimpleUser lockedBy = lat > 0 ? SimpleUser(q.value(5).toUInt(), q.value(6).toString()) : SimpleUser();
+
+            contact = Contact(id,
+                              q.value(0).toUInt(),
+                              addressee,
+                              q.value(2).toDateTime(),
+                              q.value(3).toDateTime(),
+                              lockedAt,
+                              lockedBy);
+        } else {
+            if (c && e) *e = Error(Error::NotFound, c->translate("Contact", "Can not find contact ID %1 in the database.").arg(id));
+            qCWarning(GIK_CORE) << "Can not find contact ID" <<id << "in the database.";
+        }
+
+    } else {
+        if (c && e) *e = Error(q.lastError(), c->translate("Contact", "Failed to get contact ID %1 from the database.").arg(id));
+        qCCritical(GIK_CORE) << "Failed to query contact ID" << id << "from the database:" << q.lastError().text();
+    }
+
+    return contact;
+}
+
 QDataStream &operator<<(QDataStream &stream, const Contact &contact)
 {
     stream << contact.d->addressee

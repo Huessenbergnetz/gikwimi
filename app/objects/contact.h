@@ -74,6 +74,8 @@ public:
 
     static std::vector<Contact> list(Cutelyst::Context *c, Error *e, const AddressBook &addressbook);
 
+    static Contact get(Cutelyst::Context *c, Error *e, dbid_t id);
+
 protected:
     QSharedDataPointer<ContactData> d;
 
