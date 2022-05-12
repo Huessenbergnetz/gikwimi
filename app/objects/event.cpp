@@ -290,6 +290,7 @@ QJsonObject Event::toJson() const
     o.insert(QStringLiteral("startUtc"), d->start.toString(Qt::ISODate));
     o.insert(QStringLiteral("end"), end().toString(Qt::ISODate));
     o.insert(QStringLiteral("endUtc"), d->end.toString());
+    o.insert(QStringLiteral("timezone"), ianaTimezone());
     o.insert(QStringLiteral("audience"), Event::audienceEnumToString(d->audience));
     o.insert(QStringLiteral("participation"), Event::participationEnumToString(d->participation));
     o.insert(QStringLiteral("description"), d->description);
