@@ -7,6 +7,7 @@
 #include "../logging.h"
 #include "error.h"
 #include "guest.h"
+#include "../utils.h"
 
 #include <Cutelyst/Context>
 #include <Cutelyst/Plugins/Utils/Sql>
@@ -311,6 +312,44 @@ GuestGroup GuestGroup::get(Cutelyst::Context *c, Error *e, dbid_t id)
     } else {
         if (c && e) *e = Error(q.lastError(), c->translate("GuestGroup", "Failed to get guest group with ID %1 from the database.").arg(id));
         qCCritical(GIK_CORE) << "Failed to execute database query to get guest group with ID" << id << "from the database:" << q.lastError().text();
+    }
+
+    return group;
+}
+
+GuestGroup GuestGroup::create(Cutelyst::Context *c, Error *e, const Event &event, const QVariantHash &p)
+{
+    GuestGroup group;
+
+    Q_ASSERT(event.isValid());
+
+    const QString name = p.value(QStringLiteral("name")).toString();
+    const QString note = p.value(QStringLiteral("note")).toString();
+    const QDateTime now = QDateTime::currentDateTimeUtc();
+
+    const QString slug = [p,name]() -> QString {
+        QString _slug = p.value(QStringLiteral("slug")).toString();
+        if (_slug.isEmpty()) {
+            _slug = Utils::createSlug(name);
+        }
+        return _slug;
+    }();
+
+    QSqlQuery q = CPreparedSqlQueryThread(QStringLiteral("INSERT INTO guestgroups (event_id, name, slug, note, created_at, updated_at) "
+                                                         "VALUES (:event_id, :name, :slug, :note, :created_at, :updated_at)"));
+    q.bindValue(QStringLiteral(":event_id"), event.id());
+    q.bindValue(QStringLiteral(":name"), name);
+    q.bindValue(QStringLiteral(":slug"), slug);
+    q.bindValue(QStringLiteral(":note"), note);
+    q.bindValue(QStringLiteral(":created_at"), now);
+    q.bindValue(QStringLiteral(":updated_at"), now);
+
+    if (Q_LIKELY(q.exec())) {
+        const dbid_t id = q.lastInsertId().toUInt();
+        group = GuestGroup(id, event, name, slug, note, now, now, QDateTime(), SimpleUser());
+    } else {
+        if (c && e) *e = Error(q.lastError(), c->translate("GuestGroup", "Failed to create new guest group “%1” in the database.").arg(name));
+        qCCritical(GIK_CORE) << "Failed to execute database query to create new guest group" << name << "in the database:" << q.lastError().text();
     }
 
     return group;

@@ -92,6 +92,8 @@ public:
 
     static GuestGroup get(Cutelyst::Context *c, Error *e, dbid_t id);
 
+    static GuestGroup create(Cutelyst::Context *c, Error *e, const Event &event, const QVariantHash &p);
+
 private:
     QSharedDataPointer<GuestGroupData> d;
 

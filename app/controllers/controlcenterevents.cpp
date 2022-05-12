@@ -10,6 +10,11 @@
 #include "../objects/guest.h"
 #include "../utils.h"
 
+#include <Cutelyst/Plugins/Utils/Validator> // includes the main validator
+#include <Cutelyst/Plugins/Utils/ValidatorResult> // includes the validator result
+#include <Cutelyst/Plugins/Utils/validatorrequired.h>
+#include <Cutelyst/Plugins/Utils/validatoralphadash.h>
+
 ControlCenterEvents::ControlCenterEvents(QObject *parent)
     : Controller{parent}
 {
@@ -137,6 +142,33 @@ void ControlCenterEvents::guestGroups(Context *c)
 
 void ControlCenterEvents::addGuestGroup(Context *c)
 {
+    const auto req = c->req();
+
+    if (req->isPost()) {
+        static Validator v({
+                               new ValidatorRequired(QStringLiteral("name")),
+                               new ValidatorAlphaDash(QStringLiteral("slug"), true)
+                           });
+
+        const ValidatorResult vr = v.validate(c, Validator::FillStashOnError|Validator::BodyParamsOnly);
+        if (vr) {
+            Error e;
+            const GuestGroup group = GuestGroup::create(c, &e, Event::fromStash(c), vr.values());
+            if (group.isValid()) {
+                if (req->xhr()) {
+                    c->res()->setJsonObjectBody(group.toJson());
+                }
+                c->res()->setStatus(201);
+                return;
+            } else {
+                c->setStash(QStringLiteral("error_msg"), e.text());
+                c->res()->setStatus(500);
+            }
+        } else {
+            c->res()->setStatus(400);
+        }
+    }
+
     c->stash({
                  {QStringLiteral("template"), QStringLiteral("controlcenter/events/guestgroups/add.tmpl")}
              });

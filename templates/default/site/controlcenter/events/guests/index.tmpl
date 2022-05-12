@@ -5,6 +5,7 @@
     </div>
 </div>
 
+<div id="guestgroups">
 {% for group in groups %}
 <section id="group_{{ group.id }}">
     <div class="d-flex">
@@ -58,6 +59,7 @@
 {% endwith %}
 {% empty %}
 {% endfor %}
+</div>
 
 <!-- start add group modal -->
 <div class="modal fade" id="addGroupModal" tabindex="-1" aria-labelledby="addGroupModalLabel" aria-hidden="true">
@@ -69,7 +71,8 @@
             </div>
 
             <div class="modal-body">
-                <form>
+                <form id="addGroupForm" action="/controlcenter/events/{{ event.id }}/guestgroups/add" enctype="application/x-www-form-urlencoded">
+                    {% c_csrf_token %}
                     <div>
                         <label for="newGroupName" class="form-label">{{ _("Name") }}</label>
                         <input type="text" class="form-control" id="newGroupName" name="name" aria-describedby="newGroupNameHelp" required="required">
@@ -78,7 +81,7 @@
 
                     <div>
                         <label for="newGroupSlug" class="form-label">{{ _("Slug") }}</label>
-                        <input type="text" class="form-control" id="newGroupSlug" name="slug" aria-describedby="newGroupSlugHelp">
+                        <input type="text" class="form-control" id="newGroupSlug" name="slug" aria-describedby="newGroupSlugHelp" pattern="[a-zA-Z0-9_\-]*">
                         <div id="newGroupSlugHelp" class="form-text"></div>
                     </div>
                 </form>
@@ -92,3 +95,27 @@
     </div>
 </div>
 <!-- end add group modal -->
+
+<!-- start group template -->
+<template id="group-template">
+    <section>
+        <div class="d-flex">
+        <h2></h2>
+        <div class="ms-auto">
+            <button type="button" class="btn btn-outline-secondary text-capitalize add-guest-to-group">{{ _("add guest") }}</button>
+        </div>
+    </div>
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col" class="text-capitalize">{{ guests_table_headers.name }}</th>
+                <th scope="col" class="text-capitalize">{{ guests_table_headers.guests }}</th>
+                <th scope="col" class="text-capitalize">{{ guests_table_headers.address }}</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+    </section>
+</template>
+<!-- end group template -->

@@ -78,6 +78,7 @@ void Root::error(Context *c)
                      {QStringLiteral("error_code"),     c->res()->status()}
                  });
     }
+    c->detach();
 }
 
 void Root::csrfDenied(Context *c)

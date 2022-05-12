@@ -3,5 +3,7 @@
 
 target_sources(defaulttemplate
     PRIVATE
+        addgroup.js
+        general.js
         licenseheader.js
 )
