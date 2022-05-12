@@ -77,9 +77,9 @@ public:
 
     Event();
 
-    Event(dbid_t id, dbid_t userId, const QString &title, const QString &slug, const QDateTime &start, const QDateTime &end, const QTimeZone &tz, Audience audience, Participation participation, const QString &description, const QVariantHash settings, bool allDay, const QDateTime &created, const QDateTime &updated, const QDateTime &lockedAt, const SimpleUser &lockedBy, uint adultsInvited, uint adultsAccepted, uint childrenInvited, uint childrenAccepted);
+    Event(dbid_t id, dbid_t userId, const QString &title, const QString &slug, const QDateTime &start, const QDateTime &end, const QTimeZone &tz, Audience audience, Participation participation, const QString &description, const QVariantHash &settings, bool allDay, const QDateTime &created, const QDateTime &updated, const QDateTime &lockedAt, const SimpleUser &lockedBy, uint adultsInvited, uint adultsAccepted, uint childrenInvited, uint childrenAccepted);
 
-    Event(dbid_t id, const User &user, const QString &title, const QString &slug, const QDateTime &start, const QDateTime &end, const QTimeZone &tz, Audience audience, Participation participation, const QString &description, const QVariantHash settings, bool allDay, const QDateTime &created, const QDateTime &updated, const QDateTime &lockedAt, const SimpleUser &lockedBy, uint adultsInvited, uint adultsAccepted, uint childrenInvited, uint childrenAccepted);
+    Event(dbid_t id, const User &user, const QString &title, const QString &slug, const QDateTime &start, const QDateTime &end, const QTimeZone &tz, Audience audience, Participation participation, const QString &description, const QVariantHash &settings, bool allDay, const QDateTime &created, const QDateTime &updated, const QDateTime &lockedAt, const SimpleUser &lockedBy, uint adultsInvited, uint adultsAccepted, uint childrenInvited, uint childrenAccepted);
 
     Event(const Event &other);
 
