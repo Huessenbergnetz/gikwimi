@@ -19,6 +19,8 @@
 #include <QRandomGenerator>
 #include <QMetaObject>
 #include <QMetaEnum>
+#include <QJsonValue>
+#include <QJsonArray>
 
 #include <limits>
 #include <algorithm>
@@ -219,6 +221,47 @@ bool Guest::isNull() const
     return d ? false : true;
 }
 
+QJsonObject Guest::toJson() const
+{
+    QJsonObject o;
+
+    if (isNull() || !isValid()) {
+        return o;
+    }
+
+    o.insert(QStringLiteral("id"), static_cast<qint64>(d->id));
+    o.insert(QStringLiteral("uid"), d->uid);
+    o.insert(QStringLiteral("group"), group().toJson());
+    o.insert(QStringLiteral("contact"), contact().toJson());
+    o.insert(QStringLiteral("partnerGivenName"), d->partnerGivenName);
+    o.insert(QStringLiteral("partnerFamilyName"), d->partnerFamilyName);
+    o.insert(QStringLiteral("adults"), static_cast<qint64>(d->adults));
+    o.insert(QStringLiteral("adultsAccepted"), static_cast<qint64>(d->adultsAccepted));
+    o.insert(QStringLiteral("children"), static_cast<qint64>(d->children));
+    o.insert(QStringLiteral("childrenAccepted"), static_cast<qint64>(d->childrenAccepted));
+    o.insert(QStringLiteral("status"), Guest::statusEnumToString(d->status));
+
+    QJsonArray notificationList;
+    {
+        const QMetaObject mo = Guest::staticMetaObject;
+        const QMetaEnum me = mo.enumerator(mo.indexOfEnumerator("Notification"));
+        for (int i = 0; i < me.keyCount(); ++i) {
+            if (d->notifications.testFlag(static_cast<Notification>(me.value(i)))) {
+                notificationList.append(QString::fromLatin1(me.key(i)));
+            }
+        }
+    }
+    o.insert(QStringLiteral("notifications"), notificationList);
+    o.insert(QStringLiteral("note"), d->note);
+    o.insert(QStringLiteral("comment"), d->comment);
+    o.insert(QStringLiteral("created"), d->created.toString(Qt::ISODate));
+    o.insert(QStringLiteral("updated"), d->updated.toString(Qt::ISODate));
+    o.insert(QStringLiteral("lockedAt"), d->lockedAt.toString(Qt::ISODate));
+    o.insert(QStringLiteral("lockedBy"), d->lockedBy.toJson());
+
+    return o;
+}
+
 QString Guest::generateUid()
 {
     QString uid;
@@ -239,7 +282,7 @@ QString Guest::generateUid()
                                      }());
 
     auto rand = QRandomGenerator::global();
-    uid.reserve(6);
+    uid.reserve(length);
 
     for (int i = 0; i < length; ++i) {
         uid.append(QChar(rand->bounded(0, ascii.size() - 1)));

@@ -14,6 +14,8 @@
 #include <QSharedDataPointer>
 #include <QVariant>
 #include <QDateTime>
+#include <QJsonObject>
+
 #include <vector>
 
 namespace Cutelyst {
@@ -81,6 +83,10 @@ public:
     uint size() const;
 
     bool isValid() const;
+
+    bool isNull() const;
+
+    QJsonObject toJson() const;
 
     bool toStash(Cutelyst::Context *c) const;
 

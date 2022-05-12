@@ -16,6 +16,8 @@
 #include <QMetaObject>
 #include <QMetaEnum>
 #include <QDebug>
+#include <QJsonArray>
+#include <QJsonValue>
 
 #define USER_STASH_KEY "user"
 
@@ -169,6 +171,27 @@ bool User::isValid() const
 bool User::isNull() const
 {
     return d ? false : true;
+}
+
+QJsonObject User::toJson() const
+{
+    QJsonObject o;
+
+    if (isNull() || !isValid()) {
+        return o;
+    }
+
+    o.insert(QStringLiteral("id"), static_cast<qint64>(d->id));
+    o.insert(QStringLiteral("type"), static_cast<int>(d->type));
+    o.insert(QStringLiteral("username"), d->username);
+    o.insert(QStringLiteral("email"), d->email);
+    o.insert(QStringLiteral("created"), d->created.toString(Qt::ISODate));
+    o.insert(QStringLiteral("updated"), d->updated.toString(Qt::ISODate));
+    o.insert(QStringLiteral("lockedAt"), d->lockedAt.toString(Qt::ISODate));
+    o.insert(QStringLiteral("lockedBy"), d->lockedBy.toJson());
+    o.insert(QStringLiteral("settings"), QJsonObject::fromVariantMap(d->settings));
+
+    return o;
 }
 
 void User::toStash(Cutelyst::Context *c)

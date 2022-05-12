@@ -13,6 +13,7 @@
 
 #include <QSharedDataPointer>
 #include <QDateTime>
+#include <QJsonObject>
 
 #include <vector>
 
@@ -68,6 +69,8 @@ public:
     bool isValid() const;
 
     bool isNull() const;
+
+    QJsonObject toJson() const;
 
     static std::vector<Contact> list(Cutelyst::Context *c, Error *e, const AddressBook &addressbook);
 

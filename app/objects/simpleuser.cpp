@@ -5,6 +5,7 @@
 
 #include "simpleuser.h"
 #include <QDataStream>
+#include <QJsonValue>
 #include <QDebug>
 
 class SimpleUserData : public QSharedData
@@ -59,6 +60,20 @@ bool SimpleUser::isValid() const
 bool SimpleUser::isNull() const
 {
     return d ? false : true;
+}
+
+QJsonObject SimpleUser::toJson() const
+{
+    QJsonObject o;
+
+    if (isNull() || !isValid()) {
+        return o;
+    }
+
+    o.insert(QStringLiteral("id"), static_cast<qint64>(d->id));
+    o.insert(QStringLiteral("username"), d->username);
+
+    return o;
 }
 
 QDebug operator<<(QDebug dbg, const SimpleUser &user)

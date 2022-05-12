@@ -13,6 +13,9 @@
 
 #include <QObject>
 #include <QSharedDataPointer>
+#include <QJsonObject>
+
+#include <vector>
 
 namespace Cutelyst {
 class Context;
@@ -118,6 +121,8 @@ public:
     bool isValid() const;
 
     bool isNull() const;
+
+    QJsonObject toJson() const;
 
     static QString generateUid();
 

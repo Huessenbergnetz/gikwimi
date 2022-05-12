@@ -16,7 +16,7 @@
 #include <QMetaType>
 #include <QMetaEnum>
 #include <QJsonDocument>
-#include <QJsonObject>
+#include <QJsonValue>
 #include <QDataStream>
 
 #define EVENT_STASH_KEY "event"
@@ -267,6 +267,42 @@ bool Event::isValid() const
 bool Event::isNull() const
 {
     return d ? false : true;
+}
+
+QJsonObject Event::toJson() const
+{
+    QJsonObject o;
+
+    if (isNull() || !isValid()) {
+        return o;
+    }
+
+    o.insert(QStringLiteral("id"), static_cast<qint64>(d->id));
+    o.insert(QStringLiteral("user"), d->user.toJson());
+    o.insert(QStringLiteral("title"), d->title);
+    o.insert(QStringLiteral("slug"), d->slug);
+    o.insert(QStringLiteral("start"), start().toString(Qt::ISODate));
+    o.insert(QStringLiteral("startUtc"), d->start.toString(Qt::ISODate));
+    o.insert(QStringLiteral("end"), end().toString(Qt::ISODate));
+    o.insert(QStringLiteral("endUtc"), d->end.toString());
+    o.insert(QStringLiteral("audience"), Event::audienceEnumToString(d->audience));
+    o.insert(QStringLiteral("participation"), Event::participationEnumToString(d->participation));
+    o.insert(QStringLiteral("description"), d->description);
+    o.insert(QStringLiteral("settings"), QJsonObject::fromVariantHash(d->settings));
+    o.insert(QStringLiteral("isAllDay"), d->allDay);
+    o.insert(QStringLiteral("startTimeOnly"), d->startOnly);
+    o.insert(QStringLiteral("created"), d->created.toString(Qt::ISODate));
+    o.insert(QStringLiteral("updated"), d->updated.toString(Qt::ISODate));
+    o.insert(QStringLiteral("lockedAt"), d->lockedAt.toString(Qt::ISODate));
+    o.insert(QStringLiteral("lockedBy"), d->lockedBy.toJson());
+    o.insert(QStringLiteral("adultsInvited"), static_cast<qint64>(d->adultsInvited));
+    o.insert(QStringLiteral("adultsAccepted"), static_cast<qint64>(d->adultsAccepted));
+    o.insert(QStringLiteral("childrenInvited"), static_cast<qint64>(d->childrenInvited));
+    o.insert(QStringLiteral("childrenAccepted"), static_cast<qint64>(d->childrenAccepted));
+    o.insert(QStringLiteral("totalInvited"), static_cast<qint64>(totalInvited()));
+    o.insert(QStringLiteral("totalAccepted"), static_cast<qint64>(totalAccepted()));
+
+    return o;
 }
 
 bool Event::toStash(Cutelyst::Context *c) const

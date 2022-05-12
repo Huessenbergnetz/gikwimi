@@ -15,8 +15,9 @@
 #include <QSqlError>
 #include <QMetaObject>
 #include <QMetaEnum>
-#include <QJsonObject>
 #include <QJsonDocument>
+#include <QJsonValue>
+#include <QJsonArray>
 #include <QDataStream>
 
 #define ADDRESSBOOK_STASH_KEY "addressbook"
@@ -117,6 +118,33 @@ uint AddressBook::size() const
 bool AddressBook::isValid() const
 {
     return d->id > 0;
+}
+
+bool AddressBook::isNull() const
+{
+    return d ? false : true;
+}
+
+QJsonObject AddressBook::toJson() const
+{
+    QJsonObject o;
+
+    if (isNull() || !isValid()) {
+        return o;
+    }
+
+    o.insert(QStringLiteral("id"), static_cast<qint64>(d->id));
+    o.insert(QStringLiteral("type"), static_cast<int>(d->type));
+    o.insert(QStringLiteral("name"), d->name);
+    o.insert(QStringLiteral("settings"), QJsonObject::fromVariantHash(d->settings));
+    o.insert(QStringLiteral("user"), d->user.toJson());
+    o.insert(QStringLiteral("created"), d->created.toString(Qt::ISODate));
+    o.insert(QStringLiteral("updated"), d->updated.toString(Qt::ISODate));
+    o.insert(QStringLiteral("lockedAt"), d->lockedAt.toString(Qt::ISODate));
+    o.insert(QStringLiteral("lockedBy"), d->lockedBy.toJson());
+    o.insert(QStringLiteral("size"), static_cast<qint64>(d->size));
+
+    return o;
 }
 
 bool AddressBook::toStash(Cutelyst::Context *c) const

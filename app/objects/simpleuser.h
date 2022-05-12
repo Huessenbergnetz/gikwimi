@@ -10,6 +10,7 @@
 
 #include <QObject>
 #include <QSharedDataPointer>
+#include <QJsonObject>
 
 class SimpleUserData;
 
@@ -42,6 +43,8 @@ public:
     bool isValid() const;
 
     bool isNull() const;
+
+    QJsonObject toJson() const;
 
 private:
     QSharedDataPointer<SimpleUserData> d;

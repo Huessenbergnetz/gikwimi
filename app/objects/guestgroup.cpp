@@ -14,6 +14,7 @@
 #include <QDataStream>
 #include <QSqlQuery>
 #include <QSqlError>
+#include <QJsonValue>
 
 #define GUESTGROUP_STASH_KEY "guestgroup"
 
@@ -164,6 +165,27 @@ bool GuestGroup::isValid() const
 bool GuestGroup::isNull() const
 {
     return d ? false : true;
+}
+
+QJsonObject GuestGroup::toJson() const
+{
+    QJsonObject o;
+
+    if (isNull() || !isValid()) {
+        return o;
+    }
+
+    o.insert(QStringLiteral("id"), static_cast<qint64>(d->id));
+    o.insert(QStringLiteral("event"), event().toJson());
+    o.insert(QStringLiteral("name"), d->name);
+    o.insert(QStringLiteral("slug"), d->slug);
+    o.insert(QStringLiteral("note"), d->note);
+    o.insert(QStringLiteral("created"), d->created.toString(Qt::ISODate));
+    o.insert(QStringLiteral("updated"), d->updated.toString(Qt::ISODate));
+    o.insert(QStringLiteral("lockedAt"), d->lockedAt.toString(Qt::ISODate));
+    o.insert(QStringLiteral("lockedBy"), d->lockedBy.toJson());
+
+    return o;
 }
 
 bool GuestGroup::toStash(Cutelyst::Context *c) const

@@ -12,6 +12,7 @@
 
 #include <QObject>
 #include <QSharedDataPointer>
+#include <QJsonObject>
 
 #include <vector>
 
@@ -76,6 +77,8 @@ public:
     bool isValid() const;
 
     bool isNull() const;
+
+    QJsonObject toJson() const;
 
     bool toStash(Cutelyst::Context *c) const;
 
