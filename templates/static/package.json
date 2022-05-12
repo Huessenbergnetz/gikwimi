@@ -1,0 +1,15 @@
+{
+  "private": true,
+  "scripts": {
+    "dev": "npm run development",
+    "development": "npx mix",
+    "watch": "npx mix watch",
+    "watch-poll": "npx mix watch -- --watch-options-poll=1000",
+    "hot": "npx mix --hot",
+    "prod": "npm run production",
+    "production": "npx mix --production"
+  },
+  "devDependencies": {
+    "laravel-mix": "^6.0.43"
+  }
+}

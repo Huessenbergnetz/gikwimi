@@ -103,7 +103,7 @@ bool Gikwimi::init()
 
     qCDebug(GIK_CORE) << "Registering plugins";
     auto staticSimple = new StaticSimple(this);
-    staticSimple->setIncludePaths({GikwimiConfig::tmplPath(QStringLiteral("static"))});
+    staticSimple->setIncludePaths({GikwimiConfig::tmplPath(QStringLiteral("static")), QStringLiteral(GIKWIMI_STATICSDIR)});
 
     auto sess = new Session(this);
 

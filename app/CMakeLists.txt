@@ -43,6 +43,7 @@ target_link_libraries(gikwimi
 
 target_compile_features(gikwimi PUBLIC cxx_std_14)
 
+GNUInstallDirs_get_absolute_install_dir(GIKWIMI_FULL_APPDIR GIKWIMI_APPDIR)
 GNUInstallDirs_get_absolute_install_dir(GIKWIMI_FULL_TRANSLATIONSDIR GIKWIMI_TRANSLATIONSDIR)
 GNUInstallDirs_get_absolute_install_dir(GIKWIMI_FULL_TEMPLATESDIR GIKWIMI_TEMPLATESDIR)
 
@@ -59,6 +60,8 @@ target_compile_definitions(gikwimi
         $<INSTALL_INTERFACE:GIKWIMI_TRANSLATIONSDIR="${GIKWIMI_FULL_TRANSLATIONSDIR}">
         $<BUILD_INTERFACE:GIKWIMI_TEMPLATESDIR="${CMAKE_SOURCE_DIR}/templates">
         $<INSTALL_INTERFACE:GIKWIMI_TEMPLATESDIR="${GIKWIMI_FULL_TEMPLATESDIR}">
+        $<BUILD_INTERFACE:GIKWIMI_STATICSDIR="${CMAKE_SOURCE_DIR}/templates/static">
+        $<INSTALL_INTERFACE:GIKWIMI_STATICSDIR="${GIKWIMI_FULL_APPDIR}/static">
 )
 
 target_compile_options(gikwimi
