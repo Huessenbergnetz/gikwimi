@@ -10,6 +10,7 @@
 #include "simpleuser.h"
 #include "global.h"
 #include "contact.h"
+#include "optionitem.h"
 
 #include <QObject>
 #include <QSharedDataPointer>
@@ -42,11 +43,20 @@ class Guest
     Q_PROPERTY(QString note READ note CONSTANT)
     Q_PROPERTY(QString comment READ comment CONSTANT)
     Q_PROPERTY(GuestGroup::Salutation salutation READ salutation CONSTANT)
+    Q_PROPERTY(Guest::Type type READ type CONSTANT)
     Q_PROPERTY(QDateTime created READ created CONSTANT)
     Q_PROPERTY(QDateTime updated READ updated CONSTANT)
     Q_PROPERTY(QDateTime lockedAt READ lockedAt CONSTANT)
     Q_PROPERTY(SimpleUser lockedBy READ lockedBy CONSTANT)
 public:
+    enum Type : int {
+        InvalidType     = -1,
+        PersonOrCouple  =  0,
+        Family          =  1,
+        Organization    =  2
+    };
+    Q_ENUM(Type)
+
     enum Status : qint8 {
         InvalidStatus   = -1,
         DefaultStaus    =  0,
@@ -67,9 +77,9 @@ public:
 
     Guest();
 
-    Guest(dbid_t id, const QString &uid, dbid_t groupId, const Contact &contact, const QString &pgName, const QString &pfName, uint adults, uint adultsAccepted, uint children, uint childrenAccepted, Guest::Status status, Guest::Notifications notifications, const QString &note, const QString &comment, GuestGroup::Salutation salutation, const QDateTime &created, const QDateTime &updated, const QDateTime &lockedAt, const SimpleUser &lockedBy);
+    Guest(dbid_t id, const QString &uid, dbid_t groupId, const Contact &contact, const QString &pgName, const QString &pfName, uint adults, uint adultsAccepted, uint children, uint childrenAccepted, Guest::Status status, Guest::Notifications notifications, const QString &note, const QString &comment, GuestGroup::Salutation salutation, Guest::Type type, const QDateTime &created, const QDateTime &updated, const QDateTime &lockedAt, const SimpleUser &lockedBy);
 
-    Guest(dbid_t id, const QString &uid, const GuestGroup &group, const Contact &contact, const QString &pgName, const QString &pfName, uint adults, uint adultsAccepted, uint children, uint childrenAccepted, Guest::Status status, Guest::Notifications notifications, const QString &note, const QString &comment, GuestGroup::Salutation salutation, const QDateTime &created, const QDateTime &updated, const QDateTime &lockedAt, const SimpleUser &lockedBy);
+    Guest(dbid_t id, const QString &uid, const GuestGroup &group, const Contact &contact, const QString &pgName, const QString &pfName, uint adults, uint adultsAccepted, uint children, uint childrenAccepted, Guest::Status status, Guest::Notifications notifications, const QString &note, const QString &comment, GuestGroup::Salutation salutation, Guest::Type type, const QDateTime &created, const QDateTime &updated, const QDateTime &lockedAt, const SimpleUser &lockedBy);
 
     Guest(const Guest &other);
 
@@ -113,6 +123,8 @@ public:
 
     GuestGroup::Salutation salutation() const;
 
+    Guest::Type type() const;
+
     QDateTime created() const;
 
     QDateTime updated() const;
@@ -134,6 +146,16 @@ public:
     static QString statusEnumToString(Guest::Status status);
 
     static QStringList supportedStatus();
+
+    static Guest::Type typeStringToEnum(const QString &str);
+
+    static QString typeEnumToString(Guest::Type type);
+
+    static QStringList supportedTypes();
+
+    static std::vector<OptionItem> typeOptionList(Cutelyst::Context *c, Guest::Type selected = Guest::InvalidType);
+
+    static QStringList typeValues();
 
     static std::vector<Guest> list(Cutelyst::Context *c, Error *e, dbid_t groupId);
 
