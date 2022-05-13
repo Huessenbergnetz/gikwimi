@@ -271,17 +271,17 @@ QJsonObject Guest::toJson() const
     return o;
 }
 
-QString Guest::generateUid()
+QString Guest::generateUid(int length)
 {
     QString uid;
 
-    static int length = 6;
+    const int _length = length >= 6 ? length : 6;
     static QString allowedChars = QStringLiteral("abcdefghijklmnopqrstuvwxyz0123456789");
 
     auto rand = QRandomGenerator::global();
-    uid.reserve(length);
+    uid.reserve(_length);
 
-    for (int i = 0; i < length; ++i) {
+    for (int i = 0; i < _length; ++i) {
         uid.append(allowedChars.at(rand->bounded(0, allowedChars.size() - 1)));
     }
 

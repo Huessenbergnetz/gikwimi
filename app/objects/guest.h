@@ -127,7 +127,7 @@ public:
 
     QJsonObject toJson() const;
 
-    static QString generateUid();
+    static QString generateUid(int length = 8);
 
     static Guest::Status statusStringToEnum(const QString &str);
 
