@@ -30,17 +30,29 @@ class GuestGroup
     Q_PROPERTY(QString name READ name CONSTANT)
     Q_PROPERTY(QString slug READ slug CONSTANT)
     Q_PROPERTY(QString note READ note CONSTANT)
+    Q_PROPERTY(GuestGroup::Salutation salutation READ salutation CONSTANT)
     Q_PROPERTY(QVariantList guests READ guests CONSTANT)
     Q_PROPERTY(QDateTime created READ created CONSTANT)
     Q_PROPERTY(QDateTime updated READ updated CONSTANT)
     Q_PROPERTY(QDateTime lockedAt READ lockedAt CONSTANT)
     Q_PROPERTY(SimpleUser lockedBy READ lockedBy CONSTANT)
 public:
+    enum Salutation : int {
+        SalutationInvalid = -1,
+        SalutationDefault = 0,
+        SalutationVeryFormal = 15,
+        SalutationFormal = 31,
+        SalutationNeutral = 47,
+        SalutationInformal = 63,
+        SalutationVeryInformal = 79
+    };
+    Q_ENUM(Salutation)
+
     GuestGroup();
 
-    GuestGroup(dbid_t id, dbid_t eventId, const QString &name, const QString &slug, const QString &note, const QDateTime &created, const QDateTime &updated, const QDateTime &lockedAt, const SimpleUser &lockedBy);
+    GuestGroup(dbid_t id, dbid_t eventId, const QString &name, const QString &slug, const QString &note, GuestGroup::Salutation salutation, const QDateTime &created, const QDateTime &updated, const QDateTime &lockedAt, const SimpleUser &lockedBy);
 
-    GuestGroup(dbid_t id, const Event &event, const QString &name, const QString &slug, const QString &note, const QDateTime &created, const QDateTime &updated, const QDateTime &lockedAt, const SimpleUser &lockedBy);
+    GuestGroup(dbid_t id, const Event &event, const QString &name, const QString &slug, const QString &note, GuestGroup::Salutation salutation, const QDateTime &created, const QDateTime &updated, const QDateTime &lockedAt, const SimpleUser &lockedBy);
 
     GuestGroup(const GuestGroup &other);
 
@@ -64,6 +76,8 @@ public:
 
     QString note() const;
 
+    Salutation salutation() const;
+
     QVariantList guests() const;
 
     QDateTime created() const;
@@ -85,6 +99,10 @@ public:
     static bool toStash(Cutelyst::Context *c, dbid_t groupId);
 
     static GuestGroup fromStash(Cutelyst::Context *c);
+
+    static GuestGroup::Salutation salutationStringToEnum(const QString &str);
+
+    static QString salutationEnumToString(GuestGroup::Salutation salutation);
 
     static std::vector<GuestGroup> list(Cutelyst::Context *c, Error *e, dbid_t eventId);
 

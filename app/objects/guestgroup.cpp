@@ -16,6 +16,7 @@
 #include <QSqlQuery>
 #include <QSqlError>
 #include <QJsonValue>
+#include <QMetaEnum>
 
 #define GUESTGROUP_STASH_KEY "guestgroup"
 
@@ -32,6 +33,7 @@ public:
     SimpleUser lockedBy;
     dbid_t id = 0;
     dbid_t eventId = 0;
+    GuestGroup::Salutation salutation = GuestGroup::SalutationInvalid;
 };
 
 GuestGroup::GuestGroup()
@@ -39,7 +41,7 @@ GuestGroup::GuestGroup()
 
 }
 
-GuestGroup::GuestGroup(dbid_t id, dbid_t eventId, const QString &name, const QString &slug, const QString &note, const QDateTime &created, const QDateTime &updated, const QDateTime &lockedAt, const SimpleUser &lockedBy)
+GuestGroup::GuestGroup(dbid_t id, dbid_t eventId, const QString &name, const QString &slug, const QString &note, Salutation salutation, const QDateTime &created, const QDateTime &updated, const QDateTime &lockedAt, const SimpleUser &lockedBy)
     : d(new GuestGroupData)
 {
     d->id = id;
@@ -47,6 +49,7 @@ GuestGroup::GuestGroup(dbid_t id, dbid_t eventId, const QString &name, const QSt
     d->name = name;
     d->slug = slug;
     d->note = note;
+    d->salutation = salutation;
     d->created = created;
     d->created.setTimeSpec(Qt::UTC);
     d->updated = updated;
@@ -58,7 +61,7 @@ GuestGroup::GuestGroup(dbid_t id, dbid_t eventId, const QString &name, const QSt
     d->lockedBy = lockedBy;
 }
 
-GuestGroup::GuestGroup(dbid_t id, const Event &event, const QString &name, const QString &slug, const QString &note, const QDateTime &created, const QDateTime &updated, const QDateTime &lockedAt, const SimpleUser &lockedBy)
+GuestGroup::GuestGroup(dbid_t id, const Event &event, const QString &name, const QString &slug, const QString &note, Salutation salutation, const QDateTime &created, const QDateTime &updated, const QDateTime &lockedAt, const SimpleUser &lockedBy)
     : d(new GuestGroupData)
 {
     d->id = id;
@@ -66,6 +69,7 @@ GuestGroup::GuestGroup(dbid_t id, const Event &event, const QString &name, const
     d->name = name;
     d->slug = slug;
     d->note = note;
+    d->salutation = salutation;
     d->created = created;
     d->created.setTimeSpec(Qt::UTC);
     d->updated = updated;
@@ -125,6 +129,11 @@ QString GuestGroup::note() const
     return d ? d->note : QString();
 }
 
+GuestGroup::Salutation GuestGroup::salutation() const
+{
+    return d ? d->salutation : GuestGroup::SalutationInvalid;
+}
+
 QVariantList GuestGroup::guests() const
 {
     QVariantList list;
@@ -181,6 +190,7 @@ QJsonObject GuestGroup::toJson() const
     o.insert(QStringLiteral("name"), d->name);
     o.insert(QStringLiteral("slug"), d->slug);
     o.insert(QStringLiteral("note"), d->note);
+    o.insert(QStringLiteral("salutation"), GuestGroup::salutationEnumToString(d->salutation));
     o.insert(QStringLiteral("created"), d->created.toString(Qt::ISODate));
     o.insert(QStringLiteral("updated"), d->updated.toString(Qt::ISODate));
     o.insert(QStringLiteral("lockedAt"), d->lockedAt.toString(Qt::ISODate));
@@ -225,6 +235,41 @@ GuestGroup GuestGroup::fromStash(Cutelyst::Context *c)
     return c->stash(QStringLiteral(GUESTGROUP_STASH_KEY)).value<GuestGroup>();
 }
 
+GuestGroup::Salutation GuestGroup::salutationStringToEnum(const QString &str)
+{
+    if (str.compare(QLatin1String("default"), Qt::CaseInsensitive) == 0) {
+        return GuestGroup::SalutationDefault;
+    } else if (str.compare(QLatin1String("veryformal"), Qt::CaseInsensitive) == 0) {
+        return GuestGroup::SalutationVeryFormal;
+    } else if (str.compare(QLatin1String("formal"), Qt::CaseInsensitive) == 0) {
+        return GuestGroup::SalutationFormal;
+    } else if (str.compare(QLatin1String("neutral"), Qt::CaseInsensitive) == 0) {
+        return GuestGroup::SalutationNeutral;
+    } else if (str.compare(QLatin1String("informal"), Qt::CaseInsensitive) == 0) {
+        return GuestGroup::SalutationInformal;
+    } else if (str.compare(QLatin1String("veryinformal"), Qt::CaseInsensitive) == 0) {
+        return GuestGroup::SalutationVeryInformal;
+    } else {
+        return GuestGroup::SalutationInvalid;
+    }
+}
+
+QString GuestGroup::salutationEnumToString(GuestGroup::Salutation salutation)
+{
+    QString str;
+
+    if (salutation != SalutationInvalid) {
+
+        const QMetaObject mo = GuestGroup::staticMetaObject;
+        const QMetaEnum   me = mo.enumerator(mo.indexOfEnumerator("Salutation"));
+        str = QString::fromLatin1(me.valueToKey(static_cast<int>(salutation)));
+        str = str.toLower();
+        str.remove(QLatin1String("salutation"));
+    }
+
+    return str;
+}
+
 std::vector<GuestGroup> GuestGroup::list(Cutelyst::Context *c, Error *e, dbid_t eventId)
 {
     std::vector<GuestGroup> groups;
@@ -245,7 +290,7 @@ std::vector<GuestGroup> GuestGroup::list(Cutelyst::Context *c, Error *e, const E
 {
     std::vector<GuestGroup> groups;
 
-    QSqlQuery q = CPreparedSqlQueryThreadFO(QStringLiteral("SELECT g.id, g.name, g.slug, g.note, g.created_at, g.updated_at, g.locked_at, "
+    QSqlQuery q = CPreparedSqlQueryThreadFO(QStringLiteral("SELECT g.id, g.name, g.slug, g.note, g.salutation, g.created_at, g.updated_at, g.locked_at, "
                                                            "u.id AS locked_by_id, u.username AS locked_by_username "
                                                            "FROM guestgroups g LEFT JOIN users u ON u.id = g.locked_by WHERE g.event_id = :event_id"));
     q.bindValue(QStringLiteral(":event_id"), event.id());
@@ -256,17 +301,18 @@ std::vector<GuestGroup> GuestGroup::list(Cutelyst::Context *c, Error *e, const E
         }
 
         while (q.next()) {
-            const qlonglong  lat      = q.value(6).toLongLong();
+            const qlonglong  lat      = q.value(7).toLongLong();
             const QDateTime  lockedAt = lat > 0 ? QDateTime::fromMSecsSinceEpoch(lat) : QDateTime();
-            const SimpleUser lockedBy = lat > 0 ? SimpleUser(q.value(7).toUInt(), q.value(8).toString()) : SimpleUser();
+            const SimpleUser lockedBy = lat > 0 ? SimpleUser(q.value(8).toUInt(), q.value(9).toString()) : SimpleUser();
 
             groups.emplace_back(q.value(0).toUInt(),
                                 event,
                                 q.value(1).toString(),
                                 q.value(2).toString(),
                                 q.value(3).toString(),
-                                q.value(4).toDateTime(),
+                                static_cast<GuestGroup::Salutation>(q.value(4).toInt()),
                                 q.value(5).toDateTime(),
+                                q.value(6).toDateTime(),
                                 lockedAt,
                                 lockedBy);
         }
@@ -283,7 +329,7 @@ GuestGroup GuestGroup::get(Cutelyst::Context *c, Error *e, dbid_t id)
 {
     GuestGroup group;
 
-    QSqlQuery q = CPreparedSqlQueryThreadFO(QStringLiteral("SELECT g.event_id, g.name, g.slug, g.note, g.created_at, g.updated_at, g.locked_at, "
+    QSqlQuery q = CPreparedSqlQueryThreadFO(QStringLiteral("SELECT g.event_id, g.name, g.slug, g.note, g.salutation, g.created_at, g.updated_at, g.locked_at, "
                                                            "u.id AS locked_by_id, u.username AS locked_by_username "
                                                            "FROM guestgroups g LEFT JOIN users u ON u.id = g.locked_by WHERE g.id = :id"));
     q.bindValue(QStringLiteral(":id"), id);
@@ -291,17 +337,18 @@ GuestGroup GuestGroup::get(Cutelyst::Context *c, Error *e, dbid_t id)
     if (Q_LIKELY(q.exec())) {
         if (Q_LIKELY(q.next())) {
 
-            const qlonglong lat = q.value(6).toLongLong();
+            const qlonglong lat = q.value(7).toLongLong();
             const QDateTime lockedAt = lat > 0 ? QDateTime::fromMSecsSinceEpoch(lat) : QDateTime();
-            const SimpleUser lockedBy = lat > 0 ? SimpleUser(q.value(7).toUInt(), q.value(8).toString()) : SimpleUser();
+            const SimpleUser lockedBy = lat > 0 ? SimpleUser(q.value(8).toUInt(), q.value(9).toString()) : SimpleUser();
 
             group = GuestGroup(id,
                                q.value(0).toUInt(),
                                q.value(1).toString(),
                                q.value(2).toString(),
                                q.value(3).toString(),
-                               q.value(4).toDateTime(),
+                               static_cast<GuestGroup::Salutation>(q.value(4).toInt()),
                                q.value(5).toDateTime(),
+                               q.value(6).toDateTime(),
                                lockedAt,
                                lockedBy);
 
@@ -325,6 +372,7 @@ GuestGroup GuestGroup::create(Cutelyst::Context *c, Error *e, const Event &event
 
     const QString name = p.value(QStringLiteral("name")).toString();
     const QString note = p.value(QStringLiteral("note")).toString();
+    const Salutation salutation = static_cast<Salutation>(p.value(QStringLiteral("salutation"), SalutationNeutral).toInt());
     const QDateTime now = QDateTime::currentDateTimeUtc();
 
     const QString slug = [p,name]() -> QString {
@@ -335,18 +383,19 @@ GuestGroup GuestGroup::create(Cutelyst::Context *c, Error *e, const Event &event
         return _slug;
     }();
 
-    QSqlQuery q = CPreparedSqlQueryThread(QStringLiteral("INSERT INTO guestgroups (event_id, name, slug, note, created_at, updated_at) "
-                                                         "VALUES (:event_id, :name, :slug, :note, :created_at, :updated_at)"));
+    QSqlQuery q = CPreparedSqlQueryThread(QStringLiteral("INSERT INTO guestgroups (event_id, name, slug, note, salutation, created_at, updated_at) "
+                                                         "VALUES (:event_id, :name, :slug, :note, :salutation, :created_at, :updated_at)"));
     q.bindValue(QStringLiteral(":event_id"), event.id());
     q.bindValue(QStringLiteral(":name"), name);
     q.bindValue(QStringLiteral(":slug"), slug);
     q.bindValue(QStringLiteral(":note"), note);
+    q.bindValue(QStringLiteral(":salutation"), static_cast<int>(salutation));
     q.bindValue(QStringLiteral(":created_at"), now);
     q.bindValue(QStringLiteral(":updated_at"), now);
 
     if (Q_LIKELY(q.exec())) {
         const dbid_t id = q.lastInsertId().toUInt();
-        group = GuestGroup(id, event, name, slug, note, now, now, QDateTime(), SimpleUser());
+        group = GuestGroup(id, event, name, slug, note, salutation, now, now, QDateTime(), SimpleUser());
     } else {
         if (c && e) *e = Error(q.lastError(), c->translate("GuestGroup", "Failed to create new guest group “%1” in the database.").arg(name));
         qCCritical(GIK_CORE) << "Failed to execute database query to create new guest group" << name << "in the database:" << q.lastError().text();
@@ -363,6 +412,7 @@ QDataStream &operator<<(QDataStream &stream, const GuestGroup &gg)
            << gg.d->name
            << gg.d->slug
            << gg.d->note
+           << gg.d->salutation
            << gg.d->created
            << gg.d->updated
            << gg.d->lockedAt
@@ -378,6 +428,7 @@ QDataStream &operator>>(QDataStream &stream, GuestGroup &gg)
     stream >> gg.d->name;
     stream >> gg.d->slug;
     stream >> gg.d->note;
+    stream >> gg.d->salutation;
     stream >> gg.d->created;
     stream >> gg.d->updated;
     stream >> gg.d->lockedAt;
