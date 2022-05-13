@@ -20,7 +20,7 @@ void M0008_CreateGuestsTable::up()
 {
     auto t = create(QStringLiteral("guests"));
     t->increments();
-    t->charCol(QStringLiteral("uid"), 6)->unique();
+    t->charCol(QStringLiteral("uid"), 8)->unique();
     t->integer(QStringLiteral("group_id"))->unSigned();
     t->integer(QStringLiteral("contact_id"))->unSigned();
     t->varChar(QStringLiteral("partner_given_name"), 63)->nullable();
