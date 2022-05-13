@@ -517,7 +517,7 @@ Guest Guest::create(Cutelyst::Context *c, Error *e, const Event &event, const QV
     const QString note = p.value(QStringLiteral("note")).toString();
     const GuestGroup::Salutation salutation = static_cast<GuestGroup::Salutation>(p.value(QStringLiteral("salutation"), GuestGroup::SalutationDefault).toInt());
     const QDateTime now = QDateTime::currentDateTimeUtc();
-    const QString uid = Guest::generateUid();
+    const QString uid = Guest::generateUid(8);
 
     QSqlQuery q = CPreparedSqlQueryThread(QStringLiteral("INSERT INTO guests (uid, group_id, contact_id, partner_given_name, partner_family_name, adults, adults_accepted, children, children_accepted, status, note, salutation, created_at, updated_at) "
                                                          "VALUES (:uid, :group_id, :contact_id, :partner_given_name, :partner_family_name, :adults, :adults_accepted, :children, :children_accepted, :status, :note, :salutation, :created_at, :updated_at)"));
