@@ -33,6 +33,7 @@ void M0008_CreateGuestsTable::up()
     t->tinyInteger(QStringLiteral("notified"))->unSigned()->defaultValue(0);
     t->text(QStringLiteral("note"))->nullable();
     t->text(QStringLiteral("comment"))->nullable();
+    t->tinyInteger(QStringLiteral("salutation"))->defaultValue(0);
     t->dateTime(QStringLiteral("created_at"));
     t->dateTime(QStringLiteral("updated_at"));
     t->bigInteger(QStringLiteral("locked_at"))->defaultValue(0)->nullable();
