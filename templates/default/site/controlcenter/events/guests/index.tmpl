@@ -135,6 +135,16 @@
                     </div>
 
                     <div>
+                        <label for="newGuestType" class="form-label">{{ _("Type") }}</label>
+                        <select id="newGuestType" name="type" class="form-select" aria-describedby="newGuestTypeHelp">
+                        {% for opt in guesttype_options %}
+                            <option value="{{ opt.value }}">{{ opt.name }}</option>
+                        {% endfor %}
+                        </select>
+                        <div id="newGuestTypeHelp" class="form-text"></div>
+                    <div>
+
+                    <div>
                         <label for="newGuestSalutation" class="form-label">{{ _("Salutation") }}</label>
                         <select id="newGuestSalutation" name="salutation" class="form-select" aria-describedby="newGuestSalutationHelp">
                         {% for opt in salutation_options %}
