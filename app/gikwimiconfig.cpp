@@ -39,7 +39,11 @@ void GikwimiConfig::load(const QVariantMap &gikwimi)
 
     cfg->tmpl = gikwimi.value(QStringLiteral(GIKWIMI_CONF_GIK_TEMPLATE), QStringLiteral(GIKWIMI_CONF_GIK_TEMPLATE_DEFVAL)).toString();
     if (cfg->tmpl.startsWith(QLatin1Char('/'))) {
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 14, 0))
         QStringList fullPathParts = cfg->tmpl.split(QLatin1Char('/'), Qt::SkipEmptyParts);
+#else
+        QStringList fullPathParts = cfg->tmpl.split(QLatin1Char('/'), QString::SkipEmptyParts);
+#endif
         cfg->tmpl = fullPathParts.takeLast();
         cfg->tmplDir = QLatin1Char('/') + fullPathParts.join(QLatin1Char('/'));
     }

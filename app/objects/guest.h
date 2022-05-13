@@ -57,7 +57,7 @@ public:
     };
     Q_ENUM(Type)
 
-    enum Status : qint8 {
+    enum Status : int {
         InvalidStatus   = -1,
         DefaultStaus    =  0,
         Agreed          =  1,

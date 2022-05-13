@@ -58,7 +58,7 @@ public:
     /*!
      * \brief Audience for this event.
      */
-    enum Audience : qint8 {
+    enum Audience : int {
         InvalidAudience = 0,
         Private = 1,
         Public = 2
@@ -68,7 +68,7 @@ public:
     /*!
      * \brief Participation strategy for the event.
      */
-    enum Participation : qint8 {
+    enum Participation : int {
         InvalidParticipation = 0,   /**< Invalid participation strategy */
         Refusal = 1,                /**< Guests have to refuse explicitely */
         Acceptance = 2              /**< Guests have to accept explicitely */

@@ -38,7 +38,7 @@ class AddressBook
     Q_PROPERTY(SimpleUser lockedBy READ lockedBy CONSTANT)
     Q_PROPERTY(uint size READ size CONSTANT)
 public:
-    enum Type : quint8 {
+    enum Type : int {
         Invalid = 0,
         Local = 1
     };

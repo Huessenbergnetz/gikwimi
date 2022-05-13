@@ -37,7 +37,7 @@ class User
     Q_PROPERTY(QVariantMap settings READ settings CONSTANT)
     Q_PROPERTY(bool isAdmin READ isAdmin CONSTANT)
 public:
-    enum Type : qint8 {
+    enum Type : int {
         Invalid = -1,
         Disabled = 0,
         Registered = 32,
