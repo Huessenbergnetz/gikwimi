@@ -397,8 +397,10 @@ QStringList Guest::typeValues()
 {
     QStringList list;
 
-    const QMetaObject mo = GuestGroup::staticMetaObject;
+    const QMetaObject mo = Guest::staticMetaObject;
     const QMetaEnum   me = mo.enumerator(mo.indexOfEnumerator("Type"));
+    list.reserve(me.keyCount() - 1);
+
     const int startIndex = 1;
     for (int i = startIndex; i < me.keyCount(); ++i) {
         list << QString::number(me.value(i));
