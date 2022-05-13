@@ -337,7 +337,7 @@ QDebug operator<<(QDebug dbg, const User &user)
 
 QDataStream &operator<<(QDataStream &stream, const User &user)
 {
-    stream << user.d->id << user.d->type << user.d->username << user.d->email << user.d->created << user.d->updated << user.d->lockedAt << user.d->lockedBy;
+    stream << user.d->id << static_cast<qint32>(user.d->type) << user.d->username << user.d->email << user.d->created << user.d->updated << user.d->lockedAt << user.d->lockedBy;
     return stream;
 }
 
@@ -348,7 +348,9 @@ QDataStream &operator>>(QDataStream &stream, User &user)
     }
 
     stream >> user.d->id;
-    stream >> user.d->type;
+    qint32 typeInt;
+    stream >> typeInt;
+    user.d->type = static_cast<User::Type>(typeInt);
     stream >> user.d->username;
     stream >> user.d->email;
     stream >> user.d->created;

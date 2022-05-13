@@ -593,8 +593,8 @@ QDataStream &operator<<(QDataStream &stream, const Event &event)
            << event.d->settings
            << event.d->timezone
            << event.d->id
-           << event.d->audience
-           << event.d->participation
+           << static_cast<qint32>(event.d->audience)
+           << static_cast<qint32>(event.d->participation)
            << event.d->allDay
            << event.d->startOnly;
     return stream;
@@ -619,8 +619,12 @@ QDataStream &operator>>(QDataStream &stream, Event &event)
     stream >> event.d->settings;
     stream >> event.d->timezone;
     stream >> event.d->id;
-    stream >> event.d->audience;
-    stream >> event.d->participation;
+    qint32 audienceInt;
+    stream >> audienceInt;
+    event.d->audience = static_cast<Event::Audience>(audienceInt);
+    qint32 participationInt;
+    stream >> participationInt;
+    event.d->participation = static_cast<Event::Participation>(participationInt);
     stream >> event.d->allDay;
     stream >> event.d->startOnly;
     return stream;

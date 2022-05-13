@@ -441,7 +441,7 @@ QDataStream &operator<<(QDataStream &stream, const GuestGroup &gg)
            << gg.d->name
            << gg.d->slug
            << gg.d->note
-           << gg.d->salutation
+           << static_cast<qint32>(gg.d->salutation)
            << gg.d->created
            << gg.d->updated
            << gg.d->lockedAt
@@ -457,7 +457,9 @@ QDataStream &operator>>(QDataStream &stream, GuestGroup &gg)
     stream >> gg.d->name;
     stream >> gg.d->slug;
     stream >> gg.d->note;
-    stream >> gg.d->salutation;
+    qint32 salutInt;
+    stream >> salutInt;
+    gg.d->salutation = static_cast<GuestGroup::Salutation>(salutInt);
     stream >> gg.d->created;
     stream >> gg.d->updated;
     stream >> gg.d->lockedAt;

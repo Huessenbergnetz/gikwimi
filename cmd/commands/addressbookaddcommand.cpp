@@ -117,7 +117,11 @@ int AddressBookAddCommand::exec(QCommandLineParser *parser)
     QString settingsJsonString;
     if (!settings.isEmpty()) {
         QVariantHash settingsHash;
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 14, 0))
         const QStringList settingsList = settings.split(QLatin1Char(';'), Qt::SkipEmptyParts);
+#else
+        const QStringList settingsList = settings.split(QLatin1Char(';'), QString::SkipEmptyParts);
+#endif
         for (const QString &keyValPair : settingsList) {
             const int idx = keyValPair.indexOf(QLatin1Char('='));
             if (idx > 0) {

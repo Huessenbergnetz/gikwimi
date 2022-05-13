@@ -399,7 +399,7 @@ QDataStream &operator<<(QDataStream &stream, const AddressBook &ab)
            << ab.d->lockedAt
            << ab.d->lockedBy
            << ab.d->id
-           << ab.d->type;
+           << static_cast<qint32>(ab.d->type);
     return stream;
 }
 
@@ -417,7 +417,9 @@ QDataStream &operator>>(QDataStream &stream, AddressBook &ab)
     stream >> ab.d->lockedAt;
     stream >> ab.d->lockedBy;
     stream >> ab.d->id;
-    stream >> ab.d->type;
+    qint32 typeInt;
+    stream >> typeInt;
+    ab.d->type = static_cast<AddressBook::Type>(typeInt);
     return stream;
 }
 

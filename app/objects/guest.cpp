@@ -645,14 +645,14 @@ QDataStream &operator<<(QDataStream &stream, const Guest &guest)
            << guest.d->lockedBy
            << guest.d->id
            << guest.d->groupId
-           << guest.d->salutation
-           << guest.d->type
+           << static_cast<qint32>(guest.d->salutation)
+           << static_cast<qint32>(guest.d->type)
            << guest.d->adults
            << guest.d->adultsAccepted
            << guest.d->children
            << guest.d->childrenAccepted
-           << guest.d->status
-           << guest.d->notifications;
+           << static_cast<qint32>(guest.d->status)
+           << static_cast<qint32>(guest.d->notifications);
     return stream;
 }
 
@@ -675,14 +675,21 @@ QDataStream &operator>>(QDataStream &stream, Guest &guest)
     stream >> guest.d->lockedBy;
     stream >> guest.d->id;
     stream >> guest.d->groupId;
-    stream >> guest.d->salutation;
-    stream >> guest.d->type;
-    stream >> guest.d->adults;
+    qint32 salInt;
+    stream >> salInt;
+    guest.d->salutation = static_cast<GuestGroup::Salutation>(salInt);
+    qint32 typeInt;
+    stream >> typeInt;
+    guest.d->adults = static_cast<Guest::Type>(typeInt);
     stream >> guest.d->adultsAccepted;
     stream >> guest.d->children;
     stream >> guest.d->childrenAccepted;
-    stream >> guest.d->status;
-    stream >> guest.d->notifications;
+    qint32 statusInt;
+    stream >> statusInt;
+    guest.d->status = static_cast<Guest::Status>(statusInt);
+    qint32 notificInt;
+    stream >> notificInt;
+    guest.d->notifications = static_cast<Guest::Notifications>(notificInt);
     return stream;
 }
 
