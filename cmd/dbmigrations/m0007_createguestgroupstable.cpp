@@ -24,6 +24,7 @@ void M0007_CreateGuestGroupsTable::up()
     t->varChar(QStringLiteral("name"), 63);
     t->varChar(QStringLiteral("slug"), 63)->charset(QStringLiteral("ascii"))->unique();
     t->text(QStringLiteral("note"))->nullable();
+    t->tinyInteger(QStringLiteral("salutation"));
     t->dateTime(QStringLiteral("created_at"));
     t->dateTime(QStringLiteral("updated_at"));
     t->bigInteger(QStringLiteral("locked_at"))->defaultValue(0)->nullable();
