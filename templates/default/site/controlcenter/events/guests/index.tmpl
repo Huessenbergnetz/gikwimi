@@ -84,6 +84,18 @@
                         <input type="text" class="form-control" id="newGroupSlug" name="slug" aria-describedby="newGroupSlugHelp" pattern="[a-zA-Z0-9_\-]*">
                         <div id="newGroupSlugHelp" class="form-text"></div>
                     </div>
+
+                    <div>
+                        <label for="newGroupSalutation" class="form-label">{{ _("Salutation") }}</label>
+                        <select id="newGroupSalutation" name="salutation" class="form-select" aria-describedby="newGroupSalutationHelp">
+                        {% for opt in salutation_options %}
+                            {% if opt.value != "0" %}
+                            <option value="{{ opt.value }}"{% if opt.selected %} selected="selected"{% endif %}>{{ opt.name }}</option>
+                            {% endif %}
+                        {% endfor %}
+                        </select>
+                        <div id="newGroupSalutationHelp" class="form-text"></div>
+                    </div>
                 </form>
             </div>
 
@@ -120,6 +132,16 @@
                         <label for="selectGuest" class="form-label">{{ _("Guest") }}</label>
                         <select id="selectGuest" name="contact" class="form-select" aria-describedby="selectGuestHelp"></select>
                         <div id="selectGuestHelp" class="form-text"></div>
+                    </div>
+
+                    <div>
+                        <label for="newGuestSalutation" class="form-label">{{ _("Salutation") }}</label>
+                        <select id="newGuestSalutation" name="salutation" class="form-select" aria-describedby="newGuestSalutationHelp">
+                        {% for opt in salutation_options %}
+                            <option value="{{ opt.value }}"{% if opt.value == "0" %} selected="selected"{% endif %}>{{ opt.name }}</option>
+                        {% endfor %}
+                        </select>
+                        <div id="newGuestSalutationHelp" class="form-text"></div>
                     </div>
 
                     <div>

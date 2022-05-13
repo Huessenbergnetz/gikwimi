@@ -270,6 +270,35 @@ QString GuestGroup::salutationEnumToString(GuestGroup::Salutation salutation)
     return str;
 }
 
+std::vector<OptionItem> GuestGroup::salutationOptionList(Cutelyst::Context *c, Salutation selected)
+{
+    std::vector<OptionItem> options;
+
+    options.emplace_back(c->translate("GuestGroup", "Select salutation form"), static_cast<int>(SalutationInvalid), selected == SalutationInvalid);
+    options.emplace_back(c->translate("GuestGroup", "default"), static_cast<int>(SalutationDefault), selected == SalutationDefault);
+    options.emplace_back(c->translate("GuestGroup", "very formal"), static_cast<int>(SalutationVeryFormal), selected == SalutationVeryFormal);
+    options.emplace_back(c->translate("GuestGroup", "formal"), static_cast<int>(SalutationFormal), selected == SalutationFormal);
+    options.emplace_back(c->translate("GuestGroup", "neutral"), static_cast<int>(SalutationNeutral), selected == SalutationNeutral);
+    options.emplace_back(c->translate("GuestGroup", "informal"), static_cast<int>(SalutationInformal), selected == SalutationInformal);
+    options.emplace_back(c->translate("GuestGroup", "very informal"), static_cast<int>(SalutationVeryInformal), selected == SalutationVeryInformal);
+
+    return options;
+}
+
+QStringList GuestGroup::salutationValues(bool withDefault)
+{
+    QStringList list;
+
+    const QMetaObject mo = GuestGroup::staticMetaObject;
+    const QMetaEnum   me = mo.enumerator(mo.indexOfEnumerator("Salutation"));
+    const int startIndex = withDefault ? 1 : 2;
+    for (int i = startIndex; i < me.keyCount(); ++i) {
+        list << QString::number(me.value(i));
+    }
+
+    return list;
+}
+
 std::vector<GuestGroup> GuestGroup::list(Cutelyst::Context *c, Error *e, dbid_t eventId)
 {
     std::vector<GuestGroup> groups;

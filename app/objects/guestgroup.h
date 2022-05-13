@@ -9,6 +9,7 @@
 #include "global.h"
 #include "event.h"
 #include "simpleuser.h"
+#include "optionitem.h"
 
 #include <QObject>
 #include <QSharedDataPointer>
@@ -103,6 +104,10 @@ public:
     static GuestGroup::Salutation salutationStringToEnum(const QString &str);
 
     static QString salutationEnumToString(GuestGroup::Salutation salutation);
+
+    static std::vector<OptionItem> salutationOptionList(Cutelyst::Context *c, GuestGroup::Salutation selected = GuestGroup::SalutationInvalid);
+
+    static QStringList salutationValues(bool withDefault = true);
 
     static std::vector<GuestGroup> list(Cutelyst::Context *c, Error *e, dbid_t eventId);
 

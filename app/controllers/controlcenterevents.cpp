@@ -8,6 +8,7 @@
 #include "../objects/event.h"
 #include "../objects/error.h"
 #include "../objects/guest.h"
+#include "../objects/optionitem.h"
 #include "../utils.h"
 
 #include <Cutelyst/Plugins/Utils/Validator> // includes the main validator
@@ -15,6 +16,7 @@
 #include <Cutelyst/Plugins/Utils/validatorrequired.h>
 #include <Cutelyst/Plugins/Utils/validatoralphadash.h>
 #include <Cutelyst/Plugins/Utils/validatorbetween.h>
+#include <Cutelyst/Plugins/Utils/validatorin.h>
 
 #include <limits>
 
@@ -96,11 +98,14 @@ void ControlCenterEvents::guests(Context *c)
     //: table data description, number of child guests
     guestsTableHeaders.insert(QStringLiteral("children"), c->translate("ControlCenterEvents", "children"));
 
+    const std::vector<OptionItem> salutationOptions = GuestGroup::salutationOptionList(c);
+
     c->stash({
                  {QStringLiteral("site_subtitle"), c->translate("ControlCenterEvents", "Guests")},
                  {QStringLiteral("template"), QStringLiteral("controlcenter/events/guests/index.tmpl")},
                  {QStringLiteral("groups"), QVariant::fromValue<std::vector<GuestGroup>>(groups)},
-                 {QStringLiteral("guests_table_headers"), QVariant::fromValue<QMap<QString,QString>>(guestsTableHeaders)}
+                 {QStringLiteral("guests_table_headers"), QVariant::fromValue<QMap<QString,QString>>(guestsTableHeaders)},
+                 {QStringLiteral("salutation_options"), QVariant::fromValue<std::vector<OptionItem>>(salutationOptions)}
              });
 }
 
@@ -117,7 +122,10 @@ void ControlCenterEvents::addGuest(Context *c)
                                new ValidatorRequired(QStringLiteral("expectedAdults")),
                                new ValidatorBetween(QStringLiteral("expectedAdults"), QMetaType::UInt, 0, 10),
                                new ValidatorRequired(QStringLiteral("expectedChildren")),
-                               new ValidatorBetween(QStringLiteral("expectedChildren"), QMetaType::UInt, 0, 10)
+                               new ValidatorBetween(QStringLiteral("expectedChildren"), QMetaType::UInt, 0, 10),
+                               new ValidatorRequired(QStringLiteral("salutation")),
+                               new ValidatorIn(QStringLiteral("salutation"), GuestGroup::salutationValues(true)),
+                               new ValidatorBetween(QStringLiteral("salutation"), QMetaType::Int, -127, 127)
                            });
         const ValidatorResult vr = v.validate(c, Validator::FillStashOnError|Validator::BodyParamsOnly);
         if (vr) {
@@ -185,7 +193,10 @@ void ControlCenterEvents::addGuestGroup(Context *c)
     if (req->isPost()) {
         static Validator v({
                                new ValidatorRequired(QStringLiteral("name")),
-                               new ValidatorAlphaDash(QStringLiteral("slug"), true)
+                               new ValidatorAlphaDash(QStringLiteral("slug"), true),
+                               new ValidatorRequired(QStringLiteral("salutation")),
+                               new ValidatorIn(QStringLiteral("salutation"), GuestGroup::salutationValues(false)),
+                               new ValidatorBetween(QStringLiteral("salutation"), QMetaType::Int, -127, 127)
                            });
 
         const ValidatorResult vr = v.validate(c, Validator::FillStashOnError|Validator::BodyParamsOnly);
