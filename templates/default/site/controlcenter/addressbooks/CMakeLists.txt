@@ -15,6 +15,6 @@ target_sources(defaulttemplate
 add_subdirectory(contacts)
 
 install(FILES ${CONTROLCENTER_ADDRESSBOOKS_FILES}
-        DESTINATION ${GIKWIMI_TEMPLATESDIR}/site/controlcenter/addressbooks
+        DESTINATION ${GIKWIMI_TEMPLATESDIR}/default/site/controlcenter/addressbooks
         PERMISSIONS OWNER_READ OWNER_WRITE GROUP_READ WORLD_READ
 )

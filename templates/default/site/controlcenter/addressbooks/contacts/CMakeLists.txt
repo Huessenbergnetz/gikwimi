@@ -13,6 +13,6 @@ target_sources(defaulttemplate
 )
 
 install(FILES ${CONTROLCENTER_ADDRESSBOOKS_CONTACTS_FILES}
-        DESTINATION ${GIKWIMI_TEMPLATESDIR}/site/controlcenter/addressbooks/contacts
+        DESTINATION ${GIKWIMI_TEMPLATESDIR}/default/site/controlcenter/addressbooks/contacts
         PERMISSIONS OWNER_READ OWNER_WRITE GROUP_READ WORLD_READ
 )

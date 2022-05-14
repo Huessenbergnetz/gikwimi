@@ -16,6 +16,6 @@ add_subdirectory(guests)
 add_subdirectory(guestgroups)
 
 install(FILES ${CONTROLCENTER_EVENTS_FILES}
-        DESTINATION ${GIKWIMI_TEMPLATESDIR}/site/controlcenter/events
+        DESTINATION ${GIKWIMI_TEMPLATESDIR}/default/site/controlcenter/events
         PERMISSIONS OWNER_READ OWNER_WRITE GROUP_READ WORLD_READ
 )

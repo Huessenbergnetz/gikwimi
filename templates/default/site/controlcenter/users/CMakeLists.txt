@@ -12,6 +12,6 @@ target_sources(defaulttemplate
 )
 
 install(FILES ${CONTROLCENTER_USERS_FILES}
-        DESTINATION ${GIKWIMI_TEMPLATESDIR}/site/controlcenter/users
+        DESTINATION ${GIKWIMI_TEMPLATESDIR}/default/site/controlcenter/users
         PERMISSIONS OWNER_READ OWNER_WRITE GROUP_READ WORLD_READ
 )

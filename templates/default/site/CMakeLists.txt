@@ -16,6 +16,6 @@ add_subdirectory(controlcenter)
 add_subdirectory(inc)
 
 install(FILES ${SITE_FILES}
-        DESTINATION ${GIKWIMI_TEMPLATESDIR}/site
+        DESTINATION ${GIKWIMI_TEMPLATESDIR}/default/site
         PERMISSIONS OWNER_READ OWNER_WRITE GROUP_READ WORLD_READ
 )

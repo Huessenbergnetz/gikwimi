@@ -11,6 +11,6 @@ target_sources(defaulttemplate
 )
 
 install(FILES ${INC_FILES}
-        DESTINATION ${GIKWIMI_TEMPLATESDIR}/site/inc
+        DESTINATION ${GIKWIMI_TEMPLATESDIR}/default/site/inc
         PERMISSIONS OWNER_READ OWNER_WRITE GROUP_READ WORLD_READ
 )

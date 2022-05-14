@@ -13,6 +13,6 @@ target_sources(defaulttemplate
 )
 
 install(FILES ${CONTROLCENTER_EVENTS_GUESTGROUPS_FILES}
-        DESTINATION ${GIKWIMI_TEMPLATESDIR}/site/controlcenter/events/guestgroups
+        DESTINATION ${GIKWIMI_TEMPLATESDIR}/default/site/controlcenter/events/guestgroups
         PERMISSIONS OWNER_READ OWNER_WRITE GROUP_READ WORLD_READ
 )

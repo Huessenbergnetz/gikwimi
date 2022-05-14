@@ -14,6 +14,6 @@ target_sources(defaulttemplate
 )
 
 install(FILES ${CONTROLCENTER_EVENTS_GUESTS_FILES}
-        DESTINATION ${GIKWIMI_TEMPLATESDIR}/site/controlcenter/events/guests
+        DESTINATION ${GIKWIMI_TEMPLATESDIR}/default/site/controlcenter/events/guests
         PERMISSIONS OWNER_READ OWNER_WRITE GROUP_READ WORLD_READ
 )
