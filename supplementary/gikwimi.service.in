@@ -1,0 +1,23 @@
+[Unit]
+Description=Web based invitation management
+Documentation=man:gikwimi(8) man:gikwimi.ini(5)
+After=network.target
+After=mysql.service
+Before=httpd.service nginx.service lighttpd.service
+
+[Service]
+Type=notify
+Environment="QT_LOGGING_CONF=@CMAKE_INSTALL_FULL_SYSCONFDIR@/gikwimi.ini"
+PIDFile=${RUNTIME_DIRECTORY}/gikwimi.pid
+ExecStart=/usr/bin/cutelystd3-qt5 -M -a @CMAKE_INSTALL_FULL_LIBDIR@/cutelyst3-qt5-apps/libgikwimi.so --ini @CMAKE_INSTALL_FULL_SYSCONFDIR@/gikwimi.ini --pidfile ${RUNTIME_DIRECTORY}/gikwimi.pid --fastcgi-socket ${RUNTIME_DIRECTORY}/gikwimi.sock --socket-access ug
+ExecStop=/usr/bin/cutelystd3-qt5 --stop ${RUNTIME_DIRECTORY}/gikwimi.pid
+NotifyAccess=all
+RuntimeDirectory=gikwimi
+PrivateTmp=true
+SystemCallArchitectures=native
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+User=@GIKWIMI_USER@
+Group=@GIKWIMI_GROUP@
+
+[Install]
+WantedBy=multi-user.target
