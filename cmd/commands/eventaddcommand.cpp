@@ -6,6 +6,7 @@
 #include "eventaddcommand.h"
 
 #include "../../app/objects/event.h"
+#include "../../app/objects/guestgroup.h"
 #include "../../app/utils.h"
 
 #include <QCoreApplication>
@@ -126,6 +127,16 @@ void EventAddCommand::init()
                                            //% "group name"
                                            qtTrId("gikctl-opt-event-add-group-value"),
                                            groupDefVal));
+
+    const QString salutDefVal = GuestGroup::salutationEnumToString(GuestGroup::SalutationNeutral);
+    m_cliOptions.append(QCommandLineOption(QStringLiteral("salutation"),
+                                           //: CLI option description
+                                           //% "Salutation used for guests in the default group. Can be changed later. Available forms of salutation: %1. Default value: %2"
+                                           qtTrId("gikctl-opt-event-add-salutation-desc").arg(locale.createSeparatedList(GuestGroup::salutationKeys(false)), salutDefVal),
+                                           //: CLI option value name
+                                           //% "salutation"
+                                           qtTrId("gikctl-opt-event-add-salutation-value"),
+                                           salutDefVal));
 }
 
 int EventAddCommand::exec(QCommandLineParser *parser)
@@ -145,7 +156,8 @@ int EventAddCommand::exec(QCommandLineParser *parser)
         //% "Available IANA time zone IDs:"
         printMessage(qtTrId("gikctl-event-show-timezones"));
 
-        for (const QByteArray &tz : QTimeZone::availableTimeZoneIds()) {
+        const auto tzList = QTimeZone::availableTimeZoneIds();
+        for (const QByteArray &tz : tzList) {
             printMessage(tz);
         }
 
@@ -168,6 +180,7 @@ int EventAddCommand::exec(QCommandLineParser *parser)
     const QString description                   = parser->value(QStringLiteral("description")).trimmed();
     const bool allDay                           = parser->isSet(QStringLiteral("all-day"));
     const QString group                         = parser->value(QStringLiteral("group")).trimmed();
+    const GuestGroup::Salutation salutation     = GuestGroup::salutationStringToEnum(parser->value(QStringLiteral("salutation")).trimmed());
 
     //% "Adding new event “%1”"
     printStatus(qtTrId("gikctl-status-add-event").arg(title));
@@ -243,6 +256,14 @@ int EventAddCommand::exec(QCommandLineParser *parser)
         return inputError(qtTrId("gikctl-event-add-err-invalid-participation").arg(parser->value(QStringLiteral("participation")).trimmed(), locale.createSeparatedList(Event::supportedParticipations())));
     }
 
+    if (salutation == GuestGroup::SalutationInvalid || salutation == GuestGroup::SalutationDefault) {
+        printFailed();
+        QLocale locale;
+        //: CLI error message
+        //% "Can not add a new event with invalid default group salutation form “%1”. Currently supported forms are: %2"
+        return inputError(qtTrId("gikctl-event-add-err-invalid-salutation").arg(parser->value(QStringLiteral("salutation")).trimmed(), locale.createSeparatedList(GuestGroup::salutationKeys(false))));
+    }
+
     const QDateTime now = QDateTime::currentDateTimeUtc();
 
     QSqlDatabase db = QSqlDatabase::database(QStringLiteral(DBCONNAME));
@@ -298,13 +319,14 @@ int EventAddCommand::exec(QCommandLineParser *parser)
 
     const dbid_t eventId = q.lastInsertId().toUInt();
 
-    if (Q_UNLIKELY(!q.prepare(QStringLiteral("INSERT INTO guestgroups (event_id, name, slug, created_at, updated_at) VALUES (:event_id, :name, :slug, :created_at, :updated_at)")))) {
+    if (Q_UNLIKELY(!q.prepare(QStringLiteral("INSERT INTO guestgroups (event_id, name, slug, salutation, created_at, updated_at) VALUES (:event_id, :name, :slug, :salutation, :created_at, :updated_at)")))) {
         printFailed();
         return dbError(q);
     }
     q.bindValue(QStringLiteral(":event_id"), eventId);
     q.bindValue(QStringLiteral(":name"), group);
     q.bindValue(QStringLiteral(":slug"), Utils::createSlug(group));
+    q.bindValue(QStringLiteral(":salutation"), static_cast<int>(salutation));
     q.bindValue(QStringLiteral(":created_at"), now);
     q.bindValue(QStringLiteral(":updated_at"), now);
 
