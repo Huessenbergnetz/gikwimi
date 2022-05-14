@@ -299,6 +299,22 @@ QStringList GuestGroup::salutationValues(bool withDefault)
     return list;
 }
 
+QStringList GuestGroup::salutationKeys(bool withDefault)
+{
+    QStringList list;
+
+    const QMetaObject mo = GuestGroup::staticMetaObject;
+    const QMetaEnum   me = mo.enumerator(mo.indexOfEnumerator("Salutation"));
+    const int startIndex = withDefault ? 1 : 2;
+    for (int i = startIndex; i < me.keyCount(); ++i) {
+        QString k = QString::fromLatin1(me.key(i));
+        k.remove(QLatin1String("Salutation"));
+        list << k.toLower();
+    }
+
+    return list;
+}
+
 std::vector<GuestGroup> GuestGroup::list(Cutelyst::Context *c, Error *e, dbid_t eventId)
 {
     std::vector<GuestGroup> groups;

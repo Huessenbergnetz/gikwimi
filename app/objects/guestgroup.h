@@ -109,6 +109,8 @@ public:
 
     static QStringList salutationValues(bool withDefault = true);
 
+    static QStringList salutationKeys(bool withDefault = true);
+
     static std::vector<GuestGroup> list(Cutelyst::Context *c, Error *e, dbid_t eventId);
 
     static std::vector<GuestGroup> list(Cutelyst::Context *c, Error *e, const Event &event);
