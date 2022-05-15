@@ -15,6 +15,26 @@ GikDefTmpl.addGuest.button = null;
 
 GikDefTmpl.addGuest.addressBooksLoaded = false;
 
+GikDefTmpl.addGuest.resetForm = function() {
+    const guestPartnerGivenName = document.getElementById('guestPartnerGivenName');
+    guestPartnerGivenName.value = '';
+
+    const guestPartnerFamilyName = document.getElementById('guestPartnerFamilyName');
+    guestPartnerFamilyName.value = '';
+
+    const expectedAdultsRange = document.getElementById('expectedAdultsRange');
+    expectedAdultsRange.value = 1;
+
+    const expectedAdultsValue = document.getElementById('expectedAdultsValue');
+    expectedAdultsValue.textContent = 1;
+
+    const expectedChildrenRange = document.getElementById('expectedChildrenRange');
+    expectedChildrenRange.value = 0;
+
+    const expectedChildrenValue = document.getElementById('expectedChildrenValue');
+    expectedChildrenValue.textContent = 0;
+}
+
 GikDefTmpl.addGuest.exec = function() {
     const fd = new FormData(GikDefTmpl.addGuest.form);
     const actionPath = GikDefTmpl.addGuest.form.attributes.getNamedItem('action').value;
@@ -27,8 +47,6 @@ GikDefTmpl.addGuest.exec = function() {
           })
     .then(response => response.json())
     .then(data => {
-              console.log(data);
-
               const template = document.getElementById('guest-row-template');
               const clone = template.content.cloneNode(true);
 
@@ -51,7 +69,7 @@ GikDefTmpl.addGuest.exec = function() {
               countSpans[4].textContent = data.childrenAccepted;
               countSpans[5].textContent = data.children;
 
-              if (data.contact.addressee.addresses.length) {
+              if (data.contact.addressee.addresses && data.contact.addressee.addresses.length) {
                   const address = data.contact.addressee.addresses[0];
                   let addressHtml = '';
                   if (address.street) {
@@ -74,6 +92,8 @@ GikDefTmpl.addGuest.exec = function() {
               }
 
               const section = document.getElementById('group_' + data.group.id).getElementsByTagName('tbody')[0].appendChild(clone);
+
+              GikDefTmpl.addGuest.resetForm();
           })
     .catch(console.error);
 
