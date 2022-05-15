@@ -433,7 +433,11 @@ std::vector<Guest> Guest::list(Cutelyst::Context *c, Error *e, const GuestGroup 
                                                            "g.id, g.uid, g.partner_given_name, g.partner_family_name, g.adults, g.adults_accepted, g.children, g.children_accepted, g.status, g.notified, g.note, g.comment, g.salutation, g.type, g.created_at, g.updated_at, g.locked_at, "
                                                            "u.id AS locked_by_id, u.username AS locked_by_username, "
                                                            "c.id AS contact_id, c.addressbook_id, c.vcard, c.created_at contact_created, c.updated_at AS contact_updated "
-                                                           "FROM guests g LEFT JOIN users u ON u.id = g.locked_by JOIN contacts c ON c.id = g.contact_id WHERE g.group_id = :group_id"));
+                                                           "FROM guests g "
+                                                           "LEFT JOIN users u ON u.id = g.locked_by "
+                                                           "JOIN contacts c ON c.id = g.contact_id "
+                                                           "WHERE g.group_id = :group_id "
+                                                           "ORDER BY c.family_name, c.given_name"));
     q.bindValue(QStringLiteral(":group_id"), group.id());
 
     if (Q_LIKELY(q.exec())) {
@@ -503,7 +507,8 @@ std::vector<Guest> Guest::listByEvent(Cutelyst::Context *c, Error *e, const Even
                                                            "LEFT JOIN users u ON u.id = g.locked_by "
                                                            "JOIN contacts c ON c.id = g.contact_id "
                                                            "JOIN guestgroups gg ON g.group_id = gg.id "
-                                                           "WHERE gg.event_id = :event_id"));
+                                                           "WHERE gg.event_id = :event_id "
+                                                           "ORDER BY c.family_name, c.given_name"));
     q.bindValue(QStringLiteral(":event_id"), event.id());
 
     if (Q_LIKELY(q.exec())) {
