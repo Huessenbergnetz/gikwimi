@@ -33,6 +33,10 @@ public:
     SimpleUser lockedBy;
     dbid_t id = 0;
     dbid_t eventId = 0;
+    uint adultsInvited = 0;
+    uint adultsAccepted = 0;
+    uint childrenInvited = 0;
+    uint childrenAccepted = 0;
     GuestGroup::Salutation salutation = GuestGroup::SalutationInvalid;
 };
 
@@ -41,7 +45,7 @@ GuestGroup::GuestGroup()
 
 }
 
-GuestGroup::GuestGroup(dbid_t id, dbid_t eventId, const QString &name, const QString &slug, const QString &note, Salutation salutation, const QDateTime &created, const QDateTime &updated, const QDateTime &lockedAt, const SimpleUser &lockedBy)
+GuestGroup::GuestGroup(dbid_t id, dbid_t eventId, const QString &name, const QString &slug, const QString &note, Salutation salutation, uint adultsInvited, uint adultsAccepted, uint childrenInvited, uint childrenAccepted, const QDateTime &created, const QDateTime &updated, const QDateTime &lockedAt, const SimpleUser &lockedBy)
     : d(new GuestGroupData)
 {
     d->id = id;
@@ -50,6 +54,10 @@ GuestGroup::GuestGroup(dbid_t id, dbid_t eventId, const QString &name, const QSt
     d->slug = slug;
     d->note = note;
     d->salutation = salutation;
+    d->adultsInvited = adultsInvited;
+    d->adultsAccepted = adultsAccepted;
+    d->childrenInvited = childrenInvited;
+    d->childrenAccepted = childrenAccepted;
     d->created = created;
     d->created.setTimeSpec(Qt::UTC);
     d->updated = updated;
@@ -61,7 +69,7 @@ GuestGroup::GuestGroup(dbid_t id, dbid_t eventId, const QString &name, const QSt
     d->lockedBy = lockedBy;
 }
 
-GuestGroup::GuestGroup(dbid_t id, const Event &event, const QString &name, const QString &slug, const QString &note, Salutation salutation, const QDateTime &created, const QDateTime &updated, const QDateTime &lockedAt, const SimpleUser &lockedBy)
+GuestGroup::GuestGroup(dbid_t id, const Event &event, const QString &name, const QString &slug, const QString &note, Salutation salutation, uint adultsInvited, uint adultsAccepted, uint childrenInvited, uint childrenAccepted, const QDateTime &created, const QDateTime &updated, const QDateTime &lockedAt, const SimpleUser &lockedBy)
     : d(new GuestGroupData)
 {
     d->id = id;
@@ -70,6 +78,10 @@ GuestGroup::GuestGroup(dbid_t id, const Event &event, const QString &name, const
     d->slug = slug;
     d->note = note;
     d->salutation = salutation;
+    d->adultsInvited = adultsInvited;
+    d->adultsAccepted = adultsAccepted;
+    d->childrenInvited = childrenInvited;
+    d->childrenAccepted = childrenAccepted;
     d->created = created;
     d->created.setTimeSpec(Qt::UTC);
     d->updated = updated;
@@ -145,6 +157,44 @@ QVariantList GuestGroup::guests() const
         }
     }
     return list;
+}
+
+uint GuestGroup::adultsInvited() const
+{
+    return d ? d->adultsInvited : 0;
+}
+
+uint GuestGroup::adultsAccepted() const
+{
+    return d ? d->adultsAccepted : 0;
+}
+
+uint GuestGroup::childrenInvited() const
+{
+    return d ? d->childrenInvited : 0;
+}
+
+uint GuestGroup::childrenAccepted() const
+{
+    return d ? d->childrenAccepted : 0;
+}
+
+uint GuestGroup::totalInvited() const
+{
+    if (d) {
+        return d->adultsInvited + d->childrenInvited;
+    } else {
+        return 0;
+    }
+}
+
+uint GuestGroup::totalAccepted() const
+{
+    if (d) {
+        return d->adultsAccepted + d->childrenAccepted;
+    } else {
+        return 0;
+    }
 }
 
 QDateTime GuestGroup::created() const
@@ -346,16 +396,36 @@ std::vector<GuestGroup> GuestGroup::list(Cutelyst::Context *c, Error *e, const E
         }
 
         while (q.next()) {
+
+            const dbid_t id = q.value(0).toUInt();
+
+            QSqlQuery q2 = CPreparedSqlQueryThreadFO(QStringLiteral("SELECT SUM(g.adults), SUM(g.adults_accepted), SUM(g.children), SUM(g.children_accepted) FROM guests g WHERE g.group_id = :id"));
+            q2.bindValue(QStringLiteral(":id"), id);
+
+            uint adults, adultsAccepted, children, childrenAccepted;
+            if (q2.exec() && q2.next()) {
+                adults              = q2.value(0).toUInt();
+                adultsAccepted      = q2.value(1).toUInt();
+                children            = q2.value(2).toUInt();
+                childrenAccepted    = q2.value(3).toUInt();
+            } else {
+                qCWarning(GIK_CORE) << "Failed to query guest counts for guest group ID" << id << "from the database:" << q2.lastError().text();
+            }
+
             const qlonglong  lat      = q.value(7).toLongLong();
             const QDateTime  lockedAt = lat > 0 ? QDateTime::fromMSecsSinceEpoch(lat) : QDateTime();
             const SimpleUser lockedBy = lat > 0 ? SimpleUser(q.value(8).toUInt(), q.value(9).toString()) : SimpleUser();
 
-            groups.emplace_back(q.value(0).toUInt(),
+            groups.emplace_back(id,
                                 event,
                                 q.value(1).toString(),
                                 q.value(2).toString(),
                                 q.value(3).toString(),
                                 static_cast<GuestGroup::Salutation>(q.value(4).toInt()),
+                                adults,
+                                adultsAccepted,
+                                children,
+                                childrenAccepted,
                                 q.value(5).toDateTime(),
                                 q.value(6).toDateTime(),
                                 lockedAt,
@@ -382,6 +452,19 @@ GuestGroup GuestGroup::get(Cutelyst::Context *c, Error *e, dbid_t id)
     if (Q_LIKELY(q.exec())) {
         if (Q_LIKELY(q.next())) {
 
+            QSqlQuery q2 = CPreparedSqlQueryThreadFO(QStringLiteral("SELECT SUM(g.adults), SUM(g.adults_accepted), SUM(g.children), SUM(g.children_accepted) FROM guests g WHERE g.group_id = :id"));
+            q2.bindValue(QStringLiteral(":id"), id);
+
+            uint adults, adultsAccepted, children, childrenAccepted;
+            if (q2.exec() && q2.next()) {
+                adults              = q2.value(0).toUInt();
+                adultsAccepted      = q2.value(1).toUInt();
+                children            = q2.value(2).toUInt();
+                childrenAccepted    = q2.value(3).toUInt();
+            } else {
+                qCWarning(GIK_CORE) << "Failed to query guest counts for guest group ID" << id << "from the database:" << q2.lastError().text();
+            }
+
             const qlonglong lat = q.value(7).toLongLong();
             const QDateTime lockedAt = lat > 0 ? QDateTime::fromMSecsSinceEpoch(lat) : QDateTime();
             const SimpleUser lockedBy = lat > 0 ? SimpleUser(q.value(8).toUInt(), q.value(9).toString()) : SimpleUser();
@@ -392,6 +475,10 @@ GuestGroup GuestGroup::get(Cutelyst::Context *c, Error *e, dbid_t id)
                                q.value(2).toString(),
                                q.value(3).toString(),
                                static_cast<GuestGroup::Salutation>(q.value(4).toInt()),
+                               adults,
+                               adultsAccepted,
+                               children,
+                               childrenAccepted,
                                q.value(5).toDateTime(),
                                q.value(6).toDateTime(),
                                lockedAt,
@@ -440,7 +527,7 @@ GuestGroup GuestGroup::create(Cutelyst::Context *c, Error *e, const Event &event
 
     if (Q_LIKELY(q.exec())) {
         const dbid_t id = q.lastInsertId().toUInt();
-        group = GuestGroup(id, event, name, slug, note, salutation, now, now, QDateTime(), SimpleUser());
+        group = GuestGroup(id, event, name, slug, note, salutation, 0, 0, 0, 0, now, now, QDateTime(), SimpleUser());
     } else {
         if (c && e) *e = Error(q.lastError(), c->translate("GuestGroup", "Failed to create new guest group “%1” in the database.").arg(name));
         qCCritical(GIK_CORE) << "Failed to execute database query to create new guest group" << name << "in the database:" << q.lastError().text();
@@ -458,6 +545,10 @@ QDataStream &operator<<(QDataStream &stream, const GuestGroup &gg)
            << gg.d->slug
            << gg.d->note
            << static_cast<qint32>(gg.d->salutation)
+           << gg.d->adultsInvited
+           << gg.d->adultsAccepted
+           << gg.d->childrenInvited
+           << gg.d->childrenAccepted
            << gg.d->created
            << gg.d->updated
            << gg.d->lockedAt
@@ -476,6 +567,10 @@ QDataStream &operator>>(QDataStream &stream, GuestGroup &gg)
     qint32 salutInt;
     stream >> salutInt;
     gg.d->salutation = static_cast<GuestGroup::Salutation>(salutInt);
+    stream >> gg.d->adultsInvited;
+    stream >> gg.d->adultsAccepted;
+    stream >> gg.d->childrenInvited;
+    stream >> gg.d->childrenAccepted;
     stream >> gg.d->created;
     stream >> gg.d->updated;
     stream >> gg.d->lockedAt;

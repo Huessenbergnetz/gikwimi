@@ -33,6 +33,12 @@ class GuestGroup
     Q_PROPERTY(QString note READ note CONSTANT)
     Q_PROPERTY(GuestGroup::Salutation salutation READ salutation CONSTANT)
     Q_PROPERTY(QVariantList guests READ guests CONSTANT)
+    Q_PROPERTY(uint adultsInvited READ adultsInvited CONSTANT)
+    Q_PROPERTY(uint adultsAccepted READ adultsAccepted CONSTANT)
+    Q_PROPERTY(uint childrenInvited READ childrenInvited CONSTANT)
+    Q_PROPERTY(uint childrenAccepted READ childrenAccepted CONSTANT)
+    Q_PROPERTY(uint totalInvited READ totalInvited CONSTANT)
+    Q_PROPERTY(uint totalAccepted READ totalAccepted CONSTANT)
     Q_PROPERTY(QDateTime created READ created CONSTANT)
     Q_PROPERTY(QDateTime updated READ updated CONSTANT)
     Q_PROPERTY(QDateTime lockedAt READ lockedAt CONSTANT)
@@ -51,9 +57,9 @@ public:
 
     GuestGroup();
 
-    GuestGroup(dbid_t id, dbid_t eventId, const QString &name, const QString &slug, const QString &note, GuestGroup::Salutation salutation, const QDateTime &created, const QDateTime &updated, const QDateTime &lockedAt, const SimpleUser &lockedBy);
+    GuestGroup(dbid_t id, dbid_t eventId, const QString &name, const QString &slug, const QString &note, GuestGroup::Salutation salutation, uint adultsInvited, uint adultsAccepted, uint childrenInvited, uint childrenAccepted, const QDateTime &created, const QDateTime &updated, const QDateTime &lockedAt, const SimpleUser &lockedBy);
 
-    GuestGroup(dbid_t id, const Event &event, const QString &name, const QString &slug, const QString &note, GuestGroup::Salutation salutation, const QDateTime &created, const QDateTime &updated, const QDateTime &lockedAt, const SimpleUser &lockedBy);
+    GuestGroup(dbid_t id, const Event &event, const QString &name, const QString &slug, const QString &note, GuestGroup::Salutation salutation, uint adultsInvited, uint adultsAccepted, uint childrenInvited, uint childrenAccepted, const QDateTime &created, const QDateTime &updated, const QDateTime &lockedAt, const SimpleUser &lockedBy);
 
     GuestGroup(const GuestGroup &other);
 
@@ -80,6 +86,18 @@ public:
     Salutation salutation() const;
 
     QVariantList guests() const;
+
+    uint adultsInvited() const;
+
+    uint adultsAccepted() const;
+
+    uint childrenInvited() const;
+
+    uint childrenAccepted() const;
+
+    uint totalInvited() const;
+
+    uint totalAccepted() const;
 
     QDateTime created() const;
 

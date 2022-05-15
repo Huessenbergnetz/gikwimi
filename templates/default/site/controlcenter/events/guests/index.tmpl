@@ -1,5 +1,6 @@
 <div class="d-flex">
     <h1>{{ site_subtitle }} <small class="text-muted">{{ site_title }}</small></h1>
+    <div class="text-muted align-self-center"><span id="event_{{ event.id }}_total_accepted">{{ event.totalAccepted }}</span>/<span id="event_{{ event.id }}_total_invited">{{ event.totalInvited }}</span></div>
     <div class="ms-auto">
         <button type="button" class="btn btn-outline-secondary text-capitalize" data-bs-toggle="modal" data-bs-target="#addGroupModal">{{ _("add group") }}</button>
     </div>
@@ -9,7 +10,7 @@
 {% for group in groups %}
 <section id="group_{{ group.id }}">
     <div class="d-flex">
-        <h2>{{ group.name }}</h2>
+        <h2>{{ group.name }} <small class="text-muted"><span class="total_accepted">{{ group.totalAccepted }}</span>/<span class="total_invited">{{ group.totalInvited }}</span></small></h2>
         <div class="ms-auto">
             <button type="button" class="btn btn-outline-secondary text-capitalize add-guest-to-group-btn" data-bs-toggle="modal" data-bs-target="#addGuestModal" value="{{ group.id }}">{{ _("add guest") }}</button>
         </div>
