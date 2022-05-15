@@ -474,7 +474,7 @@ std::vector<Event> Event::list(Cutelyst::Context *c, Error *e, const User &user)
                 children            = q2.value(2).toUInt();
                 childrenAccepted    = q2.value(3).toUInt();
             } else {
-                qCWarning(GIK_CORE) << "Failed to query guest counts for event ID" << eventId << "from the database:" << q.lastError().text();
+                qCWarning(GIK_CORE) << "Failed to query guest counts for event ID" << eventId << "from the database:" << q2.lastError().text();
             }
 
             const QVariantHash settings = Utils::settingsHashFromString(q.value(9).toString());
