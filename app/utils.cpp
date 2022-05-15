@@ -93,9 +93,14 @@ QString Utils::createSlug(const QString &str)
         } else if (ch.isPunct()) {
             continue;
         } else {
-            const char c = ch.toLatin1();
-            if (c != 0) {
-                slug.append(QChar::fromLatin1(c).toLower());
+            if (ch >= QLatin1Char('0') && ch <= QLatin1Char('9')) {
+                slug.append(ch);
+            } else if (ch >= QLatin1Char('A') && ch <= QLatin1Char('Z')) {
+                slug.append(ch.toLower());
+            } else if (ch >= QLatin1Char('a') && ch <= QLatin1Char('z')) {
+                slug.append(ch);
+            } else if (ch == QLatin1Char('-') || ch == QLatin1Char('_')) {
+                slug.append(ch);
             }
         }
     }
