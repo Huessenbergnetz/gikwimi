@@ -14,6 +14,7 @@ target_sources(defaulttemplate
 
 add_subdirectory(guests)
 add_subdirectory(guestgroups)
+add_subdirectory(templates)
 
 install(FILES ${CONTROLCENTER_EVENTS_FILES}
         DESTINATION ${GIKWIMI_TEMPLATESDIR}/default/site/controlcenter/events

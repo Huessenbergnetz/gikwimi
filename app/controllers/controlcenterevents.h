@@ -50,6 +50,12 @@ public:
 
     C_ATTR(editGuestGroups, :Chained("base") :PathPart("guestgroups/edit") :Args(1))
     void editGuestGroups(Context *c, const QString &id);
+
+    C_ATTR(templates, :Chained("base") :PathPart("templates") :Args(0))
+    void templates(Context *c);
+
+    C_ATTR(addTemplate, :Chained("base") :PathPart("templates/add") :Args(0))
+    void addTemplate(Context *c);
 };
 
 #endif // CONTROLCENTEREVENTS_H

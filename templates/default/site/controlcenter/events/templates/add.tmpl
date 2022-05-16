@@ -1,0 +1,56 @@
+<div class="d-flex">
+    <h1>{{ site_subtitle }} <small class="text-muted">{{ site_title }}</small></h1>
+</div>
+
+<section id="addTemplate">
+    <form id="addTemplateForm" action="/controlcenter/events/{{ event.id }}/templates/add" method="post">
+        <div class="form-floating mb-3">
+            <input type="text" class="form-control" id="addTemplateName" name="name" placeholder="My new template" aria-describedby="addTemplateNameHelp">
+            <label for="addTemplateName">{{ _("Name") }}</label>
+            <div id="addTemplateNameHelp" class="form-text"></div>
+        </div>
+
+        <div class="form-floating mb-3">
+            <input type="text" class="form-control" id="addTemplateSubject" name="subject" placeholder="My subject" aria-describedby="addTemplateSubjectHelp">
+            <label for="addTemplateSubject">{{ _("Subject") }}</label>
+        </div>
+
+        <div class="row">
+            <div class="col col-sm-12 col-md-12 col-lg-4 mb-3">
+                <select id="addTemplateType" name="type" class="form-select" aria-label="{{ _("Select template type") }}">
+                    {% for opt in type_options %}
+                    <option value="{{ opt.value }}"{% if opt.selected %} selected="selected"{% endif %}>{{ opt.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="col col-sm-12 col-md-12 col-lg-4 mb-3">
+                <select id="addTemplateSalutation" name="salutation" class="form-select" aria-label="{{ _("Select salutation form") }}">
+                    {% for opt in salutation_options %}
+                    {% if opt.value != "0" %}
+                    <option value="{{ opt.value }}"{% if opt.selected %} selected="selected"{% endif %}>{{ opt.name }}</option>
+                    {% endif %}
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="col col-sm-12 col-md-12 col-lg-4 mb-3">
+                <select id="addTemplateNotification" name="notification" class="form-select" aria-label="{{ _("Select notification type") }}">
+                    {% for opt in notification_options %}
+                    <option value="{{ opt.value }}"{% if opt.selected %} selected="selected"{% endif %}>{{ opt.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <label for="addTemplateText" class="form-label">{{ _("Template text") }}</label>
+            <textarea class="form-control" id="addTemplateText" name="text" rows="10"></textarea>
+        </div>
+
+        <div class="d-flex">
+            <a role="button" class="btn btn-outline-secondary me-auto" href="/controlcenter/events/{{ event.id }}/templates">{{ _("Cancel") }}</a>
+            <button type="submit" class="btn btn-outline-primary">{{ _("Create") }}</button>
+        </div>
+    </form>
+</section>

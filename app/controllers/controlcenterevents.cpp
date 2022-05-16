@@ -8,6 +8,7 @@
 #include "../objects/event.h"
 #include "../objects/error.h"
 #include "../objects/guest.h"
+#include "../objects/invitationtemplate.h"
 #include "../objects/optionitem.h"
 #include "../utils.h"
 
@@ -235,6 +236,29 @@ void ControlCenterEvents::editGuestGroups(Context *c, const QString &id)
 {
     c->stash({
                  {QStringLiteral("template"), QStringLiteral("controlcenter/events/guestgroups/edit.tmpl")}
+             });
+}
+
+void ControlCenterEvents::templates(Context *c)
+{
+    c->stash({
+                 {QStringLiteral("site_subtitle"), c->translate("ControlCenterEvents", "Templates")},
+                 {QStringLiteral("template"), QStringLiteral("controlcenter/events/templates/index.tmpl")}
+             });
+}
+
+void ControlCenterEvents::addTemplate(Context *c)
+{
+    const std::vector<OptionItem> typeOptions = InvitationTemplate::typeOptionList(c);
+    const std::vector<OptionItem> salutationOptions = GuestGroup::salutationOptionList(c);
+    const std::vector<OptionItem> notificationOptions = Guest::notificationOptionList(c);
+
+    c->stash({
+                 {QStringLiteral("type_options"), QVariant::fromValue<std::vector<OptionItem>>(typeOptions)},
+                 {QStringLiteral("salutation_options"), QVariant::fromValue<std::vector<OptionItem>>(salutationOptions)},
+                 {QStringLiteral("notification_options"), QVariant::fromValue<std::vector<OptionItem>>(notificationOptions)},
+                 {QStringLiteral("site_subtitle"), c->translate("ControlCenterEvents", "Add template")},
+                 {QStringLiteral("template"), QStringLiteral("controlcenter/events/templates/add.tmpl")}
              });
 }
 
