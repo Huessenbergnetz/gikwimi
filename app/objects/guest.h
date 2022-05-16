@@ -70,7 +70,8 @@ public:
         Email           = 0x1,
         SMS             = 0x2,
         Messenger       = 0x4,
-        Postal          = 0x8
+        Postal          = 0x8,
+        Phone           = 0x10
     };
     Q_DECLARE_FLAGS(Notifications, Notification)
     Q_FLAG(Notifications)
@@ -156,6 +157,14 @@ public:
     static std::vector<OptionItem> typeOptionList(Cutelyst::Context *c, Guest::Type selected = Guest::InvalidType);
 
     static QStringList typeValues();
+
+    static Guest::Notification notificationStringToEnum(const QString &str);
+
+    static QString notificationEnumToString(Guest::Notification notification);
+
+    static std::vector<OptionItem> notificationOptionList(Cutelyst::Context *c, Guest::Notification selected = Guest::NotNotified);
+
+    static QStringList notificationValues(bool withNotNotified = false);
 
     static std::vector<Guest> list(Cutelyst::Context *c, Error *e, dbid_t groupId);
 

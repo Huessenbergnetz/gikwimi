@@ -409,6 +409,66 @@ QStringList Guest::typeValues()
     return list;
 }
 
+Guest::Notification Guest::notificationStringToEnum(const QString &str)
+{
+    if (str.compare(QLatin1String("email"), Qt::CaseInsensitive) == 0) {
+        return Guest::Email;
+    } else if (str.compare(QLatin1String("sms"), Qt::CaseInsensitive) == 0) {
+        return Guest::SMS;
+    } else if (str.compare(QLatin1String("messenger"), Qt::CaseInsensitive) == 0) {
+        return Guest::Messenger;
+    } else if (str.compare(QLatin1String("postal"), Qt::CaseInsensitive) == 0) {
+        return Guest::Postal;
+    } else if (str.compare(QLatin1String("phone"), Qt::CaseInsensitive) == 0) {
+        return Guest::Phone;
+    } else {
+        return Guest::NotNotified;
+    }
+}
+
+QString Guest::notificationEnumToString(Notification notification)
+{
+    QString str;
+
+    if (notification != NotNotified) {
+        const QMetaObject mo = Guest::staticMetaObject;
+        const QMetaEnum   me = mo.enumerator(mo.indexOfEnumerator("Notification"));
+        str = QString::fromLatin1(me.valueToKey(static_cast<int>(notification))).toLower();
+    }
+
+    return str;
+}
+
+std::vector<OptionItem> Guest::notificationOptionList(Cutelyst::Context *c, Notification selected)
+{
+    std::vector<OptionItem>options;
+
+    options.emplace_back(c->translate("Guest", "Select notification type"), static_cast<int>(Guest::NotNotified), selected == Guest::NotNotified);
+    options.emplace_back(c->translate("Guest", "Email"), static_cast<int>(Guest::Email), selected == Guest::Email);
+    options.emplace_back(c->translate("Guest", "SMS"), static_cast<int>(Guest::SMS), selected == Guest::SMS);
+    options.emplace_back(c->translate("Guest", "Messenger"), static_cast<int>(Guest::Messenger), selected == Guest::Messenger);
+    options.emplace_back(c->translate("Guest", "Postal"), static_cast<int>(Guest::Postal), selected == Guest::Postal);
+    options.emplace_back(c->translate("Guest", "Phone"), static_cast<int>(Guest::Phone), selected == Guest::Phone);
+
+    return options;
+}
+
+QStringList Guest::notificationValues(bool withNotNotified)
+{
+    QStringList list;
+
+    const QMetaObject mo = Guest::staticMetaObject;
+    const QMetaEnum   me = mo.enumerator(mo.indexOfEnumerator("Notification"));
+
+    const int startIndex = withNotNotified ? 0 : 1;
+
+    for (int i = startIndex; i < me.keyCount(); ++i) {
+        list.push_back(QString::number(me.value(i)));
+    }
+
+    return list;
+}
+
 std::vector<Guest> Guest::list(Cutelyst::Context *c, Error *e, dbid_t groupId)
 {
     std::vector<Guest> guests;
