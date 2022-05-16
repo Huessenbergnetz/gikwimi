@@ -18,6 +18,8 @@ target_sources(gikwimi
         guest.h
         guestgroup.cpp
         guestgroup.h
+        invitationtemplate.cpp
+        invitationtemplate.h
         menuitem.cpp
         menuitem.h
         menuitem_p.h
