@@ -24,6 +24,7 @@ void M0009_CreateTemplatesTable::up()
     t->tinyInteger(QStringLiteral("type"));
     t->tinyInteger(QStringLiteral("salutation"));
     t->varChar(QStringLiteral("name"), 63);
+    t->text(QStringLiteral("subject"));
     t->longText(QStringLiteral("text"));
 
     t->foreignKey(QStringLiteral("event_id"), QStringLiteral("events"), QStringLiteral("id"), QStringLiteral("templates_events_id_idx"))->onDelete(QStringLiteral("CASCADE"))->onUpdate(QStringLiteral("CASCADE"));
