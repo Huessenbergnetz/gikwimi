@@ -27,6 +27,10 @@ void M0009_CreateTemplatesTable::up()
     t->varChar(QStringLiteral("name"), 63);
     t->text(QStringLiteral("subject"));
     t->longText(QStringLiteral("text"));
+    t->dateTime(QStringLiteral("created_at"));
+    t->dateTime(QStringLiteral("updated_at"));
+    t->bigInteger(QStringLiteral("locked_at"))->defaultValue(0)->nullable();
+    t->integer(QStringLiteral("locked_by"))->unSigned()->defaultValue(0)->nullable();
 
     t->foreignKey(QStringLiteral("event_id"), QStringLiteral("events"), QStringLiteral("id"), QStringLiteral("templates_events_id_idx"))->onDelete(QStringLiteral("CASCADE"))->onUpdate(QStringLiteral("CASCADE"));
 
