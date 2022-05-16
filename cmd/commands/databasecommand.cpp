@@ -17,6 +17,7 @@
 #include "../dbmigrations/m0006_createeventstable.h"
 #include "../dbmigrations/m0007_createguestgroupstable.h"
 #include "../dbmigrations/m0008_creategueststable.h"
+#include "../dbmigrations/m0009_createtemplatestable.h"
 
 #include <Firfuorida/Migrator>
 
@@ -95,6 +96,7 @@ void DatabaseCommand::initMigrations()
     new M0006_CreateEventsTable(m_migrator.get());
     new M0007_CreateGuestGroupsTable(m_migrator.get());
     new M0008_CreateGuestsTable(m_migrator.get());
+    new M0009_CreateTemplatesTable(m_migrator.get());
 }
 
 #include "moc_databasecommand.cpp"

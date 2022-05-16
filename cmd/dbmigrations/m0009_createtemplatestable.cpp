@@ -23,6 +23,7 @@ void M0009_CreateTemplatesTable::up()
     t->integer(QStringLiteral("event_id"))->unSigned();
     t->tinyInteger(QStringLiteral("type"));
     t->tinyInteger(QStringLiteral("salutation"));
+    t->integer(QStringLiteral("notification"));
     t->varChar(QStringLiteral("name"), 63);
     t->text(QStringLiteral("subject"));
     t->longText(QStringLiteral("text"));
