@@ -4,6 +4,8 @@
 
 <section id="addTemplate">
     <form id="addTemplateForm" action="/controlcenter/events/{{ event.id }}/templates/add" method="post">
+        {% c_csrf_token %}
+
         <div class="form-floating mb-3">
             <input type="text" class="form-control" id="addTemplateName" name="name" placeholder="My new template" aria-describedby="addTemplateNameHelp">
             <label for="addTemplateName">{{ _("Name") }}</label>

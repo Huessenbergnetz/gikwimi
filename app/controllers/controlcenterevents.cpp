@@ -18,6 +18,7 @@
 #include <Cutelyst/Plugins/Utils/validatoralphadash.h>
 #include <Cutelyst/Plugins/Utils/validatorbetween.h>
 #include <Cutelyst/Plugins/Utils/validatorin.h>
+#include <Cutelyst/Plugins/StatusMessage>
 
 #include <limits>
 
@@ -221,9 +222,6 @@ void ControlCenterEvents::addGuestGroup(Context *c)
                 e.toStash(c, true);
                 return;
             }
-        } else {
-            c->res()->setStatus(400);
-            c->detach(c->getAction(QStringLiteral("error")));
         }
     }
 
@@ -249,6 +247,38 @@ void ControlCenterEvents::templates(Context *c)
 
 void ControlCenterEvents::addTemplate(Context *c)
 {
+    if (c->req()->isPost()) {
+        const Event event = Event::fromStash(c);
+
+        static Validator v({
+                               new ValidatorRequired(QStringLiteral("name")),
+                               new ValidatorRequired(QStringLiteral("type")),
+                               new ValidatorIn(QStringLiteral("type"), InvitationTemplate::typeValues()),
+                               new ValidatorBetween(QStringLiteral("type"), QMetaType::Int, -127, 127),
+                               new ValidatorRequired(QStringLiteral("salutation")),
+                               new ValidatorIn(QStringLiteral("salutation"), GuestGroup::salutationValues()),
+                               new ValidatorBetween(QStringLiteral("salutation"), QMetaType::Int, -127, 127),
+                               new ValidatorRequired(QStringLiteral("notification")),
+                               new ValidatorIn(QStringLiteral("notification"), Guest::notificationValues()),
+                               new ValidatorBetween(QStringLiteral("notification"), QMetaType::Int, -127, 127),
+                               new ValidatorRequired(QStringLiteral("text"))
+                           });
+        const ValidatorResult vr = v.validate(c, Validator::FillStashOnError|Validator::BodyParamsOnly);
+        if (vr) {
+            QVariantHash values = vr.values();
+            values.insert(QStringLiteral("subject"), c->req()->bodyParam(QStringLiteral("subject")));
+            Error e;
+            const InvitationTemplate templ = InvitationTemplate::create(c, &e, event, values);
+            if (templ.isValid()) {
+                c->res()->redirect(c->uriForAction(QStringLiteral("/controlcenter/events/templates"), QStringList(QString::number(event.id())), QStringList(), StatusMessage::statusQuery(c, c->translate("ControlCenterEvents", "Successfully created new template “%1” (ID: %2).").arg(templ.name(), QString::number(templ.id())))));
+                return;
+            } else {
+                e.toStash(c, true);
+                return;
+            }
+        }
+    }
+
     const std::vector<OptionItem> typeOptions = InvitationTemplate::typeOptionList(c);
     const std::vector<OptionItem> salutationOptions = GuestGroup::salutationOptionList(c);
     const std::vector<OptionItem> notificationOptions = Guest::notificationOptionList(c);
