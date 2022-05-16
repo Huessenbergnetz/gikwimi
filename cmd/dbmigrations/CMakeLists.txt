@@ -19,4 +19,6 @@ target_sources(gikwimictl
         m0007_createguestgroupstable.h
         m0008_creategueststable.cpp
         m0008_creategueststable.h
+        m0009_createtemplatestable.cpp
+        m0009_createtemplatestable.h
 )
