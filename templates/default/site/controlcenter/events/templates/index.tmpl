@@ -4,3 +4,29 @@
         <a role="button" class="btn btn-outline-secondary text-capitalize" href="/controlcenter/events/{{ event.id }}/templates/add">{{ _("add template") }}</a>
     </div>
 </div>
+
+{% if templates.size %}
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col" class="text-capitalize">{{ templates_table_headers.name }}</th>
+            <th scope="col" class="text-capitalize">{{ templates_table_headers.type }}</th>
+            <th scope="col" class="text-capitalize">{{ templates_table_headers.salutation }}</th>
+            <th scope="col" class="text-capitalize">{{ templates_table_headers.notification }}</th>
+            <th scope="col" class="text-capitalize">{{ templates_table_headers.id }}</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for templ in templates %}
+        <tr>
+            <td>{{ templ.name }}</td>
+            <td>{{ templ.type.key }}</td>
+            <td>{{ templ.salutation.key }}</td>
+            <td>{{ templ.notification.key }}</td>
+            <td>{{ templ.id }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+{% endif %}
