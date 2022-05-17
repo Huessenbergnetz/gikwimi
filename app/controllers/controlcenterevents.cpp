@@ -95,6 +95,8 @@ void ControlCenterEvents::guests(Context *c)
     guestsTableHeaders.insert(QStringLiteral("guests"), c->translate("ControlCenterEvents", "guests"));
     //: table header
     guestsTableHeaders.insert(QStringLiteral("address"), c->translate("ControlCenterEvents", "address"));
+    //: table header
+    guestsTableHeaders.insert(QStringLiteral("notified"), c->translate("ControlCenterEvents", "notified"));
     //: table data description, number of adult guests
     guestsTableHeaders.insert(QStringLiteral("adults"), c->translate("ControlCenterEvents", "adults"));
     //: table data description, number of child guests
@@ -180,6 +182,61 @@ void ControlCenterEvents::editGuest(Context *c, const QString &id)
              });
 }
 
+void ControlCenterEvents::inviteGuest(Context *c, const QString &id, const QString &notificationValue)
+{
+    bool ok = false;
+    const dbid_t guestId = Utils::strToDbid(id, &ok, c->translate("ControlCenterEvents", "Invalid guest database ID."), c);
+
+    if (!ok) {
+        return;
+    }
+
+    Error e;
+    Guest guest = Guest::get(c, &e, guestId);
+
+    if (!guest.isValid()) {
+        e.toStash(c, true);
+        return;
+    }
+
+    const Guest::Notification notification = static_cast<Guest::Notification>(notificationValue.toInt(&ok));
+
+    if (!ok) {
+        e = Error(Error::InputError, c->translate("ControlCenterEvents", "Invalid notification type identifier."));
+        e.toStash(c, true);
+        return;
+    }
+
+    if (c->req()->isPost()) {
+        if (guest.markAsInvited(c, &e, notification)) {
+            const Event event = Event::fromStash(c);
+            c->res()->redirect(c->uriForAction(QStringLiteral("/controlcenter/events/guests"), QStringList(QString::number(event.id())), QStringList()));
+        } else {
+            e.toStash(c, true);
+        }
+        return;
+    }
+
+    const QString invitationText = guest.invitationText(c, &e, notification);
+
+    if (e.type() != Error::NoError) {
+        e.toStash(c, true);
+        return;
+    }
+
+    const QString invitationSubject = (notification == Guest::Email || notification == Guest::Postal) ? guest.invitationSubject(c, &e, notification) : QString();
+
+    c->stash({
+                 {QStringLiteral("guest"), QVariant::fromValue<Guest>(guest)},
+                 {QStringLiteral("notification_type"), static_cast<int>(notification)},
+                 {QStringLiteral("invitation_subject"), invitationSubject},
+                 {QStringLiteral("invitation_text"), invitationText},
+                 {QStringLiteral("site_subtitle"), c->translate("ControlCenterEvents", "Invite guest")},
+                 {QStringLiteral("site_title"), guest.contact().addressee().formattedName()},
+                 {QStringLiteral("template"), QStringLiteral("controlcenter/events/guests/invite.tmpl")}
+             });
+}
+
 void ControlCenterEvents::add(Context *c)
 {
     c->stash({
@@ -239,7 +296,26 @@ void ControlCenterEvents::editGuestGroups(Context *c, const QString &id)
 
 void ControlCenterEvents::templates(Context *c)
 {
+    const Event event = Event::fromStash(c);
+
+    Error e;
+    const std::vector<InvitationTemplate> templates = InvitationTemplate::list(c, &e, event);
+
+    QMap<QString,QString> templatesTableHeaders;
+    //: table header
+    templatesTableHeaders.insert(QStringLiteral("name"), c->translate("ControlCenterEvents", "name"));
+    //: table header
+    templatesTableHeaders.insert(QStringLiteral("type"), c->translate("ControlCenterEvents", "type"));
+    //: table header
+    templatesTableHeaders.insert(QStringLiteral("salutation"), c->translate("ControlCenterEvents", "salutation"));
+    //: table header
+    templatesTableHeaders.insert(QStringLiteral("notification"), c->translate("ControlCenterEvents", "notification"));
+    //: table header
+    templatesTableHeaders.insert(QStringLiteral("id"), c->translate("ControlCenterEvents", "ID"));
+
     c->stash({
+                 {QStringLiteral("templates_table_headers"), QVariant::fromValue<QMap<QString,QString>>(templatesTableHeaders)},
+                 {QStringLiteral("templates"), QVariant::fromValue<std::vector<InvitationTemplate>>(templates)},
                  {QStringLiteral("site_subtitle"), c->translate("ControlCenterEvents", "Templates")},
                  {QStringLiteral("template"), QStringLiteral("controlcenter/events/templates/index.tmpl")}
              });
