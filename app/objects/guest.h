@@ -48,6 +48,11 @@ class Guest
     Q_PROPERTY(QDateTime updated READ updated CONSTANT)
     Q_PROPERTY(QDateTime lockedAt READ lockedAt CONSTANT)
     Q_PROPERTY(SimpleUser lockedBy READ lockedBy CONSTANT)
+    Q_PROPERTY(bool notifiedByEmail READ notifiedByEmail CONSTANT)
+    Q_PROPERTY(bool notifiedBySMS READ notifiedBySMS CONSTANT)
+    Q_PROPERTY(bool notifiedByMessenger READ notifiedByMessenger CONSTANT)
+    Q_PROPERTY(bool notifiedByPostal READ notifiedByPostal CONSTANT)
+    Q_PROPERTY(bool notifiedByPhone READ notifiedByPhone CONSTANT)
 public:
     enum Type : int {
         InvalidType     = -1,
@@ -133,6 +138,16 @@ public:
     QDateTime lockedAt() const;
 
     SimpleUser lockedBy() const;
+
+    bool notifiedByEmail() const;
+
+    bool notifiedBySMS() const;
+
+    bool notifiedByMessenger() const;
+
+    bool notifiedByPostal() const;
+
+    bool notifiedByPhone() const;
 
     bool isValid() const;
 

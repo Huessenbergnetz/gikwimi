@@ -231,6 +231,31 @@ SimpleUser Guest::lockedBy() const
     return d ? d->lockedBy : SimpleUser();
 }
 
+bool Guest::notifiedByEmail() const
+{
+    return d ? d->notifications.testFlag(Email) : false;
+}
+
+bool Guest::notifiedBySMS() const
+{
+    return d ? d->notifications.testFlag(SMS) : false;
+}
+
+bool Guest::notifiedByMessenger() const
+{
+    return d ? d->notifications.testFlag(Messenger) : false;
+}
+
+bool Guest::notifiedByPostal() const
+{
+    return d ? d->notifications.testFlag(Postal) : false;
+}
+
+bool Guest::notifiedByPhone() const
+{
+    return d ? d->notifications.testFlag(Phone) : false;
+}
+
 bool Guest::isValid() const
 {
     return d && d->id > 0;
@@ -286,7 +311,7 @@ QJsonObject Guest::toJson() const
 
 bool Guest::invite(Cutelyst::Context *c, Error *e, Notification notificaton)
 {
-
+    return false;
 }
 
 QString Guest::invitationText(Cutelyst::Context *c, Error *e, Guest::Notification notification) const
