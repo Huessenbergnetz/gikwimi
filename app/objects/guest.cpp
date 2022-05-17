@@ -11,6 +11,10 @@
 #include <Cutelyst/Context>
 #include <Cutelyst/Plugins/Utils/Sql>
 
+#include <cutelee/engine.h>
+#include <cutelee/context.h>
+#include <cutelee/template.h>
+
 #include <KContacts/VCardConverter>
 #include <KContacts/Addressee>
 
@@ -280,6 +284,112 @@ QJsonObject Guest::toJson() const
     return o;
 }
 
+bool Guest::invite(Cutelyst::Context *c, Error *e, Notification notificaton)
+{
+
+}
+
+QString Guest::invitationText(Cutelyst::Context *c, Error *e, Guest::Notification notification) const
+{
+    QString text;
+
+    const GuestGroup gg = group();
+    const Event event = gg.event();
+
+    GuestGroup::Salutation sal = salutation();
+    if (sal == GuestGroup::SalutationDefault) {
+        sal = gg.salutation();
+    }
+
+    QSqlQuery q = CPreparedSqlQueryThreadFO(QStringLiteral("SELECT text, name FROM templates WHERE event_id = :event_id AND salutation = :salutation AND notification = :notification"));
+    q.bindValue(QStringLiteral(":event_id"), event.id());
+    q.bindValue(QStringLiteral(":salutation"), static_cast<int>(sal));
+    q.bindValue(QStringLiteral(":notification"), static_cast<int>(notification));
+
+    if (Q_LIKELY(q.exec())) {
+        if (Q_LIKELY(q.next())) {
+            const QString templ = q.value(0).toString();
+            const QString name  = q.value(1).toString();
+
+            Cutelee::Engine engine;
+            auto t = engine.newTemplate(templ, name);
+            Cutelee::Context cc;
+            cc.insert(QStringLiteral("guest"), QVariant::fromValue<Guest>(*this));
+            text = t->render(&cc);
+
+        } else {
+            if (c && e) *e = Error(Error::NotFound, c->translate("Guest", "Can not find a matching template in the database."));
+            qCWarning(GIK_CORE) << "Can not find a matching template in the database. Guest ID:" << id() << "Event ID:" << event.id() << "Salutation:" << sal << "Notification:" << notification;
+        }
+    } else {
+        if (c && e) *e = Error(q.lastError(), c->translate("Guest", "Failed to execute database query to get invitation text template."));
+        qCCritical(GIK_CORE) << "Failed to execute query to get invitation text template for guest ID" << id() << "from the database:" << q.lastError().text();
+    }
+
+    return text;
+}
+
+QString Guest::invitationSubject(Cutelyst::Context *c, Error *e, Guest::Notification notification) const
+{
+    QString subject;
+
+    const GuestGroup gg = group();
+    const Event event = gg.event();
+
+    GuestGroup::Salutation sal = salutation();
+    if (sal == GuestGroup::SalutationDefault) {
+        sal = gg.salutation();
+    }
+
+    QSqlQuery q = CPreparedSqlQueryThreadFO(QStringLiteral("SELECT subject, name FROM templates WHERE event_id = :event_id AND salutation = :salutation AND notification = :notification"));
+    q.bindValue(QStringLiteral(":event_id"), event.id());
+    q.bindValue(QStringLiteral(":salutation"), static_cast<int>(sal));
+    q.bindValue(QStringLiteral(":notification"), static_cast<int>(notification));
+
+    if (Q_LIKELY(q.exec())) {
+        if (Q_LIKELY(q.next())) {
+            const QString templ = q.value(0).toString();
+            const QString name  = q.value(1).toString();
+
+            Cutelee::Engine engine;
+            auto t = engine.newTemplate(templ, name);
+            Cutelee::Context cc;
+            cc.insert(QStringLiteral("guest"), QVariant::fromValue<Guest>(*this));
+            subject = t->render(&cc);
+
+        } else {
+            if (c && e) *e = Error(Error::NotFound, c->translate("Guest", "Can not find a matching subject template in the database."));
+            qCWarning(GIK_CORE) << "Can not find a matching subject template in the database. Guest ID:" << id() << "Event ID:" << event.id() << "Salutation:" << sal << "Notification:" << notification;
+        }
+    } else {
+        if (c && e) *e = Error(q.lastError(), c->translate("Guest", "Failed to execute database query to get invitation subject template."));
+        qCCritical(GIK_CORE) << "Failed to execute query to get invitation subject template for guest ID" << id() << "from the database:" << q.lastError().text();
+    }
+
+    return subject;
+}
+
+bool Guest::markAsInvited(Cutelyst::Context *c, Error *e, Notification notification)
+{
+    Guest::Notifications nots = notifications();
+
+    nots |= notification;
+
+    QSqlQuery q = CPreparedSqlQueryThread(QStringLiteral("UPDATE guests SET notified = :notified WHERE id = :id"));
+    q.bindValue(QStringLiteral(":notified"), static_cast<int>(nots));
+    q.bindValue(QStringLiteral(":id"), id());
+
+    if (Q_LIKELY(q.exec())) {
+        d->notifications = nots;
+    } else {
+        if (c && e) *e = Error(q.lastError(), c->translate("Guest", "Failed to execute database query to update notification status."));
+        qCCritical(GIK_CORE) << "Failed to execute query to update notification status of guest ID" << id() << "in the database:" << q.lastError().text();
+        return false;
+    }
+
+    return true;
+}
+
 QString Guest::generateUid(int length)
 {
     QString uid;
@@ -462,6 +572,8 @@ QStringList Guest::notificationValues(bool withNotNotified)
 
     const int startIndex = withNotNotified ? 0 : 1;
 
+    list.reserve(me.keyCount());
+
     for (int i = startIndex; i < me.keyCount(); ++i) {
         list.push_back(QString::number(me.value(i)));
     }
@@ -602,11 +714,11 @@ std::vector<Guest> Guest::listByEvent(Cutelyst::Context *c, Error *e, const Even
                                 contact,
                                 q.value(3).toString(),
                                 q.value(4).toString(),
-                                static_cast<quint8>(q.value(5).toUInt()),
-                                static_cast<quint8>(q.value(6).toUInt()),
-                                static_cast<quint8>(q.value(7).toUInt()),
-                                static_cast<quint8>(q.value(8).toUInt()),
-                                static_cast<Guest::Status>(static_cast<qint8>(q.value(9).toInt())),
+                                q.value(5).toUInt(),
+                                q.value(6).toUInt(),
+                                q.value(7).toUInt(),
+                                q.value(8).toUInt(),
+                                static_cast<Guest::Status>(q.value(9).toInt()),
                                 static_cast<Guest::Notifications>(q.value(10).toInt()),
                                 q.value(11).toString(),
                                 q.value(12).toString(),
@@ -690,6 +802,74 @@ Guest Guest::create(Cutelyst::Context *c, Error *e, const Event &event, const QV
     } else {
         if (c && e) *e = Error(q.lastError(), c->translate("Guest", "Failed to create new guest “%1” for group “%2” in event “%3” in the database.").arg(contact.addressee().formattedName(), group.name(), event.title()));
         qCCritical(GIK_CORE) << "Failed to execute database query to create new guest for group id" << groupId << "in event id" << event.id() << "in the database:" << q.lastError().text();
+    }
+
+    return guest;
+}
+
+Guest Guest::get(Cutelyst::Context *c, Error *e, dbid_t guestId)
+{
+    Guest guest;
+
+    QSqlQuery q = CPreparedSqlQueryThreadFO(QStringLiteral("SELECT "
+                                                           "g.uid, g.group_id, g.partner_given_name, g.partner_family_name, g.adults, g.adults_accepted, g.children, g.children_accepted, g.status, g.notified, g.note, g.comment, g.salutation, g.type, g.created_at, g.updated_at, g.locked_at, "
+                                                           "u.id AS locked_by_id, u.username AS locked_by_username, "
+                                                           "c.id AS contact_id, c.addressbook_id, c.vcard, c.created_at contact_created, c.updated_at AS contact_updated "
+                                                           "FROM guests g "
+                                                           "LEFT JOIN users u ON u.id = g.locked_by "
+                                                           "JOIN contacts c ON c.id = g.contact_id "
+                                                           "WHERE g.id = :id"));
+    q.bindValue(QStringLiteral(":id"), guestId);
+
+    if (Q_LIKELY(q.exec())) {
+        if (Q_LIKELY(q.next())) {
+
+            const qlonglong  lat      = q.value(16).toLongLong();
+            const QDateTime  lockedAt = lat > 0 ? QDateTime::fromMSecsSinceEpoch(lat) : QDateTime();
+            const SimpleUser lockedBy = lat > 0 ? SimpleUser(q.value(17).toUInt(), q.value(18).toString()) : SimpleUser();
+
+            const KContacts::VCardConverter converter;
+            const KContacts::Addressee addressee = converter.parseVCard(q.value(21).toString().toUtf8());
+            if (addressee.isEmpty()) {
+                qCWarning(GIK_CORE) << "Failed to parse vCard for contact id" << q.value(19).toUInt();
+            }
+
+            const Contact cont(q.value(19).toUInt(),
+                               q.value(20).toUInt(),
+                               addressee,
+                               q.value(22).toDateTime(),
+                               q.value(23).toDateTime(),
+                               QDateTime(),
+                               SimpleUser());
+
+            guest = Guest(guestId,
+                          q.value(0).toString(),
+                          q.value(1).toUInt(),
+                          cont,
+                          q.value(2).toString(),
+                          q.value(3).toString(),
+                          q.value(4).toUInt(),
+                          q.value(5).toUInt(),
+                          q.value(6).toUInt(),
+                          q.value(7).toUInt(),
+                          static_cast<Guest::Status>(q.value(8).toInt()),
+                          static_cast<Guest::Notifications>(q.value(9).toInt()),
+                          q.value(10).toString(),
+                          q.value(11).toString(),
+                          static_cast<GuestGroup::Salutation>(q.value(12).toInt()),
+                          static_cast<Guest::Type>(q.value(13).toInt()),
+                          q.value(14).toDateTime(),
+                          q.value(15).toDateTime(),
+                          lockedAt,
+                          lockedBy);
+
+        } else {
+            if (c && e) *e = Error(Error::NotFound, c->translate("Guest", "Can not find guest with ID %1 in the database.").arg(guestId));
+            qCWarning(GIK_CORE) << "Can not find guest with ID" << guestId << "in the database";
+        }
+    } else {
+        if (c && e) *e = Error(q.lastError(), c->translate("Guest", "Failed to execute query to get guest with ID %1 from the database.").arg(guestId));
+        qCCritical(GIK_CORE) << "Failed to execute query to get guest ID" << guestId << "from the database:" << q.lastError().text();
     }
 
     return guest;

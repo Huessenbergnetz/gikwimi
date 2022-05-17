@@ -140,6 +140,14 @@ public:
 
     QJsonObject toJson() const;
 
+    bool invite(Cutelyst::Context *c, Error *e, Guest::Notification notificaton);
+
+    QString invitationText(Cutelyst::Context *c, Error *e, Guest::Notification notification) const;
+
+    QString invitationSubject(Cutelyst::Context *c, Error *e, Guest::Notification notification) const;
+
+    bool markAsInvited(Cutelyst::Context *c, Error *e, Guest::Notification notification);
+
     static QString generateUid(int length = 8);
 
     static Guest::Status statusStringToEnum(const QString &str);
@@ -173,6 +181,8 @@ public:
     static std::vector<Guest> listByEvent(Cutelyst::Context *c, Error *e, const Event &event);
 
     static Guest create(Cutelyst::Context *c, Error *e, const Event &event, const QVariantHash &p);
+
+    static Guest get(Cutelyst::Context *c, Error *e, dbid_t guestId);
 
 private:
     QSharedDataPointer<GuestData> d;
