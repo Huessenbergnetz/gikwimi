@@ -32,6 +32,8 @@ class Guest
     Q_PROPERTY(QString uid READ uid CONSTANT)
     Q_PROPERTY(GuestGroup group READ group CONSTANT)
     Q_PROPERTY(Contact contact READ contact CONSTANT)
+    Q_PROPERTY(QString givenName READ givenName CONSTANT)
+    Q_PROPERTY(QString familyName READ familyName CONSTANT)
     Q_PROPERTY(QString partnerGivenName READ partnerGivenName CONSTANT)
     Q_PROPERTY(QString partnerFamilyName READ partnerFamilyName CONSTANT)
     Q_PROPERTY(uint adults READ adults CONSTANT)
@@ -106,6 +108,10 @@ public:
     GuestGroup group() const;
 
     Contact contact() const;
+
+    QString givenName() const;
+
+    QString familyName() const;
 
     QString partnerGivenName() const;
 

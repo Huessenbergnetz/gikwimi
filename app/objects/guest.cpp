@@ -151,6 +151,16 @@ Contact Guest::contact() const
     return d ? d->contact : Contact();
 }
 
+QString Guest::givenName() const
+{
+    return d ? d->contact.addressee().givenName() : QString();
+}
+
+QString Guest::familyName() const
+{
+    return d ? d->contact.addressee().familyName() : QString();
+}
+
 QString Guest::partnerGivenName() const
 {
     return d ? d->partnerGivenName : QString();
@@ -476,14 +486,21 @@ QStringList Guest::supportedStatus()
 
 Guest::Type Guest::typeStringToEnum(const QString &str)
 {
-    if (str.compare(QLatin1String("personorcouple"), Qt::CaseInsensitive) == 0) {
-        return Guest::PersonOrCouple;
-    } else if (str.compare(QLatin1String("family"), Qt::CaseInsensitive) == 0) {
-        return Guest::Family;
-    } else if (str.compare(QLatin1String("organization"), Qt::CaseInsensitive) == 0) {
-        return Guest::Organization;
+    bool ok = false;
+    const int type = str.toInt(&ok);
+    if (ok) {
+        return static_cast<Guest::Type>(type);
     } else {
-        return Guest::InvalidType;
+        if (str.compare(QLatin1String("personorcouple"), Qt::CaseInsensitive) == 0) {
+            return Guest::PersonOrCouple;
+        } else if (str.compare(QLatin1String("family"), Qt::CaseInsensitive) == 0) {
+            return Guest::Family;
+        } else if (str.compare(QLatin1String("organization"), Qt::CaseInsensitive) == 0) {
+            return Guest::Organization;
+        } else {
+            qCWarning(GIK_CORE) << "Can not convert string to Guest::Type:" << str << "is neither a valid integer value nor a valid enum key.";
+            return Guest::InvalidType;
+        }
     }
 }
 
@@ -546,18 +563,24 @@ QStringList Guest::typeValues()
 
 Guest::Notification Guest::notificationStringToEnum(const QString &str)
 {
-    if (str.compare(QLatin1String("email"), Qt::CaseInsensitive) == 0) {
-        return Guest::Email;
-    } else if (str.compare(QLatin1String("sms"), Qt::CaseInsensitive) == 0) {
-        return Guest::SMS;
-    } else if (str.compare(QLatin1String("messenger"), Qt::CaseInsensitive) == 0) {
-        return Guest::Messenger;
-    } else if (str.compare(QLatin1String("postal"), Qt::CaseInsensitive) == 0) {
-        return Guest::Postal;
-    } else if (str.compare(QLatin1String("phone"), Qt::CaseInsensitive) == 0) {
-        return Guest::Phone;
+    bool ok = false;
+    const int notification = str.toInt(&ok);
+    if (ok) {
+        return static_cast<Guest::Notification>(notification);
     } else {
-        return Guest::NotNotified;
+        if (str.compare(QLatin1String("email"), Qt::CaseInsensitive) == 0) {
+            return Guest::Email;
+        } else if (str.compare(QLatin1String("sms"), Qt::CaseInsensitive) == 0) {
+            return Guest::SMS;
+        } else if (str.compare(QLatin1String("messenger"), Qt::CaseInsensitive) == 0) {
+            return Guest::Messenger;
+        } else if (str.compare(QLatin1String("postal"), Qt::CaseInsensitive) == 0) {
+            return Guest::Postal;
+        } else if (str.compare(QLatin1String("phone"), Qt::CaseInsensitive) == 0) {
+            return Guest::Phone;
+        } else {
+            return Guest::NotNotified;
+        }
     }
 }
 
