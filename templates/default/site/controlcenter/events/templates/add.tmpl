@@ -7,14 +7,16 @@
         {% c_csrf_token %}
 
         <div class="form-floating mb-3">
-            <input type="text" class="form-control" id="addTemplateName" name="name" placeholder="My new template" aria-describedby="addTemplateNameHelp">
+            <input type="text" class="form-control" id="addTemplateName" name="name" value="{{ name }}" placeholder="My new template" aria-describedby="addTemplateNameHelp" required>
             <label for="addTemplateName">{{ _("Name") }}</label>
             <div id="addTemplateNameHelp" class="form-text"></div>
         </div>
 
         <div class="form-floating mb-3">
-            <input type="text" class="form-control" id="addTemplateSubject" name="subject" placeholder="My subject" aria-describedby="addTemplateSubjectHelp">
+            <input type="text" class="form-control{% if validationErrors.subject.count %} is-invalid{% endif %}" id="addTemplateSubject" name="subject" value="{{ subject }}" placeholder="My subject" aria-describedby="addTemplateSubjectHelp{% if validationErrors.subject.count %} addTemplateSubjectFeedback{% endif %}">
             <label for="addTemplateSubject">{{ _("Subject") }}</label>
+            {% if validationErrors.subject.count %}<div id="addTemplateSubjectFeedback" class="invalid-feedback">{{ validationErrors.subject.0 }}</div>{% endif %}
+            <div id="addTemplateSubjectHelp" class="form-text"></div>
         </div>
 
         <div class="row">
@@ -47,7 +49,7 @@
 
         <div class="mb-3">
             <label for="addTemplateText" class="form-label">{{ _("Template text") }}</label>
-            <textarea class="form-control" id="addTemplateText" name="text" rows="10"></textarea>
+            <textarea class="form-control" id="addTemplateText" name="text" rows="10" required>{{ text }}</textarea>
         </div>
 
         <div class="d-flex">

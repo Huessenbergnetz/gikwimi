@@ -18,6 +18,7 @@
 #include <Cutelyst/Plugins/Utils/validatoralphadash.h>
 #include <Cutelyst/Plugins/Utils/validatorbetween.h>
 #include <Cutelyst/Plugins/Utils/validatorin.h>
+#include <Cutelyst/Plugins/Utils/validatorrequiredif.h>
 #include <Cutelyst/Plugins/StatusMessage>
 
 #include <limits>
@@ -323,12 +324,17 @@ void ControlCenterEvents::templates(Context *c)
 
 void ControlCenterEvents::addTemplate(Context *c)
 {
+    InvitationTemplate::Type typeSelected = InvitationTemplate::Invalid;
+    GuestGroup::Salutation salutationSelected = GuestGroup::SalutationInvalid;
+    Guest::Notification notificationSelected = Guest::NotNotified;
+
     if (c->req()->isPost()) {
         const Event event = Event::fromStash(c);
 
         static Validator v({
                                new ValidatorRequired(QStringLiteral("name")),
                                new ValidatorRequired(QStringLiteral("type")),
+                               new ValidatorRequiredIf(QStringLiteral("subject"), QStringLiteral("notification"), QStringList({QString::number(static_cast<int>(Guest::Email)), QString::number(static_cast<int>(Guest::Postal))}), ValidatorMessages(QT_TRANSLATE_NOOP("ControlCenterEvents", "Subject"), QT_TRANSLATE_NOOP("ControlCenterEvents", "Please enter a subject if you have selected email or postal as the notification type."))),
                                new ValidatorIn(QStringLiteral("type"), InvitationTemplate::typeValues()),
                                new ValidatorBetween(QStringLiteral("type"), QMetaType::Int, -127, 127),
                                new ValidatorRequired(QStringLiteral("salutation")),
@@ -352,12 +358,16 @@ void ControlCenterEvents::addTemplate(Context *c)
                 e.toStash(c, true);
                 return;
             }
+        } else {
+            typeSelected = InvitationTemplate::typeStringToEnum(c->req()->bodyParam(QStringLiteral("type")));
+            salutationSelected = GuestGroup::salutationStringToEnum(c->req()->bodyParam(QStringLiteral("salutation")));
+            notificationSelected = Guest::notificationStringToEnum(c->req()->bodyParam(QStringLiteral("notification")));
         }
     }
 
-    const std::vector<OptionItem> typeOptions = InvitationTemplate::typeOptionList(c);
-    const std::vector<OptionItem> salutationOptions = GuestGroup::salutationOptionList(c);
-    const std::vector<OptionItem> notificationOptions = Guest::notificationOptionList(c);
+    const std::vector<OptionItem> typeOptions = InvitationTemplate::typeOptionList(c, typeSelected);
+    const std::vector<OptionItem> salutationOptions = GuestGroup::salutationOptionList(c, salutationSelected);
+    const std::vector<OptionItem> notificationOptions = Guest::notificationOptionList(c, notificationSelected);
 
     c->stash({
                  {QStringLiteral("type_options"), QVariant::fromValue<std::vector<OptionItem>>(typeOptions)},
