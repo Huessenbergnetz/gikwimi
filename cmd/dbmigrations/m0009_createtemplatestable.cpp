@@ -25,7 +25,7 @@ void M0009_CreateTemplatesTable::up()
     t->tinyInteger(QStringLiteral("salutation"));
     t->integer(QStringLiteral("notification"));
     t->varChar(QStringLiteral("name"), 63);
-    t->text(QStringLiteral("subject"));
+    t->text(QStringLiteral("subject"))->nullable();
     t->longText(QStringLiteral("text"));
     t->dateTime(QStringLiteral("created_at"));
     t->dateTime(QStringLiteral("updated_at"));
