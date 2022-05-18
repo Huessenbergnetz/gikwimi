@@ -384,7 +384,7 @@ std::vector<Contact> Contact::list(Cutelyst::Context *c, Error *e, const Address
     std::vector<Contact> contacts;
 
     QSqlQuery q = CPreparedSqlQueryThreadFO(QStringLiteral("SELECT c.id, c.vcard, c.created_at, c.updated_at, c.locked_at, u.id AS locked_by_id, u.username AS locked_by_username "
-                                                           "FROM contacts c LEFT JOIN users u ON u.id = c.locked_by WHERE addressbook_id = :addressbook_id ORDER BY c.family_name"));
+                                                           "FROM contacts c LEFT JOIN users u ON u.id = c.locked_by WHERE addressbook_id = :addressbook_id ORDER BY c.family_name, c.given_name"));
     q.bindValue(QStringLiteral(":addressbook_id"), addressbook.id());
 
     if (Q_UNLIKELY(!q.exec())) {
