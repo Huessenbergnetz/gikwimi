@@ -190,12 +190,19 @@ QJsonObject InvitationTemplate::toJson() const
 
 InvitationTemplate::Type InvitationTemplate::typeStringToEnum(const QString &str)
 {
-    if (str.compare(QLatin1String("text"), Qt::CaseInsensitive) == 0) {
-        return InvitationTemplate::Text;
-    } else if (str.compare(QLatin1String("html"), Qt::CaseInsensitive) == 0) {
-        return InvitationTemplate::HTML;
+    bool ok = false;
+    const int type = str.toInt(&ok);
+    if (ok) {
+        return static_cast<InvitationTemplate::Type>(type);
     } else {
-        return InvitationTemplate::Invalid;
+        if (str.compare(QLatin1String("text"), Qt::CaseInsensitive) == 0) {
+            return InvitationTemplate::Text;
+        } else if (str.compare(QLatin1String("html"), Qt::CaseInsensitive) == 0) {
+            return InvitationTemplate::HTML;
+        } else {
+            qCWarning(GIK_CORE) << "Can not convert string to InvitationTemplate::Type:" << str << "is neither a valid integer value nor a valid enum key.";
+            return InvitationTemplate::Invalid;
+        }
     }
 }
 

@@ -287,20 +287,27 @@ GuestGroup GuestGroup::fromStash(Cutelyst::Context *c)
 
 GuestGroup::Salutation GuestGroup::salutationStringToEnum(const QString &str)
 {
-    if (str.compare(QLatin1String("default"), Qt::CaseInsensitive) == 0) {
-        return GuestGroup::SalutationDefault;
-    } else if (str.compare(QLatin1String("veryformal"), Qt::CaseInsensitive) == 0) {
-        return GuestGroup::SalutationVeryFormal;
-    } else if (str.compare(QLatin1String("formal"), Qt::CaseInsensitive) == 0) {
-        return GuestGroup::SalutationFormal;
-    } else if (str.compare(QLatin1String("neutral"), Qt::CaseInsensitive) == 0) {
-        return GuestGroup::SalutationNeutral;
-    } else if (str.compare(QLatin1String("informal"), Qt::CaseInsensitive) == 0) {
-        return GuestGroup::SalutationInformal;
-    } else if (str.compare(QLatin1String("veryinformal"), Qt::CaseInsensitive) == 0) {
-        return GuestGroup::SalutationVeryInformal;
+    bool ok = false;
+    const int salutation = str.toInt(&ok);
+    if (ok) {
+        return static_cast<GuestGroup::Salutation>(salutation);
     } else {
-        return GuestGroup::SalutationInvalid;
+        if (str.compare(QLatin1String("default"), Qt::CaseInsensitive) == 0) {
+            return GuestGroup::SalutationDefault;
+        } else if (str.compare(QLatin1String("veryformal"), Qt::CaseInsensitive) == 0) {
+            return GuestGroup::SalutationVeryFormal;
+        } else if (str.compare(QLatin1String("formal"), Qt::CaseInsensitive) == 0) {
+            return GuestGroup::SalutationFormal;
+        } else if (str.compare(QLatin1String("neutral"), Qt::CaseInsensitive) == 0) {
+            return GuestGroup::SalutationNeutral;
+        } else if (str.compare(QLatin1String("informal"), Qt::CaseInsensitive) == 0) {
+            return GuestGroup::SalutationInformal;
+        } else if (str.compare(QLatin1String("veryinformal"), Qt::CaseInsensitive) == 0) {
+            return GuestGroup::SalutationVeryInformal;
+        } else {
+            qCWarning(GIK_CORE) << "Can not convert string to GuestGroup::Salutation:" << str << "is neither a valid integer value nor a valid enum key.";
+            return GuestGroup::SalutationInvalid;
+        }
     }
 }
 
