@@ -15,6 +15,8 @@ target_sources(gikwimi
         controlcenterusers.h
         controlcenterusersettings.cpp
         controlcenterusersettings.h
+        invitation.cpp
+        invitation.h
         login.cpp
         login.h
         logout.cpp

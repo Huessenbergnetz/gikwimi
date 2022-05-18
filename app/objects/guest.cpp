@@ -350,6 +350,7 @@ QString Guest::invitationText(Cutelyst::Context *c, Error *e, Guest::Notificatio
             auto t = engine.newTemplate(templ, name);
             Cutelee::Context cc;
             cc.insert(QStringLiteral("guest"), QVariant::fromValue<Guest>(*this));
+            cc.insert(QStringLiteral("invitation_url"), c->uriFor(c->getAction(QStringLiteral("index"), QStringLiteral("i")), QStringList(), QStringList(uid())));
             text = t->render(&cc);
 
         } else {

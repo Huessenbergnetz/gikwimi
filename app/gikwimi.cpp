@@ -19,6 +19,7 @@
 #include "controllers/controlcenterusersettings.h"
 #include "controllers/controlcenterevents.h"
 #include "controllers/controlcenteraddressbooks.h"
+#include "controllers/invitation.h"
 
 #include "objects/menuitem.h"
 
@@ -103,6 +104,7 @@ bool Gikwimi::init()
     new ControlCenterUserSettings(this);
     new ControlCenterEvents(this);
     new ControlCenterAddressBooks(this);
+    new Invitation(this);
 
     qCDebug(GIK_CORE) << "Registering plugins";
     auto staticSimple = new StaticSimple(this);
