@@ -31,7 +31,7 @@ void Root::index(Context *c)
     QString body;
     body = QStringLiteral("Hello World!");
     c->response()->setBody(body);
-    c->response()->setContentType(QLatin1String("text/html; charset=utf-8"));
+    c->response()->setContentType(QStringLiteral("text/html; charset=utf-8"));
 }
 
 void Root::defaultPage(Context *c)
@@ -86,7 +86,7 @@ void Root::csrfDenied(Context *c)
     qCDebug(GIK_CORE) << "Entering Root::csrfDenied()";
 
     c->response()->setBody(QStringLiteral("CSRF check failed"));
-    c->response()->setContentType(QLatin1String("text/html; charset=utf-8"));
+    c->response()->setContentType(QStringLiteral("text/html; charset=utf-8"));
     c->detach();
 }
 
