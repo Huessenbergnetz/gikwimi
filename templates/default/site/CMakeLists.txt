@@ -5,6 +5,7 @@ set(SITE_FILES
     base.tmpl
     login.tmpl
     wrapper.tmpl
+    invitation.tmpl
 )
 
 target_sources(defaulttemplate

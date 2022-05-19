@@ -6,6 +6,7 @@ set(CONTROLCENTER_EVENTS_GUESTS_FILES
     addtogroup.tmpl
     edit.tmpl
     index.tmpl
+    invite.tmpl
 )
 
 target_sources(defaulttemplate

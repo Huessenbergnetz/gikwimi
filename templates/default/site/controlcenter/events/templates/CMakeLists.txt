@@ -3,6 +3,7 @@
 
 set(CONTROLCENTER_EVENTS_TEMPLATES_FILES
     add.tmpl
+    edit.tmpl
     index.tmpl
 )
 
