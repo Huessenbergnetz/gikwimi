@@ -19,7 +19,8 @@ mix.scripts([
     'node_modules/bootstrap/dist/js/bootstrap.js',
     'assets/js/general.js',
     'assets/js/addguest.js',
-    'assets/js/addgroup.js'
+    'assets/js/addgroup.js',
+    'assets/js/inviteguest.js'
 ], 'static/js/scripts.js');
 
 mix.copy('node_modules/bootstrap-icons/font/fonts', 'static/fonts');

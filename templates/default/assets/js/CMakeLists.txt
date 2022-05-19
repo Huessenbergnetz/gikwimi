@@ -6,5 +6,6 @@ target_sources(defaulttemplate
         addgroup.js
         addguest.js
         general.js
+        inviteguest.js
         licenseheader.js
 )
