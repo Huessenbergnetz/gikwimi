@@ -110,6 +110,8 @@ public:
 
     static InvitationTemplate create(Cutelyst::Context *c, Error *e, const Event &event, const QVariantHash &p);
 
+    static InvitationTemplate get(Cutelyst::Context *c, Error *e, dbid_t id);
+
 private:
     QSharedDataPointer<InvitationTemplateData> d;
 

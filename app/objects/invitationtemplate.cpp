@@ -361,6 +361,47 @@ InvitationTemplate InvitationTemplate::create(Cutelyst::Context *c, Error *e, co
     return templ;
 }
 
+InvitationTemplate InvitationTemplate::get(Cutelyst::Context *c, Error *e, dbid_t id)
+{
+    InvitationTemplate templ;
+
+    QSqlQuery q = CPreparedSqlQueryThreadFO(QStringLiteral("SELECT t.event_id, t.type, t.salutation, t.notification, t.name, t.subject, t.text, t.created_at, t.updated_at, t.locked_at, "
+                                                           "u.id AS locked_by_id, u.username AS locked_by_username "
+                                                           "FROM templates t LEFT JOIN users u ON u.id = t.locked_by WHERE t.id = :id"));
+    q.bindValue(QStringLiteral(":id"), id);
+
+    if (Q_LIKELY(q.exec())) {
+        if (Q_LIKELY(q.next())) {
+
+            const qlonglong  lat      = q.value(9).toLongLong();
+            const QDateTime  lockedAt = lat > 0 ? QDateTime::fromMSecsSinceEpoch(lat) : QDateTime();
+            const SimpleUser lockedBy = lat > 0 ? SimpleUser(q.value(10).toUInt(), q.value(11).toString()) : SimpleUser();
+
+            templ = InvitationTemplate(id,
+                                       q.value(0).toUInt(),
+                                       static_cast<InvitationTemplate::Type>(q.value(1).toInt()),
+                                       static_cast<GuestGroup::Salutation>(q.value(2).toInt()),
+                                       static_cast<Guest::Notification>(q.value(3).toInt()),
+                                       q.value(4).toString(),
+                                       q.value(5).toString(),
+                                       q.value(6).toString(),
+                                       q.value(7).toDateTime(),
+                                       q.value(8).toDateTime(),
+                                       lockedAt,
+                                       lockedBy);
+
+        } else {
+            if (c && e) *e = Error(Error::NotFound, c->translate("InvitationTemplate", "Can not find template ID %1 in the database.").arg(id));
+            qCWarning(GIK_CORE) << "Can not find template ID" << id << "in the database";
+        }
+    } else {
+        if (c && e) *e = Error(q.lastError(), c->translate("InvitationTemplate", "Failed to get template ID %1 from the database.").arg(id));
+        qCCritical(GIK_CORE) << "Failed to get template ID" << id << "from the database:" << q.lastError().text();
+    }
+
+    return templ;
+}
+
 QDataStream &operator<<(QDataStream &stream, const InvitationTemplate &templ)
 {
     stream << templ.d->id
