@@ -924,6 +924,72 @@ Guest Guest::get(Cutelyst::Context *c, Error *e, dbid_t guestId)
     return guest;
 }
 
+Guest Guest::getByUid(Cutelyst::Context *c, Error *e, const QString &uid)
+{
+    Guest guest;
+
+    QSqlQuery q = CPreparedSqlQueryThreadFO(QStringLiteral("SELECT "
+                                                           "g.id, g.group_id, g.partner_given_name, g.partner_family_name, g.adults, g.adults_accepted, g.children, g.children_accepted, g.status, g.notified, g.note, g.comment, g.salutation, g.type, g.created_at, g.updated_at, g.locked_at, "
+                                                           "u.id AS locked_by_id, u.username AS locked_by_username, "
+                                                           "c.id AS contact_id, c.addressbook_id, c.vcard, c.created_at contact_created, c.updated_at AS contact_updated "
+                                                           "FROM guests g "
+                                                           "LEFT JOIN users u ON u.id = g.locked_by "
+                                                           "JOIN contacts c ON c.id = g.contact_id "
+                                                           "WHERE g.uid = :uid"));
+    q.bindValue(QStringLiteral(":uid"), uid);
+
+    if (Q_LIKELY(q.exec())) {
+        if (Q_LIKELY(q.next())) {
+            const qlonglong  lat      = q.value(16).toLongLong();
+            const QDateTime  lockedAt = lat > 0 ? QDateTime::fromMSecsSinceEpoch(lat) : QDateTime();
+            const SimpleUser lockedBy = lat > 0 ? SimpleUser(q.value(17).toUInt(), q.value(18).toString()) : SimpleUser();
+
+            const KContacts::VCardConverter converter;
+            const KContacts::Addressee addressee = converter.parseVCard(q.value(21).toString().toUtf8());
+            if (addressee.isEmpty()) {
+                qCWarning(GIK_CORE) << "Failed to parse vCard for contact id" << q.value(19).toUInt();
+            }
+
+            const Contact cont(q.value(19).toUInt(),
+                               q.value(20).toUInt(),
+                               addressee,
+                               q.value(22).toDateTime(),
+                               q.value(23).toDateTime(),
+                               QDateTime(),
+                               SimpleUser());
+
+            guest = Guest(q.value(0).toUInt(),
+                          uid,
+                          q.value(1).toUInt(),
+                          cont,
+                          q.value(2).toString(),
+                          q.value(3).toString(),
+                          q.value(4).toUInt(),
+                          q.value(5).toUInt(),
+                          q.value(6).toUInt(),
+                          q.value(7).toUInt(),
+                          static_cast<Guest::Status>(q.value(8).toInt()),
+                          static_cast<Guest::Notifications>(q.value(9).toInt()),
+                          q.value(10).toString(),
+                          q.value(11).toString(),
+                          static_cast<GuestGroup::Salutation>(q.value(12).toInt()),
+                          static_cast<Guest::Type>(q.value(13).toInt()),
+                          q.value(14).toDateTime(),
+                          q.value(15).toDateTime(),
+                          lockedAt,
+                          lockedBy);
+        } else {
+            if (c && e) *e = Error(Error::NotFound, c->translate("Guest", "Can not find guest with UID “%1” in the database.").arg(uid));
+            qCWarning(GIK_CORE) << "Can not find guest with UID" << uid << "in the database";
+        }
+    } else {
+        if (c && e) *e = Error(q.lastError(), c->translate("Guest", "Failed to execute query to get guest with UID “%1” from the database.").arg(uid));
+        qCCritical(GIK_CORE) << "Failed to execute query to get guest UID" << uid << "from the database:" << q.lastError().text();
+    }
+
+    return guest;
+}
+
 QDataStream &operator<<(QDataStream &stream, const Guest &guest)
 {
     stream << guest.d->group

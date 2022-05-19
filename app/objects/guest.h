@@ -205,6 +205,8 @@ public:
 
     static Guest get(Cutelyst::Context *c, Error *e, dbid_t guestId);
 
+    static Guest getByUid(Cutelyst::Context *c, Error *e, const QString &uid);
+
 private:
     QSharedDataPointer<GuestData> d;
 
