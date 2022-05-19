@@ -402,6 +402,50 @@ InvitationTemplate InvitationTemplate::get(Cutelyst::Context *c, Error *e, dbid_
     return templ;
 }
 
+bool InvitationTemplate::update(Cutelyst::Context *c, Error *e, const QVariantHash &p)
+{
+    const InvitationTemplate::Type  type            = static_cast<InvitationTemplate::Type>(p.value(QStringLiteral("type")).toInt());
+    const GuestGroup::Salutation    salutation      = static_cast<GuestGroup::Salutation>(p.value(QStringLiteral("salutation")).toInt());
+    const Guest::Notification       notification    = static_cast<Guest::Notification>(p.value(QStringLiteral("notification")).toInt());
+    const QString                   name            = p.value(QStringLiteral("name")).toString();
+    const QString                   subject         = p.value(QStringLiteral("subject")).toString();
+    const QString                   text            = p.value(QStringLiteral("text")).toString();
+    const QDateTime                 now             = QDateTime::currentDateTimeUtc();
+
+    QSqlQuery q = CPreparedSqlQueryThread(QStringLiteral("UPDATE templates SET "
+                                                         "type = :type, "
+                                                         "salutation = :salutation, "
+                                                         "notification = :notification, "
+                                                         "name = :name, "
+                                                         "subject = :subject, "
+                                                         "text = :text,"
+                                                         "updated_at = :updated_at "
+                                                         "WHERE id = :id"));
+    q.bindValue(QStringLiteral(":type"),         static_cast<int>(type));
+    q.bindValue(QStringLiteral(":salutation"),   static_cast<int>(salutation));
+    q.bindValue(QStringLiteral(":notification"), static_cast<int>(notification));
+    q.bindValue(QStringLiteral(":name"),         name);
+    q.bindValue(QStringLiteral(":subject"),      subject);
+    q.bindValue(QStringLiteral(":text"),         text);
+    q.bindValue(QStringLiteral(":updated_at"),   now);
+    q.bindValue(QStringLiteral(":id"),           id());
+
+    if (Q_LIKELY(q.exec())) {
+        d->type = type;
+        d->salutation = salutation;
+        d->notification = notification;
+        d->name = name;
+        d->subject = subject;
+        d->text = text;
+        d->updated = now;
+        return true;
+    } else {
+        if (c && e) *e = Error(q.lastError(), c->translate("InvitationTemplate", "Failed to update invitation template in the database."));
+        qCCritical(GIK_CORE) << "Failed to update invitation template ID" << id() << "in the database:" << q.lastError().text();
+        return false;
+    }
+}
+
 QDataStream &operator<<(QDataStream &stream, const InvitationTemplate &templ)
 {
     stream << templ.d->id

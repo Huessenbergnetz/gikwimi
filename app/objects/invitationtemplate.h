@@ -112,6 +112,8 @@ public:
 
     static InvitationTemplate get(Cutelyst::Context *c, Error *e, dbid_t id);
 
+    bool update(Cutelyst::Context *c, Error *e, const QVariantHash &p);
+
 private:
     QSharedDataPointer<InvitationTemplateData> d;
 
