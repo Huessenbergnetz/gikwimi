@@ -329,8 +329,6 @@ void ControlCenterEvents::addTemplate(Context *c)
     Guest::Notification notificationSelected = Guest::NotNotified;
 
     if (c->req()->isPost()) {
-        const Event event = Event::fromStash(c);
-
         static Validator v({
                                new ValidatorRequired(QStringLiteral("name")),
                                new ValidatorRequired(QStringLiteral("type")),
@@ -347,10 +345,9 @@ void ControlCenterEvents::addTemplate(Context *c)
                            });
         const ValidatorResult vr = v.validate(c, Validator::FillStashOnError|Validator::BodyParamsOnly);
         if (vr) {
-            QVariantHash values = vr.values();
-            values.insert(QStringLiteral("subject"), c->req()->bodyParam(QStringLiteral("subject")));
+            const Event event = Event::fromStash(c);
             Error e;
-            const InvitationTemplate templ = InvitationTemplate::create(c, &e, event, values);
+            const InvitationTemplate templ = InvitationTemplate::create(c, &e, event, vr.values());
             if (templ.isValid()) {
                 c->res()->redirect(c->uriForAction(QStringLiteral("/controlcenter/events/templates"), QStringList(QString::number(event.id())), QStringList(), StatusMessage::statusQuery(c, c->translate("ControlCenterEvents", "Successfully created new template “%1” (ID: %2).").arg(templ.name(), QString::number(templ.id())))));
                 return;
@@ -375,6 +372,69 @@ void ControlCenterEvents::addTemplate(Context *c)
                  {QStringLiteral("notification_options"), QVariant::fromValue<std::vector<OptionItem>>(notificationOptions)},
                  {QStringLiteral("site_subtitle"), c->translate("ControlCenterEvents", "Add template")},
                  {QStringLiteral("template"), QStringLiteral("controlcenter/events/templates/add.tmpl")}
+             });
+}
+
+void ControlCenterEvents::editTemplate(Context *c, const QString &id)
+{
+    bool ok = false;
+    const int templateId = Utils::strToDbid(id, &ok, c->translate("ControlCenterEvents", "Invalid template database ID."), c);
+    if (!ok) {
+        return;
+    }
+
+    Error e;
+    InvitationTemplate templ = InvitationTemplate::get(c, &e, templateId);
+    if (e.type() != Error::NoError) {
+        e.toStash(c, true);
+        return;
+    }
+
+    InvitationTemplate::Type typeSelected         = templ.type();
+    GuestGroup::Salutation   salutationSelected   = templ.salutation();
+    Guest::Notification      notificationSelected = templ.notification();
+
+    if (c->req()->isPost()) {
+        static Validator v({
+                               new ValidatorRequired(QStringLiteral("name")),
+                               new ValidatorRequired(QStringLiteral("type")),
+                               new ValidatorRequiredIf(QStringLiteral("subject"), QStringLiteral("notification"), QStringList({QString::number(static_cast<int>(Guest::Email)), QString::number(static_cast<int>(Guest::Postal))}), ValidatorMessages(QT_TRANSLATE_NOOP("ControlCenterEvents", "Subject"), QT_TRANSLATE_NOOP("ControlCenterEvents", "Please enter a subject if you have selected email or postal as the notification type."))),
+                               new ValidatorIn(QStringLiteral("type"), InvitationTemplate::typeValues()),
+                               new ValidatorBetween(QStringLiteral("type"), QMetaType::Int, -127, 127),
+                               new ValidatorRequired(QStringLiteral("salutation")),
+                               new ValidatorIn(QStringLiteral("salutation"), GuestGroup::salutationValues()),
+                               new ValidatorBetween(QStringLiteral("salutation"), QMetaType::Int, -127, 127),
+                               new ValidatorRequired(QStringLiteral("notification")),
+                               new ValidatorIn(QStringLiteral("notification"), Guest::notificationValues()),
+                               new ValidatorBetween(QStringLiteral("notification"), QMetaType::Int, -127, 127),
+                               new ValidatorRequired(QStringLiteral("text"))
+                           });
+        const ValidatorResult vr = v.validate(c, Validator::FillStashOnError|Validator::BodyParamsOnly);
+        if (vr) {
+            if (templ.update(c, &e, vr.values())) {
+
+            } else {
+
+            }
+        } else {
+            typeSelected         = InvitationTemplate::typeStringToEnum(c->req()->bodyParam(QStringLiteral("type")));
+            salutationSelected   = GuestGroup::salutationStringToEnum(c->req()->bodyParam(QStringLiteral("salutation")));
+            notificationSelected = Guest::notificationStringToEnum(c->req()->bodyParam(QStringLiteral("notification")));
+        }
+
+    }
+
+    const std::vector<OptionItem> typeOptions           = InvitationTemplate::typeOptionList(c, typeSelected);
+    const std::vector<OptionItem> salutationOptions     = GuestGroup::salutationOptionList(c, salutationSelected);
+    const std::vector<OptionItem> notificationOptions   = Guest::notificationOptionList(c, notificationSelected);
+
+    c->stash({
+                 {QStringLiteral("templ"), QVariant::fromValue<InvitationTemplate>(templ)},
+                 {QStringLiteral("type_options"), QVariant::fromValue<std::vector<OptionItem>>(typeOptions)},
+                 {QStringLiteral("salutation_options"), QVariant::fromValue<std::vector<OptionItem>>(salutationOptions)},
+                 {QStringLiteral("notification_options"), QVariant::fromValue<std::vector<OptionItem>>(notificationOptions)},
+                 {QStringLiteral("site_subtitle"), c->translate("ControlCenterEvents", "Edit template")},
+                 {QStringLiteral("template"), QStringLiteral("controlcenter/events/templates/edit.tmpl")}
              });
 }
 

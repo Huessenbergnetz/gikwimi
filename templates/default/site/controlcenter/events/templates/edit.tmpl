@@ -1,0 +1,60 @@
+<div class="d-flex">
+    <h1>{{ site_subtitle }} <small class="text-muted">{{ site_title }}</small></h1>
+</div>
+
+<section id="editTemplate">
+    <form id="editTemplateForm" action="/controlcenter/events/{{ event.id }}/templates/edit/{{ templ.id }}" method="post">
+        {% c_csrf_token %}
+
+        <div class="form-floating mb-3">
+            <input type="text" class="form-control" id="editTemplateName" name="name" value="{{ name|default_if_none:templ.name }}" placeholder="My new template" aria-describedby="editTemplateNameHelp" required>
+            <label for="editTemplateName">{{ _("Name") }}</label>
+            <div id="editTemplateNameHelp" class="form-text"></div>
+        </div>
+
+        <div class="form-floating mb-3">
+            <input type="text" class="form-control{% if validationErrors.subject.count %} is-invalid{% endif %}" id="editTemplateSubject" name="subject" value="{{ subject|default_if_none:templ.subject }}" placeholder="My subject" aria-describedby="editTemplateSubjectHelp{% if validationErrors.subject.count %} editTemplateSubjectFeedback{% endif %}">
+            <label for="editTemplateSubject">{{ _("Subject") }}</label>
+            {% if validationErrors.subject.count %}<div id="editTemplateSubjectFeedback" class="invalid-feedback">{{ validationErrors.subject.0 }}</div>{% endif %}
+            <div id="editTemplateSubjectHelp" class="form-text"></div>
+        </div>
+
+        <div class="row">
+            <div class="col col-sm-12 col-md-12 col-lg-4 mb-3">
+                <select id="editTemplateType" name="type" class="form-select" aria-label="{{ _("Select template type") }}">
+                    {% for opt in type_options %}
+                    <option value="{{ opt.value }}"{% if opt.selected %} selected="selected"{% endif %}>{{ opt.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="col col-sm-12 col-md-12 col-lg-4 mb-3">
+                <select id="editTemplateSalutation" name="salutation" class="form-select" aria-label="{{ _("Select salutation form") }}">
+                    {% for opt in salutation_options %}
+                    {% if opt.value != "0" %}
+                    <option value="{{ opt.value }}"{% if opt.selected %} selected="selected"{% endif %}>{{ opt.name }}</option>
+                    {% endif %}
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="col col-sm-12 col-md-12 col-lg-4 mb-3">
+                <select id="editTemplateNotification" name="notification" class="form-select" aria-label="{{ _("Select notification type") }}">
+                    {% for opt in notification_options %}
+                    <option value="{{ opt.value }}"{% if opt.selected %} selected="selected"{% endif %}>{{ opt.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <label for="addTemplateText" class="form-label">{{ _("Template text") }}</label>
+            <textarea class="form-control" id="addTemplateText" name="text" rows="10" required>{{ text|default_if_none:templ.text }}</textarea>
+        </div>
+
+        <div class="d-flex">
+            <a role="button" class="btn btn-outline-secondary me-auto" href="/controlcenter/events/{{ event.id }}/templates">{{ _("Cancel") }}</a>
+            <button type="submit" class="btn btn-outline-primary">{{ _("Update") }}</button>
+        </div>
+    </form>
+</section>

@@ -59,6 +59,9 @@ public:
 
     C_ATTR(addTemplate, :Chained("base") :PathPart("templates/add") :Args(0))
     void addTemplate(Context *c);
+
+    C_ATTR(editTemplate, :Chained("base") :PathPart("templates/edit") :Args(1))
+    void editTemplate(Context *c, const QString &id);
 };
 
 #endif // CONTROLCENTEREVENTS_H

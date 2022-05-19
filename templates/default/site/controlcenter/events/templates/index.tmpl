@@ -19,7 +19,7 @@
     <tbody>
         {% for templ in templates %}
         <tr>
-            <td>{{ templ.name }}</td>
+            <td><a href="/controlcenter/events/{{ event.id }}/templates/edit/{{ templ.id }}">{{ templ.name }}</a></td>
             <td>{{ templ.type.key }}</td>
             <td>{{ templ.salutation.key }}</td>
             <td>{{ templ.notification.key }}</td>
