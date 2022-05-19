@@ -28,12 +28,19 @@ struct ConfigValues {
     QString tmpl = QStringLiteral(GIKWIMI_CONF_GIK_TEMPLATE_DEFVAL);
     QString tmplDir = QStringLiteral(GIKWIMI_TEMPLATESDIR);
     QString siteName = QStringLiteral(GIKWIMI_CONF_GIK_SITENAME_DEFVAL);
+    QString emailHost;
+    QString emailFromName;
+    QString emailFromMail = QStringLiteral(GIKWIMI_CONF_MAIL_FROM_NAME_DEFVAL);
+    QString emailUser;
+    QString emailPassword;
+    int emailPort = GIKWIMI_CONF_MAIL_PORT_DEFVAL;
+    SimpleMail::Server::ConnectionType emailConnectionType = SimpleMail::Server::SslConnection;
     bool useMemcached = GIKWIMI_CONF_GIK_USEMEMCACHED_DEFVAL;
     bool useMemcachedSession = GIKWIMI_CONF_GIK_USEMEMCACHEDSESSION_DEFVAL;
 };
 Q_GLOBAL_STATIC(ConfigValues, cfg)
 
-void GikwimiConfig::load(const QVariantMap &gikwimi)
+void GikwimiConfig::load(const QVariantMap &gikwimi, const QVariantMap &email)
 {
     QWriteLocker locker(&cfg->lock);
 
@@ -52,6 +59,22 @@ void GikwimiConfig::load(const QVariantMap &gikwimi)
 
     cfg->useMemcached = gikwimi.value(QStringLiteral(GIKWIMI_CONF_GIK_USEMEMCACHED), GIKWIMI_CONF_GIK_USEMEMCACHED_DEFVAL).toBool();
     cfg->useMemcachedSession = gikwimi.value(QStringLiteral(GIKWIMI_CONF_GIK_USEMEMCACHEDSESSION), GIKWIMI_CONF_GIK_USEMEMCACHEDSESSION_DEFVAL).toBool();
+
+    cfg->emailHost = email.value(QStringLiteral(GIKWIMI_CONF_MAIL_HOST)).toString();
+    cfg->emailPort = email.value(QStringLiteral(GIKWIMI_CONF_MAIL_PORT), GIKWIMI_CONF_MAIL_PORT_DEFVAL).toInt();
+    cfg->emailFromMail = email.value(QStringLiteral(GIKWIMI_CONF_MAIL_FROM_MAIL)).toString();
+    cfg->emailFromName = email.value(QStringLiteral(GIKWIMI_CONF_MAIL_FROM_NAME), QStringLiteral(GIKWIMI_CONF_MAIL_FROM_NAME_DEFVAL)).toString();
+    cfg->emailUser = email.value(QStringLiteral(GIKWIMI_CONF_MAIL_USER)).toString();
+    cfg->emailPassword = email.value(QStringLiteral(GIKWIMI_CONF_MAIL_PASS)).toString();
+
+    const QString enc = email.value(QStringLiteral(GIKWIMI_CONF_MAIL_ENC), QStringLiteral(GIKWIMI_CONF_MAIL_ENC_DEFVAL)).toString();
+    if (enc.compare(QLatin1String("ssl"), Qt::CaseInsensitive) == 0 || enc.compare(QLatin1String("tls"), Qt::CaseInsensitive) == 0) {
+        cfg->emailConnectionType = SimpleMail::Server::SslConnection;
+    } else if (enc.compare(QLatin1String("starttls"), Qt::CaseInsensitive) == 0) {
+        cfg->emailConnectionType = SimpleMail::Server::TlsConnection;
+    } else {
+        cfg->emailConnectionType = SimpleMail::Server::TcpConnection;
+    }
 }
 
 QString GikwimiConfig::tmpl()
@@ -92,6 +115,48 @@ bool GikwimiConfig::useMemcachedSession()
 {
     QReadLocker locker(&cfg->lock);
     return cfg->useMemcachedSession;
+}
+
+QString GikwimiConfig::emailHost()
+{
+    QReadLocker locker(&cfg->lock);
+    return cfg->emailHost;
+}
+
+int GikwimiConfig::emailPort()
+{
+    QReadLocker locker(&cfg->lock);
+    return cfg->emailPort;
+}
+
+QString GikwimiConfig::emailFromMail()
+{
+    QReadLocker locker(&cfg->lock);
+    return cfg->emailFromMail;
+}
+
+QString GikwimiConfig::emailFromName()
+{
+    QReadLocker locker(&cfg->lock);
+    return cfg->emailFromName;
+}
+
+QString GikwimiConfig::emailUser()
+{
+    QReadLocker locker(&cfg->lock);
+    return cfg->emailUser;
+}
+
+QString GikwimiConfig::emailPassword()
+{
+    QReadLocker locker(&cfg->lock);
+    return cfg->emailPassword;
+}
+
+SimpleMail::Server::ConnectionType GikwimiConfig::emailConnectionType()
+{
+    QReadLocker locker(&cfg->lock);
+    return cfg->emailConnectionType;
 }
 
 template< typename T >

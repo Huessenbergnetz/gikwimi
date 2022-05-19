@@ -10,6 +10,9 @@
 
 using namespace Cutelyst;
 
+class Guest;
+class Event;
+
 class Invitation : public Controller
 {
     Q_OBJECT
@@ -21,6 +24,9 @@ public:
 
     C_ATTR(index, :Path :Args(1))
     void index(Context *c, const QString &uid);
+
+private:
+    void sendNotificationEmails(Context *c, const Guest &guest, const Event &event);
 };
 
 #endif // GIKWIMI_INVITATION_H

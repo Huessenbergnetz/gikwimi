@@ -6,6 +6,8 @@
 #ifndef GIKWIMICONFIG_H
 #define GIKWIMICONFIG_H
 
+#include <SimpleMail/server.h>
+
 #include <QString>
 #include <QStringList>
 #include <QVariantMap>
@@ -13,7 +15,7 @@
 class GikwimiConfig
 {
 public:
-    static void load(const QVariantMap &gikwimi);
+    static void load(const QVariantMap &gikwimi, const QVariantMap &email);
 
     static QString tmpl();
     static QString tmplPath();
@@ -23,6 +25,14 @@ public:
     static QString siteName();
     static bool useMemcached();
     static bool useMemcachedSession();
+
+    static QString emailHost();
+    static int emailPort();
+    static QString emailFromMail();
+    static QString emailFromName();
+    static QString emailUser();
+    static QString emailPassword();
+    static SimpleMail::Server::ConnectionType emailConnectionType();
 
 private:
     template< typename T >

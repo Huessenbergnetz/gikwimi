@@ -67,7 +67,8 @@ Gikwimi::~Gikwimi()
 bool Gikwimi::init()
 {
     if (!isInitialized) {
-        GikwimiConfig::load(engine()->config(QStringLiteral(GIKWIMI_CONF_GIK)));
+        GikwimiConfig::load(engine()->config(QStringLiteral(GIKWIMI_CONF_GIK)),
+                            engine()->config(QStringLiteral(GIKWIMI_CONF_MAIL)));
 
         qCInfo(GIK_CORE) << "Template:" << GikwimiConfig::tmplPath();
 

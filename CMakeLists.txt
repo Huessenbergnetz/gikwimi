@@ -18,6 +18,7 @@ find_package(Cutelyst3Qt5 REQUIRED)
 find_package(Cutelee6Qt5 5.2.0 REQUIRED)
 find_package(FirfuoridaQt5 REQUIRED)
 find_package(KF5Contacts REQUIRED)
+find_package(SimpleMail2Qt5 REQUIRED)
 
 # Auto generate moc files
 set(CMAKE_AUTOMOC ON)
@@ -57,6 +58,20 @@ set(GIKWIMI_CONF_GIK_USEMEMCACHED "usememcached")
 set(GIKWIMI_CONF_GIK_USEMEMCACHED_DEFVAL false)
 set(GIKWIMI_CONF_GIK_USEMEMCACHEDSESSION "usememcachedsession")
 set(GIKWIMI_CONF_GIK_USEMEMCACHEDSESSION_DEFVAL false)
+
+set(GIKWIMI_CONF_MAIL "email")
+SET(GIKWIMI_CONF_MAIL_HOST "host")
+SET(GIKWIMI_CONF_MAIL_PORT "port")
+SET(GIKWIMI_CONF_MAIL_PORT_DEFVAL 465)
+SET(GIKWIMI_CONF_MAIL_FROM_MAIL "frommail")
+SET(GIKWIMI_CONF_MAIL_FROM_NAME "fromname")
+SET(GIKWIMI_CONF_MAIL_FROM_NAME_DEFVAL "Gikwimi")
+SET(GIKWIMI_CONF_MAIL_USER "user")
+SET(GIKWIMI_CONF_MAIL_PASS "password")
+SET(GIKWIMI_CONF_MAIL_ENC "encryption")
+SET(GIKWIMI_CONF_MAIL_ENC_DEFVAL "ssl")
+
+
 
 add_subdirectory(app)
 add_subdirectory(cmd)

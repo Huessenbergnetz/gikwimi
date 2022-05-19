@@ -6,6 +6,8 @@
 #include "invitation.h"
 #include "../objects/guest.h"
 #include "../objects/error.h"
+#include "../gikwimiconfig.h"
+#include "../logging.h"
 
 #include <Cutelyst/Plugins/Utils/Validator> // includes the main validator
 #include <Cutelyst/Plugins/Utils/ValidatorResult> // includes the validator result
@@ -15,6 +17,8 @@
 #include <Cutelyst/Plugins/Utils/validatorrequiredif.h>
 #include <Cutelyst/Plugins/Utils/validatorinteger.h>
 #include <Cutelyst/Plugins/StatusMessage>
+
+#include <SimpleMail/SimpleMail>
 
 Invitation::Invitation(QObject *parent)
     : Controller{parent}
@@ -72,6 +76,8 @@ void Invitation::index(Context *c, const QString &uid)
                 c->setStash(QStringLiteral("status_msg"), statusMessage);
                 c->setStash(QStringLiteral("guest"), QVariant::fromValue<Guest>(guest));
                 consent = guest.status();
+
+                sendNotificationEmails(c, guest, event);
             }
         }
     }
@@ -81,6 +87,60 @@ void Invitation::index(Context *c, const QString &uid)
                  {QStringLiteral("no_wrapper"), true},
                  {QStringLiteral("template"), QStringLiteral("invitation.tmpl")},
              });
+}
+
+void Invitation::sendNotificationEmails(Context *c, const Guest &guest, const Event &event)
+{
+    if (GikwimiConfig::emailFromMail().isEmpty()) {
+        qCWarning(GIK_CORE) << "Will not send notification email: empty from mail";
+        return;
+    }
+
+    if (GikwimiConfig::emailHost().isEmpty()) {
+        qCWarning(GIK_CORE) << "Will not send notification email: empty mail host";
+        return;
+    }
+
+    const QString guestString = guest.partnerGivenName().isEmpty() ? guest.givenName() : c->translate("Invitation", "%1 and %2").arg(guest.givenName(), guest.partnerGivenName());
+
+    auto server = new SimpleMail::Server;
+    server->setHost(GikwimiConfig::emailHost());
+    server->setPort(GikwimiConfig::emailPort());
+    server->setConnectionType(GikwimiConfig::emailConnectionType());
+    server->setUsername(GikwimiConfig::emailUser());
+    server->setPassword(GikwimiConfig::emailPassword());
+
+    SimpleMail::MimeMessage message;
+    message.setSender(SimpleMail::EmailAddress(GikwimiConfig::emailFromMail(), GikwimiConfig::emailFromName()));
+    message.addTo(SimpleMail::EmailAddress(event.user().email()));
+    QString subject;
+    if (guest.partnerGivenName().isEmpty() && guest.status() == Guest::Agreed) {
+        subject = QStringLiteral("👍 ") + c->translate("Invitation", "%1: %2 has agreed").arg(event.title(), guestString);
+    } else if (!guest.partnerGivenName().isEmpty() && guest.status() == Guest::Agreed) {
+        subject = QStringLiteral("👍 ") + c->translate("Invitation", "%1: %2 have agreed").arg(event.title(), guestString);
+    } else if (guest.partnerGivenName().isEmpty() && guest.status() == Guest::Canceled) {
+        subject = QStringLiteral("👎 ") + c->translate("Invitation", "%1: %2 has canceled").arg(event.title(), guestString);
+    } else if (!guest.partnerGivenName().isEmpty() && guest.status() == Guest::Canceled) {
+        subject = QStringLiteral("👎 ") + c->translate("Invitation", "%1: %2 have canceled").arg(event.title(), guestString);
+    }
+    message.setSubject(subject);
+
+    auto text = new SimpleMail::MimeText;
+    if (guest.status() == Guest::Agreed) {
+        text->setText(c->translate("Invitation", "Hello,\n\na guest of your event “%1” has accepted.\n\nGuest: %2\nAdults: %3\nChildren: %4\n\nComment:\n%5\n\nAutomatically sent by Gikwimi on %6").arg(event.title(), guestString, QString::number(guest.adultsAccepted()), QString::number(guest.childrenAccepted()), guest.comment(), c->uriFor(QStringLiteral("/")).toString()));
+    } else {
+        text->setText(c->translate("Invitation", "Hello,\n\na guest of your event “%1” has unfortunately cancelled.\n\nGuest: %2\nAdults: %3\nChildren: %4\n\nComment\n%5\n\nAutomatically sent by Gikwimi on %6").arg(event.title(), guestString, QString::number(guest.adults()), QString::number(guest.children()), guest.comment(), c->uriFor(QStringLiteral("/")).toString()));
+    }
+
+    message.addPart(text);
+
+    SimpleMail::ServerReply *reply = server->sendMail(message);
+    connect(reply, &SimpleMail::ServerReply::finished, [reply]() {
+        if (reply->error()) {
+            qCCritical(GIK_CORE) << "Failed to send notification email:" << reply->responseCode() << reply->responseText();
+        }
+        reply->deleteLater();
+    });
 }
 
 #include "moc_invitation.cpp"

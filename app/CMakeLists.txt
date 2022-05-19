@@ -39,6 +39,7 @@ target_link_libraries(gikwimi
     Cutelyst::CSRFProtection
     Cutelee::Templates
     KF5::Contacts
+    SimpleMail::Core
 )
 
 target_compile_features(gikwimi PUBLIC cxx_std_14)
