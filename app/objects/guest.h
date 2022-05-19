@@ -177,6 +177,8 @@ public:
 
     static QStringList supportedStatus();
 
+    static QStringList statusValues(bool withDefault = false);
+
     static Guest::Type typeStringToEnum(const QString &str);
 
     static QString typeEnumToString(Guest::Type type);

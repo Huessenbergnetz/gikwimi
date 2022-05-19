@@ -485,6 +485,22 @@ QStringList Guest::supportedStatus()
     return lst;
 }
 
+QStringList Guest::statusValues(bool withDefault)
+{
+    QStringList list;
+
+    const QMetaObject mo = Guest::staticMetaObject;
+    const QMetaEnum   me = mo.enumerator(mo.indexOfEnumerator("Status"));
+    list.reserve(me.keyCount() - 1);
+
+    const int startIndex = withDefault ? 1 : 2;
+    for (int i = startIndex; i < me.keyCount(); ++i) {
+        list << QString::number(me.value(i));
+    }
+
+    return list;
+}
+
 Guest::Type Guest::typeStringToEnum(const QString &str)
 {
     bool ok = false;
