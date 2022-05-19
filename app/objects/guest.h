@@ -169,6 +169,8 @@ public:
 
     bool markAsInvited(Cutelyst::Context *c, Error *e, Guest::Notification notification);
 
+    bool updateStatus(Cutelyst::Context *c, Error *e, const QVariantHash &p);
+
     static QString generateUid(int length = 8);
 
     static Guest::Status statusStringToEnum(const QString &str);

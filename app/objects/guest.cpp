@@ -426,6 +426,42 @@ bool Guest::markAsInvited(Cutelyst::Context *c, Error *e, Notification notificat
     return true;
 }
 
+bool Guest::updateStatus(Cutelyst::Context *c, Error *e, const QVariantHash &p)
+{
+    const Guest::Status status = Guest::statusStringToEnum(p.value(QStringLiteral("consent")).toString());
+    const uint adults          = status == Guest::Agreed ? p.value(QStringLiteral("adults")).toUInt() : 0;
+    const uint children        = status == Guest::Agreed ? p.value(QStringLiteral("children")).toUInt() : 0;
+    const QString comment      = p.value(QStringLiteral("comment")).toString();
+    const QDateTime now        = QDateTime::currentDateTimeUtc();
+
+    QSqlQuery q = CPreparedSqlQueryThread(QStringLiteral("UPDATE guests SET "
+                                                         "status = :status, "
+                                                         "adults_accepted = :adults_accepted, "
+                                                         "children_accepted = :children_accepted, "
+                                                         "comment = :comment, "
+                                                         "updated_at = :updated_at "
+                                                         "WHERE id = :id"));
+    q.bindValue(QStringLiteral(":status"),            status);
+    q.bindValue(QStringLiteral(":adults_accepted"),   adults);
+    q.bindValue(QStringLiteral(":children_accepted"), children);
+    q.bindValue(QStringLiteral(":comment"),           comment);
+    q.bindValue(QStringLiteral(":updated_at"),        now);
+    q.bindValue(QStringLiteral(":id"),                id());
+
+    if (Q_LIKELY(q.exec())) {
+        d->status = status;
+        d->adultsAccepted = adults;
+        d->childrenAccepted = children;
+        d->comment = comment;
+        d->updated = now;
+        return true;
+    } else {
+        if (c && e) *e = Error(q.lastError(), c->translate("Guest", "Failed to update guest status in the database."));
+        qCCritical(GIK_CORE) << "Failed to update status for guest ID" << id() << "in the database:" << q.lastError().text();
+        return false;
+    }
+}
+
 QString Guest::generateUid(int length)
 {
     QString uid;
@@ -445,14 +481,20 @@ QString Guest::generateUid(int length)
 
 Guest::Status Guest::statusStringToEnum(const QString &str)
 {
-    if (str.compare(QLatin1String("defaultstatus"), Qt::CaseInsensitive) == 0) {
-        return Guest::DefaultStaus;
-    } else if (str.compare(QLatin1String("agreed"), Qt::CaseInsensitive) == 0) {
-        return Guest::Agreed;
-    } else if (str.compare(QLatin1String("canceled"), Qt::CaseInsensitive) == 0) {
-        return Guest::Canceled;
+    bool ok = false;
+    const int statusInt = str.toInt(&ok);
+    if (ok) {
+        return static_cast<Guest::Status>(statusInt);
     } else {
-        return Guest::InvalidStatus;
+        if (str.compare(QLatin1String("defaultstatus"), Qt::CaseInsensitive) == 0) {
+            return Guest::DefaultStaus;
+        } else if (str.compare(QLatin1String("agreed"), Qt::CaseInsensitive) == 0) {
+            return Guest::Agreed;
+        } else if (str.compare(QLatin1String("canceled"), Qt::CaseInsensitive) == 0) {
+            return Guest::Canceled;
+        } else {
+            return Guest::InvalidStatus;
+        }
     }
 }
 
