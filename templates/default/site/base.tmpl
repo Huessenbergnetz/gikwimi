@@ -38,6 +38,18 @@
         </main>
       </div>
     <footer class="container-fluid"></footer>
+
+    <div class="position-fixed top-0 end-0 p-3">
+        <div id="messageToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header">
+                <i id="messageToastIcon"></i>
+                <strong id="messageToastTitle" class="me-auto"></strong>
+                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="{{ _("Close") }}"></button>
+            </div>
+            <div id="messageToastBody" class="toast-body"></div>
+        </div>
+    </div>
+
     <script src="/js/scripts.js" defer></script>
   </body>
 </html>
