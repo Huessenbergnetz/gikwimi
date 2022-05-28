@@ -294,7 +294,7 @@ QJsonObject Guest::toJson() const
     o.insert(QStringLiteral("adultsAccepted"), static_cast<qint64>(d->adultsAccepted));
     o.insert(QStringLiteral("children"), static_cast<qint64>(d->children));
     o.insert(QStringLiteral("childrenAccepted"), static_cast<qint64>(d->childrenAccepted));
-    o.insert(QStringLiteral("status"), Guest::statusEnumToString(d->status));
+    o.insert(QStringLiteral("status"), static_cast<int>(d->status));
 
     QJsonArray notificationList;
     {
@@ -309,8 +309,8 @@ QJsonObject Guest::toJson() const
     o.insert(QStringLiteral("notifications"), notificationList);
     o.insert(QStringLiteral("note"), d->note);
     o.insert(QStringLiteral("comment"), d->comment);
-    o.insert(QStringLiteral("salutation"), GuestGroup::salutationEnumToString(d->salutation));
-    o.insert(QStringLiteral("type"), Guest::typeEnumToString(d->type));
+    o.insert(QStringLiteral("salutation"), static_cast<int>(d->salutation));
+    o.insert(QStringLiteral("type"), static_cast<int>(d->type));
     o.insert(QStringLiteral("created"), d->created.toString(Qt::ISODate));
     o.insert(QStringLiteral("updated"), d->updated.toString(Qt::ISODate));
     o.insert(QStringLiteral("lockedAt"), d->lockedAt.toString(Qt::ISODate));
@@ -462,6 +462,66 @@ bool Guest::updateStatus(Cutelyst::Context *c, Error *e, const QVariantHash &p)
     }
 }
 
+bool Guest::update(Cutelyst::Context *c, Error *e, const QVariantHash &p)
+{
+    const Guest::Type            type             = static_cast<Guest::Type>(p.value(QStringLiteral("type")).toInt());
+    const GuestGroup::Salutation salutation       = static_cast<GuestGroup::Salutation>(p.value(QStringLiteral("salutation")).toInt());
+    const Guest::Status          status           = static_cast<Guest::Status>(p.value(QStringLiteral("status")).toInt());
+    const QString                pgName           = p.value(QStringLiteral("partnerGivenName")).toString();
+    const QString                pfName           = p.value(QStringLiteral("partnerFamilyName")).toString();
+    const uint                   expectedAdults   = p.value(QStringLiteral("expectedAdults")).toUInt();
+    const uint                   agreedAdults     = p.value(QStringLiteral("agreedAdults")).toUInt();
+    const uint                   expectedChildren = p.value(QStringLiteral("expectedChildren")).toUInt();
+    const uint                   agreedChildren   = p.value(QStringLiteral("agreedChildren")).toUInt();
+    const QString                note             = p.value(QStringLiteral("note")).toString();
+    const QDateTime              now              = QDateTime::currentDateTimeUtc();
+
+    QSqlQuery q = CPreparedSqlQueryThread(QStringLiteral("UPDATE guests SET "
+                                                         "type = :type, "
+                                                         "salutation = :salutation, "
+                                                         "status = :status, "
+                                                         "partner_given_name = :partner_given_name, "
+                                                         "partner_family_name = :partner_family_name, "
+                                                         "adults = :adults, "
+                                                         "adults_accepted = :adults_accepted, "
+                                                         "children = :children, "
+                                                         "children_accepted = :children_accepted, "
+                                                         "note = :note, "
+                                                         "updated_at = :updated_at "
+                                                         "WHERE id = :id"));
+    q.bindValue(QStringLiteral(":type"), static_cast<int>(type));
+    q.bindValue(QStringLiteral(":salutation"), static_cast<int>(salutation));
+    q.bindValue(QStringLiteral(":status"), static_cast<int>(status));
+    q.bindValue(QStringLiteral(":partner_given_name"), pgName);
+    q.bindValue(QStringLiteral(":partner_family_name"), pfName);
+    q.bindValue(QStringLiteral(":adults"), expectedAdults);
+    q.bindValue(QStringLiteral(":adults_accepted"), agreedAdults);
+    q.bindValue(QStringLiteral(":children"), expectedChildren);
+    q.bindValue(QStringLiteral(":children_accepted"), agreedChildren);
+    q.bindValue(QStringLiteral(":note"), note);
+    q.bindValue(QStringLiteral(":updated_at"), now);
+    q.bindValue(QStringLiteral(":id"), id());
+
+    if (Q_LIKELY(q.exec())) {
+        d->type = type;
+        d->salutation = salutation;
+        d->status = status;
+        d->partnerGivenName = pgName;
+        d->partnerFamilyName = pfName;
+        d->adults = expectedAdults;
+        d->adultsAccepted = agreedAdults;
+        d->children = expectedChildren;
+        d->childrenAccepted = agreedChildren;
+        d->note = note;
+        d->updated = now;
+        return true;
+    } else {
+        if (c && e) *e = Error(q.lastError(), c->translate("Guest", "Failed to update guest in the database."));
+        qCCritical(GIK_CORE) << "Failed to update guest ID" << id() << "in the database:" << q.lastError().text();
+        return false;
+    }
+}
+
 QString Guest::generateUid(int length)
 {
     QString uid;
@@ -525,6 +585,18 @@ QStringList Guest::supportedStatus()
     }
 
     return lst;
+}
+
+std::vector<OptionItem> Guest::statusOptionList(Cutelyst::Context *c, Guest::Status selected)
+{
+    std::vector<OptionItem> options;
+
+    options.emplace_back(c->translate("Guest", "Select guest status"), static_cast<int>(Guest::InvalidStatus), selected == Guest::InvalidStatus);
+    options.emplace_back(c->translate("Guest", "Default"), static_cast<int>(Guest::DefaultStaus), selected == Guest::DefaultStaus);
+    options.emplace_back(c->translate("Guest", "Agreed"), static_cast<int>(Guest::Agreed), selected == Guest::Agreed);
+    options.emplace_back(c->translate("Guest", "Canceled"), static_cast<int>(Guest::Canceled), selected == Guest::Canceled);
+
+    return options;
 }
 
 QStringList Guest::statusValues(bool withDefault)

@@ -171,6 +171,8 @@ public:
 
     bool updateStatus(Cutelyst::Context *c, Error *e, const QVariantHash &p);
 
+    bool update(Cutelyst::Context *c, Error *e, const QVariantHash &p);
+
     static QString generateUid(int length = 8);
 
     static Guest::Status statusStringToEnum(const QString &str);
@@ -178,6 +180,8 @@ public:
     static QString statusEnumToString(Guest::Status status);
 
     static QStringList supportedStatus();
+
+    static std::vector<OptionItem> statusOptionList(Cutelyst::Context *c, Guest::Status selected = Guest::InvalidStatus);
 
     static QStringList statusValues(bool withDefault = false);
 
