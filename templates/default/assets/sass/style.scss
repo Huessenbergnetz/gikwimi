@@ -54,4 +54,10 @@
 // Bootstrap icons
 $bootstrap-icons-font-src: url("../fonts/bootstrap-icons.woff2?524846017b983fc8ded9325d94ed40f3") format("woff2"),
 url("../fonts/bootstrap-icons.woff?524846017b983fc8ded9325d94ed40f3") format("woff");
-@import "node_modules/bootstrap-icons/font/bootstrap-icons.scss"
+@import "node_modules/bootstrap-icons/font/bootstrap-icons.scss";
+
+.btn {
+    .bi {
+        pointer-events: none;
+    }
+}
