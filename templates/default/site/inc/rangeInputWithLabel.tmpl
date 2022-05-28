@@ -1,0 +1,6 @@
+{% extends "inc/inputWithLabel.tmpl" %}
+{% block divclass %}range-with-label{% endblock divclass %}
+{% block labelextension %} <span id="{{ inputId }}Value">{{ inputValue }}</span>{% endblock labelextension %}
+{% block type %}type="range"{% endblock %}
+{% block class %}form-range{% endblock %}
+{% block options %} min="{{ inputMin|default:0 }}" max="{{ inputMax|default:30 }}" steps="{{ inputSteps|default:1 }}"{% endblock %}

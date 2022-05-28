@@ -1,0 +1,5 @@
+{% extends "inc/inputWithLabel.tmpl" %}
+{% block divclass %}text-with-label{% endblock divclass %}
+{% block type %}type="text"{% endblock %}
+{% block class %}form-control{% endblock %}
+{% block options %}{% if inputMinLength %} minlength="{{ inputMinLength }}"{% endif %}{% if inputMaxLength %} maxlength="{{ inputMaxLength}}"{% endif %}{% if inputPattern %} pattern="{{ inputPattern }}"{% endif %}{% endblock %}

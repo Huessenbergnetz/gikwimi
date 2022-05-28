@@ -1,0 +1,92 @@
+{% extends "inc/modal.tmpl" %}
+{% block label %}{% i18n "Edit guest" %} <span id="editGuestName"></span>{% endblock %}
+
+{% block content %}
+<form id="editGuestForm" action="/controlcenter/events/{{ eventId }}/guests/edit/">
+    {% c_csrf_token %}
+    <input type="hidden" id="editGuestId">
+
+    <div>
+        <label for="editGuestType" class="form-label">{{ _("Type") }}</label>
+        <select id="editGuestType" name="type" class="form-select" aria-describedby="editGuestTypeHelp">
+        {% for opt in guesttype_options %}
+            <option value="{{ opt.value }}">{{ opt.name }}</option>
+        {% endfor %}
+        </select>
+        <div id="editGuestTypeHelp" class="form-text"></div>
+    </div>
+
+    <div>
+        <label for="editGuestSalutation" class="form-label">{{ _("Salutation") }}</label>
+        <select id="editGuestSalutation" name="salutation" class="form-select" aria-describedby="editGuestSalutationHelp">
+        {% for opt in salutation_options %}
+            <option value="{{ opt.value }}">{{ opt.name }}</option>
+        {% endfor %}
+        </select>
+        <div id="editGuestSalutationHelp" class="form-text"></div>
+    </div>
+
+    <div>
+        <label for="editGuestStatus" class="form-label">{{ _("Status") }}</label>
+        <select id="editGuestStatus" name="status" class="form-select" aria-describedby="editGuestStatusHelp">
+        {% for opt in gueststatus_options %}
+            <option value="{{ opt.value }}">{{ opt.name }}</option>
+        {% endfor %}
+        </select>
+        <div id="editGuestStatusHelp" class="form-text"></div>
+    </div>
+
+    {% with "editGuestPartnerGivenName" as inputId %}
+    {% with "partnerGivenName" as inputName %}
+    {% with _("Partner given name") as inputLabel %}
+    {% include "inc/textInputWithLabel.tmpl" %}
+    {% endwith %}
+    {% endwith %}
+    {% endwith %}
+
+    {% with "editGuestPartnerFamilyName" as inputId %}
+    {% with "partnerFamilyName" as inputName %}
+    {% with _("Partner family name") as inputLabel %}
+    {% include "inc/textInputWithLabel.tmpl" %}
+    {% endwith %}
+    {% endwith %}
+    {% endwith %}
+
+    {% with "editGuestExpectedAdults" as inputId %}
+    {% with "expectedAdults" as inputName %}
+    {% with _("Expected adults:") as inputLabel %}
+    {% include "inc/rangeInputWithLabel.tmpl" %}
+    {% endwith %}
+    {% endwith %}
+    {% endwith %}
+
+    {% with "editGuestAgreedAdults" as inputId %}
+    {% with "agreedAdults" as inputName %}
+    {% with _("Agreed adults:") as inputLabel %}
+    {% include "inc/rangeInputWithLabel.tmpl" %}
+    {% endwith %}
+    {% endwith %}
+    {% endwith %}
+
+    {% with "editGuestExpectedChildren" as inputId %}
+    {% with "expectedChildren" as inputName %}
+    {% with _("Expected children:") as inputLabel %}
+    {% include "inc/rangeInputWithLabel.tmpl" %}
+    {% endwith %}
+    {% endwith %}
+    {% endwith %}
+
+    {% with "editGuestAgreedChildren" as inputId %}
+    {% with "agreedChildren" as inputName %}
+    {% with _("Agreed children:") as inputLabel %}
+    {% include "inc/rangeInputWithLabel.tmpl" %}
+    {% endwith %}
+    {% endwith %}
+    {% endwith %}
+</form>
+{% endblock %}
+
+{% block footer %}
+<button type="button" class="btn btn-secondary text-capitalize" data-bs-dismiss="modal">{{ _("cancel") }}</button>
+<button id="{{ modalId }}Button" type="button" class="btn btn-primary text-capitalize">{{ _("update guest") }}</button>
+{% endblock %}

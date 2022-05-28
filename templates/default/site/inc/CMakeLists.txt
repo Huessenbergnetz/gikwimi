@@ -2,7 +2,12 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 set(INC_FILES
+    editGuestModal.tmpl
+    inputWithLabel.tmpl
+    modal.tmpl
     page_header.tmpl
+    rangeInputWithLabel.tmpl
+    textInputWithLabel.tmpl
 )
 
 target_sources(defaulttemplate
