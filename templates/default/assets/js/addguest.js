@@ -53,9 +53,10 @@ GikDefTmpl.addGuest.exec = function() {
               const tr = clone.querySelector('tr');
 
               const tds = tr.getElementsByTagName('td');
-              const nameTd      = tds[0];
-              const countTd     = tds[1];
-              const addressTd   = tds[2];
+              const buttonTd    = tds[0];
+              const nameTd      = tds[1];
+              const countTd     = tds[2];
+              const addressTd   = tds[3];
 
               if (data.contact.addressee.familyName === data.partnerFamilyName) {
                   nameTd.textContent = data.contact.addressee.givenName + ' and ' + data.partnerGivenName + ' ' + data.contact.addressee.familyName;

@@ -5,6 +5,7 @@ target_sources(defaulttemplate
     PRIVATE
         addgroup.js
         addguest.js
+        editguest.js
         general.js
         inviteguest.js
         licenseheader.js
