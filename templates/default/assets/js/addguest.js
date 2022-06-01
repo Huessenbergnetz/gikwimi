@@ -16,28 +16,25 @@ GikDefTmpl.addGuest.button = null;
 GikDefTmpl.addGuest.addressBooksLoaded = false;
 
 GikDefTmpl.addGuest.resetForm = function() {
-    const guestPartnerGivenName = document.getElementById('guestPartnerGivenName');
-    guestPartnerGivenName.value = '';
+    const els = GikDefTmpl.addGuest.form.elements;
 
-    const guestPartnerFamilyName = document.getElementById('guestPartnerFamilyName');
-    guestPartnerFamilyName.value = '';
+    els.namedItem('partnerGivenName').value = '';
+    els.namedItem('partnerFamilyName').value = '';
 
-    const expectedAdultsRange = document.getElementById('expectedAdultsRange');
-    expectedAdultsRange.value = 1;
+    const e = new Event('input');
 
-    const expectedAdultsValue = document.getElementById('expectedAdultsValue');
-    expectedAdultsValue.textContent = 1;
+    const ea = els.namedItem('expectedAdults');
+    ea.value = 1;
+    ea.dispatchEvent(e);
 
-    const expectedChildrenRange = document.getElementById('expectedChildrenRange');
-    expectedChildrenRange.value = 0;
-
-    const expectedChildrenValue = document.getElementById('expectedChildrenValue');
-    expectedChildrenValue.textContent = 0;
+    const ec = els.namedItem('expectedChildren');
+    ec.value = 0;
+    ec.dispatchEvent(e);
 }
 
 GikDefTmpl.addGuest.exec = function() {
     const fd = new FormData(GikDefTmpl.addGuest.form);
-    const actionPath = GikDefTmpl.addGuest.form.attributes.getNamedItem('action').value;
+    const actionPath = GikDefTmpl.addGuest.form.action;
     const hdrs = GikDefTmpl.newXhrHeaders();
 
     fetch(actionPath, {
@@ -57,6 +54,12 @@ GikDefTmpl.addGuest.exec = function() {
               const nameTd      = tds[1];
               const countTd     = tds[2];
               const addressTd   = tds[3];
+
+              const editGuestBtn = buttonTd.getElementsByClassName('edit-guest-btn')[0];
+              editGuestBtn.value = data.id;
+              editGuestBtn.addEventListener('click', GikDefTmpl.editGuest.loadData);
+              buttonTd.getElementsByClassName('invite-guest-btn')[0].href = '/i/' + data.uid;
+              buttonTd.getElementsByClassName('delete-guest-btn')[0].dataset.value = data.id;
 
               if (data.contact.addressee.familyName === data.partnerFamilyName) {
                   nameTd.textContent = data.contact.addressee.givenName + ' and ' + data.partnerGivenName + ' ' + data.contact.addressee.familyName;
@@ -173,7 +176,7 @@ GikDefTmpl.addGuest.init = function() {
         GikDefTmpl.addGuest.modal = bootstrap.Modal.getOrCreateInstance(agm);
         agm.addEventListener('show.bs.modal', GikDefTmpl.addGuest.loadData);
 
-        GikDefTmpl.addGuest.form = document.getElementById('addGuestForm');
+        GikDefTmpl.addGuest.form = document.forms['addGuestForm'];
         GikDefTmpl.addGuest.form.addEventListener('submit', (e) => { e.preventDefault(); GikDefTmpl.addGuest.exec(); });
 
         GikDefTmpl.addGuest.button = document.getElementById('addGuestButton');
