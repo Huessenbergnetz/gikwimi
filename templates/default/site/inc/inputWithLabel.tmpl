@@ -1,5 +1,6 @@
 <div class="{% block divclass %}{% endblock divclass %}{% if inputDivClass %} {{ inputDivClass }}{% endif %}">
     <label for="{{ inputId }}" class="form-label">{{ inputLabel }}{% block labelextension %}{% endblock labelextension %}</label>
-    <input {% block type %}{% endblock type %} class="{% block class %}{% endblock class %}" id="{{ inputId }}" name="{{ inputName|default:inputId }}" value="{{ inputValue }}"{% if inputPlaceholder %} placeholder="{{ inputPlaceholder }}"{% endif %}{% if inputDesc %} aria-describedby="{{ inputId }}Help"{% endif %}{% if inputRequired %} required="required"{% endif %}{% block options %}{% endblock options %}>
+    <input {% block type %}{% endblock type %} class="{% block class %}{% endblock class %}" id="{{ inputId }}" name="{{ inputName|default:inputId }}" value="{{ inputValue }}"{% if inputPlaceholder %} placeholder="{{ inputPlaceholder }}"{% endif %} aria-describedby="{{ inputId }}Feedback{% if inputDesc %} {{ inputId }}Help{% endif %}"{% if inputRequired %} required="required"{% endif %}{% block options %}{% endblock options %}>
+    <div id="{{ inputId }}Feedback" class="invalid-feedback"></div>
     {% if inputDesc %}<div id="{{ inputId }}Help" class="form-text">{{ inputDesc }}</div>{% endif %}
 </div>
