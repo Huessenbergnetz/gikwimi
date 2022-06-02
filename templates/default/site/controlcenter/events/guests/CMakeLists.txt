@@ -5,7 +5,7 @@ set(CONTROLCENTER_EVENTS_GUESTS_FILES
     add.tmpl
     addtogroup.tmpl
     edit.tmpl
-    editGuestModel.tmpl
+    editGuestModal.tmpl
     index.tmpl
     invite.tmpl
 )
