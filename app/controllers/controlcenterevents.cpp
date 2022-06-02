@@ -98,6 +98,8 @@ void ControlCenterEvents::guests(Context *c)
     //: table header
     guestsTableHeaders.insert(QStringLiteral("guests"), c->translate("ControlCenterEvents", "guests"));
     //: table header
+    guestsTableHeaders.insert(QStringLiteral("status"), c->translate("ControlCenterEvents", "status"));
+    //: table header
     guestsTableHeaders.insert(QStringLiteral("address"), c->translate("ControlCenterEvents", "address"));
     //: table header
     guestsTableHeaders.insert(QStringLiteral("notified"), c->translate("ControlCenterEvents", "notified"));

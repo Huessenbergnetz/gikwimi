@@ -21,6 +21,7 @@
             <tr>
                 <th scope="col"></th>
                 <th scope="col" class="text-capitalize">{{ guests_table_headers.name }}</th>
+                <th scope="col" class="text-capitalize">{{ guests_table_headers.status }}</th>
                 <th scope="col" class="text-capitalize">{{ guests_table_headers.guests }}</th>
                 <th scope="col" class="text-capitalize d-none d-sm-table-cell">{{ guests_table_headers.address }}</th>
                 <th scope="col" class="text-capitalize">{{ guests_table_headers.notified}}</th>
@@ -49,9 +50,11 @@
                 {% endif %}
                 </td>
 
+                <td><i class="bi {% if guest.status == guest.Canceled %}bi-x-circle text-warning{% elif guest.status == guest.Agreed %}bi-check-circle text-success{% else %}bi-dash-circle text-secondary{% endif %}"></i></td>
+
                 <td>
-                <span class="text-capitalize">{{ guests_table_headers.adults }}</span>:&nbsp;{{ guest.adultsAccepted }}/{{ guest.adults }}<br>
-                <span class="text-capitalize">{{ guests_table_headers.children }}</span>:&nbsp;{{ guest.childrenAccepted }}/{{ guest.children }}
+                    <span class="text-capitalize">{{ guests_table_headers.adults }}</span>:&nbsp;{{ guest.adultsAccepted }}/{{ guest.adults }}<br>
+                    <span class="text-capitalize">{{ guests_table_headers.children }}</span>:&nbsp;{{ guest.childrenAccepted }}/{{ guest.children }}
                 </td>
 
                 <td class="d-none d-sm-table-cell">
@@ -196,6 +199,7 @@
                 <tr>
                     <th scope="col"></th>
                     <th scope="col" class="text-capitalize">{{ guests_table_headers.name }}</th>
+                    <th scope="col" class="text-capitalize">{{ guests_table_headers.status }}</th>
                     <th scope="col" class="text-capitalize">{{ guests_table_headers.guests }}</th>
                     <th scope="col" class="text-capitalize d-none d-sm-table-cell">{{ guests_table_headers.address }}</th>
                     <th scope="col" class="text-capitalize">{{ guests_table_headers.notified}}</th>
@@ -221,6 +225,7 @@
             </div>
         </td>
         <td></td>
+        <td><i></i></td>
         <td>
             <span class="text-capitalize">{{ guests_table_headers.adults }}</span>:&nbsp;<span></span>/<span></span><br>
             <span class="text-capitalize">{{ guests_table_headers.children }}</span>:&nbsp;<span></span>/<span></span>

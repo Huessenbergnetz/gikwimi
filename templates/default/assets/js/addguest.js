@@ -48,12 +48,15 @@ GikDefTmpl.addGuest.exec = function() {
               const clone = template.content.cloneNode(true);
 
               const tr = clone.querySelector('tr');
+              tr.id = data.id;
 
               const tds = tr.getElementsByTagName('td');
               const buttonTd    = tds[0];
               const nameTd      = tds[1];
-              const countTd     = tds[2];
-              const addressTd   = tds[3];
+              const statusTd    = tds[2]
+              const countTd     = tds[3];
+              const addressTd   = tds[4];
+              const inviteTd    = tds[5];
 
               const editGuestBtn = buttonTd.getElementsByClassName('edit-guest-btn')[0];
               editGuestBtn.value = data.id;
@@ -67,6 +70,15 @@ GikDefTmpl.addGuest.exec = function() {
                   nameTd.innerHTML = data.contact.addressee.givenName + ' ' + data.contact.addressee.familyName + '<br>' + data.partnerGivenName + ' ' + data.partnerFamilyName;
               }
 
+              const statusIcon = statusTd.getElementsByTagName('i')[0];
+              if (data.status === 1) { // Agreed
+                  statusIcon.className = 'bi bi-check-circle text-success';
+              } else if (data.status === 2) { // Canceled
+                  statusIcon.className = 'bi bi-x-circle text-warning';
+              } else { // DefaultStatus
+                  statusIcon.className = 'bi bi-dash-circle text-secondary';
+              }
+
               const countSpans = countTd.getElementsByTagName('span');
               countSpans[1].textContent = data.adultsAccepted;
               countSpans[2].textContent = data.adults;
@@ -74,25 +86,7 @@ GikDefTmpl.addGuest.exec = function() {
               countSpans[5].textContent = data.children;
 
               if (data.contact.addressee.addresses && data.contact.addressee.addresses.length) {
-                  const address = data.contact.addressee.addresses[0];
-                  let addressHtml = '';
-                  if (address.street) {
-                      addressHtml += address.street + '<br>';
-                  }
-                  if (address.postalCode) {
-                      addressHtml += address.postalCode + ' ';
-                  }
-                  if (address.locality) {
-                      addressHtml += address.locality;
-                  }
-                  if (address.locality || address.postalCode) {
-                      addressHtml += '<br>';
-                  }
-                  addressHtml += address.region;
-                  if (address.region && address.country) {
-                      addressHtml += ', ' + address.country;
-                  }
-                  addressTd.innerHTML = addressHtml;
+                  addressTd.innerHTML = GikDefTmpl.composeAddress(data.contact.addressee.addresses[0]);
               }
 
               const section = document.getElementById('group_' + data.group.id).getElementsByTagName('tbody')[0].appendChild(clone);
