@@ -14,8 +14,20 @@ GikDefTmpl.addGroup.form = null;
 GikDefTmpl.addGroup.button = null;
 
 GikDefTmpl.addGroup.exec = function() {
+    const submitButton = document.getElementById('createGroupButton');
+    submitButton.disabled = true;
+    const spinner = submitButton.getElementsByTagName('span')[0];
+    spinner.classList.remove('d-none');
+    spinner.classList.add('d-inline-block');
+    const icon = submitButton.getElementsByTagName('i')[0];
+    icon.classList.add('d-none');
+
+    for (let i = 0; i < GikDefTmpl.addGroup.form.elements.length; ++i) {
+        GikDefTmpl.addGroup.form.elements[i].classList.remove('is-invalid');
+    }
+
     let fd = new FormData(GikDefTmpl.addGroup.form);
-    const actionPath = GikDefTmpl.addGroup.form.attributes.getNamedItem('action').value;
+    const actionPath = GikDefTmpl.addGroup.form.action;
     const hdrs = GikDefTmpl.newXhrHeaders();
 
     fetch(actionPath, {
@@ -23,25 +35,61 @@ GikDefTmpl.addGroup.exec = function() {
               headers: hdrs,
               body: fd
           })
-    .then(response => response.json())
-    .then(data => {
-              let template = document.getElementById('group-template');
-              let clone = template.content.cloneNode(true);
+    .then(response => {
+              if (response.ok) {
+                  return response.json();
+              } else {
+                  return Promise.reject(response);
+              }
+          })
+    .then(group => {
+              const template = document.getElementById('group-template');
+              const clone = template.content.cloneNode(true);
 
-              let section = clone.querySelector('section');
-              section.id = 'group_' + data.id;
+              const section = clone.querySelector('section');
+              section.id = 'group_' + group.id;
 
-              let header = clone.querySelector('h2');
-              header.textContent = data.name;
+              const header = clone.querySelector('h2');
+              header.textContent = group.name;
 
-              let button = clone.querySelector('button');
-              button.value = data.id;
+              const button = clone.querySelector('button');
+              button.value = group.id;
 
               document.getElementById('guestgroups').appendChild(clone);
-          })
-    .catch(console.error);
 
-    GikDefTmpl.addGroup.modal.hide();
+              GikDefTmpl.addGroup.form.reset();
+              GikDefTmpl.addGroup.modal.hide();
+          })
+    .catch(error => {
+               if (error instanceof Response) {
+                   error.json().then(json => {
+                                         if (json.error) {
+                                             GikDefTmpl.addGroup.modal.hide();
+                                             GikDefTmpl.showError(json.error.title, json.error.text);
+                                         } else if (json.fielderrors) {
+                                             const fe = json.fielderrors;
+                                             const els = GikDefTmpl.addGroup.form.elements;
+                                             for (const field in fe) {
+                                                 if (fe.hasOwnProperty(field)) {
+                                                     const el = els.namedItem(field)
+                                                     const fb = el.nextElementSibling;
+                                                     fb.innerHTML = fe[field].join('<br>');
+                                                     el.classList.add('is-invalid');
+                                                 }
+                                             }
+                                         }
+                                     });
+               } else {
+                   GikDefTmpl.addGroup.modal.hide();
+                   GikDefTmpl.showError(error.name, error.message);
+               }
+           })
+    .finally(() => {
+                 spinner.classList.remove('d-inline-block');
+                 spinner.classList.add('d-none');
+                 icon.classList.remove('d-none');
+                 submitButton.disabled = false;
+             });
 }
 
 GikDefTmpl.addGroup.init = function() {
@@ -49,11 +97,8 @@ GikDefTmpl.addGroup.init = function() {
     if (agm) {
         GikDefTmpl.addGroup.modal = bootstrap.Modal.getOrCreateInstance(agm);
 
-        GikDefTmpl.addGroup.form = document.getElementById('addGroupForm');
+        GikDefTmpl.addGroup.form = document.forms['addGroupForm'];
         GikDefTmpl.addGroup.form.addEventListener('submit', (e) => { e.preventDefault(); GikDefTmpl.addGroup.exec(); });
-
-        GikDefTmpl.addGroup.button = document.getElementById('createGroupButton');
-        GikDefTmpl.addGroup.button.addEventListener('click', GikDefTmpl.addGroup.exec);
     }
 }
 
