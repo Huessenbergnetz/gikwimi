@@ -6,6 +6,18 @@
     {% c_csrf_token %}
     <input type="hidden" id="editGuestId">
 
+    <div class="d-flex">
+        <label for="editGuestStatus" class="form-label me-auto align-self-center">{{ _("Status") }}</label>
+        <div id="editGuestStatus" class="btn btn-group pe-0" role="group" aria-label="{{ _("Status") }}">
+            {% for opt in gueststatus_options %}
+                {% if opt.value != "-1" %}
+                <input id="editGuestStatus_{{ opt.value }}" type="radio" class="btn-check" name="status" value="{{ opt.value }}" autocomplete="off">
+                <label for="editGuestStatus_{{ opt.value }}" class="btn {% if opt.value == "1" %}btn-outline-success{% elif opt.value == "2" %}btn-outline-warning{% else %}btn-outline-secondary{% endif %}">{{ opt.name }}</label>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+
     <div>
         <label for="editGuestType" class="form-label">{{ _("Type") }}</label>
         <select id="editGuestType" name="type" class="form-select" aria-describedby="editGuestTypeHelp">
@@ -24,16 +36,6 @@
         {% endfor %}
         </select>
         <div id="editGuestSalutationHelp" class="form-text"></div>
-    </div>
-
-    <div>
-        <label for="editGuestStatus" class="form-label">{{ _("Status") }}</label>
-        <select id="editGuestStatus" name="status" class="form-select" aria-describedby="editGuestStatusHelp">
-        {% for opt in gueststatus_options %}
-            <option value="{{ opt.value }}">{{ opt.name }}</option>
-        {% endfor %}
-        </select>
-        <div id="editGuestStatusHelp" class="form-text"></div>
     </div>
 
     {% with "editGuestPartnerGivenName" as inputId %}
