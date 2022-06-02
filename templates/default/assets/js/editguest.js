@@ -41,19 +41,33 @@ GikDefTmpl.editGuest.loadData = function(event) {
           })
     .then(data => {
               document.getElementById('editGuestName').textContent = data.contact.addressee.realName;
-              document.getElementById('editGuestType').value = data.type;
-              document.getElementById('editGuestSalutation').value = data.salutation;
               document.getElementById('editGuestStatus_' + data.status).checked = true;
-              document.getElementById('editGuestPartnerGivenName').value = data.partnerGivenName;
-              document.getElementById('editGuestPartnerFamilyName').value = data.partnerFamilyName;
-              document.getElementById('editGuestExpectedAdults').value = data.adults;
-              document.getElementById('editGuestExpectedAdultsValue').textContent = data.adults;
-              document.getElementById('editGuestAgreedAdults').value = data.adultsAccepted;
-              document.getElementById('editGuestAgreedAdultsValue').textContent = data.adultsAccepted;
-              document.getElementById('editGuestExpectedChildren').value = data.children;
-              document.getElementById('editGuestExpectedChildrenValue').textContent = data.children;
-              document.getElementById('editGuestAgreedChildren').value = data.childrenAccepted;
-              document.getElementById('editGuestAgreedChildrenValue').textContent = data.childrenAccepted;
+
+              const els = GikDefTmpl.editGuest.form.elements;
+
+              els.namedItem('type').value = data.type;
+              els.namedItem('salutation').value = data.salutation;
+              els.namedItem('partnerGivenName').value = data.partnerGivenName;
+              els.namedItem('partnerFamilyName').value = data.partnerFamilyName;
+
+              const e = new Event('input');
+
+              const ea = els.namedItem('expectedAdults');
+              ea.value = data.adults;
+              ea.dispatchEvent(e);
+
+              const aa = els.namedItem('agreedAdults');
+              aa.value = data.adultsAccepted;
+              aa.dispatchEvent(e);
+
+              const ec = els.namedItem('expectedChildren');
+              ec.value = data.children;
+              ec.dispatchEvent(e);
+
+              const ac = els.namedItem('agreedChildren');
+              ac.value = data.childrenAccepted;
+              ac.dispatchEvent(e);
+
               GikDefTmpl.editGuest.modal.show();
           })
     .catch(error => {
@@ -76,7 +90,7 @@ GikDefTmpl.editGuest.loadData = function(event) {
 GikDefTmpl.editGuest.exec = function() {
     const formData = new FormData(GikDefTmpl.editGuest.form);
     const guestId = document.getElementById('editGuestId').value;
-    const actionPath = GikDefTmpl.editGuest.form.attributes.getNamedItem('action').value + guestId;
+    const actionPath = GikDefTmpl.editGuest.form.action + guestId;
     const hdrs = GikDefTmpl.newXhrHeaders();
 
     fetch(actionPath, {
@@ -85,8 +99,8 @@ GikDefTmpl.editGuest.exec = function() {
               body: formData
           })
     .then(response => response.json())
-    .then(data => {
-            console.log(data);
+    .then(guest => {
+            console.log(guest);
           })
     .catch(error => {
                if (error instanceof Response) {
@@ -112,7 +126,7 @@ GikDefTmpl.editGuest.init = function() {
             btn.addEventListener('click', GikDefTmpl.editGuest.loadData);
         }
 
-        GikDefTmpl.editGuest.form = document.getElementById('editGuestForm');
+        GikDefTmpl.editGuest.form = document.forms['editGuestForm'];
         GikDefTmpl.editGuest.form.addEventListener('submit', (e) => { e.preventDefault(); GikDefTmpl.editGuest.exec(); });
 
         GikDefTmpl.editGuest.button = document.getElementById('editGuestButton');
