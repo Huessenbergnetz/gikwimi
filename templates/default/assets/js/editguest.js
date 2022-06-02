@@ -73,7 +73,7 @@ GikDefTmpl.editGuest.loadData = function(event) {
     .catch(error => {
                if (error instanceof Response) {
                    error.json().then(json => {
-                                         GikDefTmpl.showError(json.error_title, json.error_text);
+                                         GikDefTmpl.showError(json.error.title, json.error.text);
                                      })
                } else {
                    GikDefTmpl.showError(error.name, error.message);
@@ -88,6 +88,18 @@ GikDefTmpl.editGuest.loadData = function(event) {
 }
 
 GikDefTmpl.editGuest.exec = function() {
+    const button = document.getElementById('editGuestSubmitButton');
+    button.disabled = true;
+    const spinner = button.getElementsByTagName('span')[0];
+    spinner.classList.remove('d-none');
+    spinner.classList.add('d-inline-block');
+    const icon = button.getElementsByTagName('i')[0];
+    icon.classList.add('d-none');
+
+    for (let i = 0; i < GikDefTmpl.editGuest.form.elements.length; ++i) {
+            GikDefTmpl.editGuest.form.elements[i].classList.remove('is-invalid');
+        }
+
     const formData = new FormData(GikDefTmpl.editGuest.form);
     const guestId = document.getElementById('editGuestId').value;
     const actionPath = GikDefTmpl.editGuest.form.action + guestId;
@@ -98,21 +110,73 @@ GikDefTmpl.editGuest.exec = function() {
               headers: hdrs,
               body: formData
           })
-    .then(response => response.json())
+    .then(response => {
+              if (response.ok) {
+                  return response.json();
+              } else {
+                  return Promise.reject(response);
+              }
+          })
     .then(guest => {
-            console.log(guest);
+              const tr = document.getElementById('guest-' + guest.id);
+              const tds = tr.getElementsByTagName('td');
+
+              const nameTd      = tds[1];
+              const statusTd    = tds[2];
+              const countTd     = tds[3];
+
+              if (guest.contact.addressee.familyName === guest.partnerFamilyName) {
+                  nameTd.textContent = guest.contact.addressee.givenName + ' and ' + guest.partnerGivenName + ' ' + guest.contact.addressee.familyName;
+              } else {
+                  nameTd.innerHTML = guest.contact.addressee.givenName + ' ' + guest.contact.addressee.familyName + '<br>' + guest.partnerGivenName + ' ' + guest.partnerFamilyName;
+              }
+
+              const statusIcon = statusTd.getElementsByTagName('i')[0];
+              if (guest.status === 1) { // Agreed
+                  statusIcon.className = 'bi bi-check-circle text-success';
+              } else if (guest.status === 2) { // Canceled
+                  statusIcon.className = 'bi bi-x-circle text-warning';
+              } else { // DefaultStatus
+                  statusIcon.className = 'bi bi-dash-circle text-secondary';
+              }
+
+              const countSpans = countTd.getElementsByTagName('span');
+              countSpans[1].textContent = guest.adultsAccepted;
+              countSpans[2].textContent = guest.adults;
+              countSpans[4].textContent = guest.childrenAccepted;
+              countSpans[5].textContent = guest.children;
+
+              GikDefTmpl.editGuest.modal.hide();
           })
     .catch(error => {
                if (error instanceof Response) {
                    error.json().then(json => {
-                                         GikDefTmpl.showError(json.error_title, json.error_text);
-                                     })
+                                         if (json.error) {
+                                             GikDefTmpl.editGuest.modal.hide();
+                                             GikDefTmpl.showError(json.error.title, json.error.text);
+                                         } else if (json.fielderrors) {
+                                             const fe = json.fielderrors;
+                                             const els = GikDefTmpl.editGuest.form.elements;
+                                             for (const field in fe) {
+                                                 if (fe.hasOwnProperty(field)) {
+                                                     const el = els.namedItem(field);
+                                                     const fb = el.nextElementSibling;
+                                                     fb.innerHTML = fe[field].join('<br>');
+                                                     el.classList.add('is-invalid');
+                                                 }
+                                             }
+                                         }
+                                     });
                } else {
+                   GikDefTmpl.editGuest.modal.hide();
                    GikDefTmpl.showError(error.name, error.message);
                }
            })
     .finally(() => {
-                 GikDefTmpl.editGuest.modal.hide();
+                 spinner.classList.remove('d-inline-block');
+                 spinner.classList.add('d-none');
+                 icon.classList.remove('d-none');
+                 button.disabled = false;
              });
 }
 
@@ -129,9 +193,6 @@ GikDefTmpl.editGuest.init = function() {
 
         GikDefTmpl.editGuest.form = document.forms['editGuestForm'];
         GikDefTmpl.editGuest.form.addEventListener('submit', (e) => { e.preventDefault(); GikDefTmpl.editGuest.exec(); });
-
-        GikDefTmpl.editGuest.button = document.getElementById('editGuestButton');
-        GikDefTmpl.editGuest.button.addEventListener('click', GikDefTmpl.editGuest.exec);
     }
 }
 

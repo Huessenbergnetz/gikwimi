@@ -53,8 +53,8 @@
                 <td><i class="bi {% if guest.status == guest.Canceled %}bi-x-circle text-warning{% elif guest.status == guest.Agreed %}bi-check-circle text-success{% else %}bi-dash-circle text-secondary{% endif %}"></i></td>
 
                 <td>
-                    <span class="text-capitalize">{{ guests_table_headers.adults }}</span>:&nbsp;{{ guest.adultsAccepted }}/{{ guest.adults }}<br>
-                    <span class="text-capitalize">{{ guests_table_headers.children }}</span>:&nbsp;{{ guest.childrenAccepted }}/{{ guest.children }}
+                    <span class="text-capitalize">{{ guests_table_headers.adults }}</span>:&nbsp;<span>{{ guest.adultsAccepted }}</span>/<span>{{ guest.adults }}</span><br>
+                    <span class="text-capitalize">{{ guests_table_headers.children }}</span>:&nbsp;<span>{{ guest.childrenAccepted }}</span>/<span>{{ guest.children }}</span>
                 </td>
 
                 <td class="d-none d-sm-table-cell">

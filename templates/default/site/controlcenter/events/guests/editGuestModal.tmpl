@@ -20,21 +20,23 @@
 
     <div>
         <label for="editGuestType" class="form-label">{{ _("Type") }}</label>
-        <select id="editGuestType" name="type" class="form-select" aria-describedby="editGuestTypeHelp">
+        <select id="editGuestType" name="type" class="form-select" aria-describedby="editGuestTypeHelp editGuestTypeFeedback">
         {% for opt in guesttype_options %}
             <option value="{{ opt.value }}">{{ opt.name }}</option>
         {% endfor %}
         </select>
+        <div id="editGuestTypeFeedback" class="invalid-feedback"></div>
         <div id="editGuestTypeHelp" class="form-text"></div>
     </div>
 
     <div>
         <label for="editGuestSalutation" class="form-label">{{ _("Salutation") }}</label>
-        <select id="editGuestSalutation" name="salutation" class="form-select" aria-describedby="editGuestSalutationHelp">
+        <select id="editGuestSalutation" name="salutation" class="form-select" aria-describedby="editGuestSalutationHelp editGuestSalutationFeedback">
         {% for opt in salutation_options %}
             <option value="{{ opt.value }}">{{ opt.name }}</option>
         {% endfor %}
         </select>
+        <div id="editGuestSalutationFeedback" class="invalid-feedback"></div>
         <div id="editGuestSalutationHelp" class="form-text"></div>
     </div>
 
@@ -90,5 +92,5 @@
 
 {% block footer %}
 <button type="button" class="btn btn-secondary text-capitalize" data-bs-dismiss="modal">{{ _("cancel") }}</button>
-<button id="{{ modalId }}Button" type="button" class="btn btn-primary text-capitalize">{{ _("update guest") }}</button>
+<button id="{{ modalId }}SubmitButton" type="submit" form="editGuestForm" class="btn btn-primary text-capitalize"><span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span><i class="bi bi-pencil-square"></i> {{ _("update guest") }}</button>
 {% endblock %}
