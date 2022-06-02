@@ -204,10 +204,10 @@ void ControlCenterEvents::editGuest(Context *c, const QString &id)
     if (c->req()->isPost()) {
         static Validator v({
                                new ValidatorRequired(QStringLiteral("type")),
-                               new ValidatorIn(QStringLiteral("type"), Guest::typeValues()),
+                               new ValidatorIn(QStringLiteral("type"), Guest::typeValues(), Qt::CaseSensitive, ValidatorMessages(QT_TRANSLATE_NOOP("ControlCenterEvents", "Salutation"), QT_TRANSLATE_NOOP("ControlCenterEvents", "Please select a valid guest type."))),
                                new ValidatorBetween(QStringLiteral("type"), QMetaType::Int, -127, 127),
                                new ValidatorRequired(QStringLiteral("salutation")),
-                               new ValidatorIn(QStringLiteral("salutation"), GuestGroup::salutationValues(true)),
+                               new ValidatorIn(QStringLiteral("salutation"), GuestGroup::salutationValues(true), Qt::CaseSensitive, ValidatorMessages(QT_TRANSLATE_NOOP("ControlCenterEvents", "Salutation"), QT_TRANSLATE_NOOP("ControlCenterEvents", "Please select a valid salutation form."))),
                                new ValidatorBetween(QStringLiteral("salutation"), QMetaType::Int, -127, 127),
                                new ValidatorRequired(QStringLiteral("status")),
                                new ValidatorIn(QStringLiteral("status"), Guest::statusValues(true)),
@@ -336,7 +336,7 @@ void ControlCenterEvents::addGuestGroup(Context *c)
                                new ValidatorRequired(QStringLiteral("name")),
                                new ValidatorAlphaDash(QStringLiteral("slug"), true),
                                new ValidatorRequired(QStringLiteral("salutation")),
-                               new ValidatorIn(QStringLiteral("salutation"), GuestGroup::salutationValues(false), Qt::CaseSensitive, ValidatorMessages(QT_TRANSLATE_NOOP("ControlCenterEvents", "Salutation"), QT_TRANSLATE_NOOP("ControlCenterEvents", "Please select a valid salutatuion form."))),
+                               new ValidatorIn(QStringLiteral("salutation"), GuestGroup::salutationValues(false), Qt::CaseSensitive, ValidatorMessages(QT_TRANSLATE_NOOP("ControlCenterEvents", "Salutation"), QT_TRANSLATE_NOOP("ControlCenterEvents", "Please select a valid salutation form."))),
                                new ValidatorBetween(QStringLiteral("salutation"), QMetaType::Int, -127, 127)
                            });
 
