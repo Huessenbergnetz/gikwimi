@@ -112,6 +112,7 @@ GikDefTmpl.editGuest.exec = function() {
                }
            })
     .finally(() => {
+                 GikDefTmpl.editGuest.modal.hide();
              });
 }
 
