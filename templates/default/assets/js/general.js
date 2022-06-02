@@ -18,14 +18,36 @@ GikDefTmpl.showError = function(title, text) {
     toast.show();
 }
 
-GikDefTmpl.updateRangeWithLabel = function()
-{
+GikDefTmpl.updateRangeWithLabel = function() {
     const divs = document.getElementsByClassName('range-with-label');
     for (let i = 0; i < divs.length; ++i) {
         const range = divs[i].getElementsByTagName('input')[0];
         const span = divs[i].getElementsByTagName('label')[0].getElementsByTagName('span')[0];
         range.addEventListener('input', (e) => {span.textContent = e.target.value});
     }
+}
+
+GikDefTmpl.composeAddress = function(address) {
+    let addressHtml = '';
+
+    if (address.street) {
+        addressHtml += address.street + '<br>';
+    }
+    if (address.postalCode) {
+        addressHtml += address.postalCode + ' ';
+    }
+    if (address.locality) {
+        addressHtml += address.locality;
+    }
+    if (address.locality || address.postalCode) {
+        addressHtml += '<br>';
+    }
+    addressHtml += address.region;
+    if (address.region && address.country) {
+        addressHtml += ', ' + address.country;
+    }
+
+    return addressHtml;
 }
 
 GikDefTmpl.updateRangeWithLabel();
