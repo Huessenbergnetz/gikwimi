@@ -160,16 +160,6 @@ GikDefTmpl.addGuest.loadData = function(e) {
     }
 }
 
-GikDefTmpl.addGuest.addRangeEventListeners = function() {
-    const expectedAdultsRange = document.getElementById('expectedAdultsRange');
-    const expectedAdultsValue = document.getElementById('expectedAdultsValue');
-    expectedAdultsRange.addEventListener('input', (e) => {expectedAdultsValue.textContent = e.target.value;} )
-
-    const expectedChildrenRange = document.getElementById('expectedChildrenRange');
-    const expectedChildrenValue = document.getElementById('expectedChildrenValue');
-    expectedChildrenRange.addEventListener('input', (e) => {expectedChildrenValue.textContent = e.target.value});
-}
-
 GikDefTmpl.addGuest.init = function() {
     const agm = document.getElementById('addGuestModal');
     if (agm) {
@@ -186,8 +176,6 @@ GikDefTmpl.addGuest.init = function() {
         addressbooks.addEventListener('change', function(e) {
             GikDefTmpl.addGuest.loadContacts(e.target.value);
         })
-
-        GikDefTmpl.addGuest.addRangeEventListeners();
     }
 }
 
