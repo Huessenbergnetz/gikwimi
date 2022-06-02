@@ -152,17 +152,21 @@ void ControlCenterEvents::addGuest(Context *c)
             Error e;
             const Guest guest = Guest::create(c, &e, Event::fromStash(c), values);
             if (guest.isValid()) {
+                c->res()->setStatus(201);
                 if (req->xhr()) {
                     c->res()->setJsonObjectBody(guest.toJson());
+                    return;
                 }
-                c->res()->setStatus(201);
             } else {
                 e.toStash(c, true);
                 return;
             }
         } else {
-            c->res()->setStatus(400);
-            c->detach(c->getAction(QStringLiteral("error")));
+            if (req->xhr()) {
+                c->res()->setStatus(400);
+                c->res()->setJsonObjectBody(QJsonObject({{QStringLiteral("fielderrors"), vr.errorsJsonObject()}}));
+                return;
+            }
         }
     }
 
@@ -233,9 +237,11 @@ void ControlCenterEvents::editGuest(Context *c, const QString &id)
                 return;
             }
         } else {
-            c->res()->setStatus(400);
-            c->res()->setJsonObjectBody(QJsonObject({{QStringLiteral("fielderrors"), vr.errorsJsonObject()}}));
-            return;
+            if (c->req()->xhr()) {
+                c->res()->setStatus(400);
+                c->res()->setJsonObjectBody(QJsonObject({{QStringLiteral("fielderrors"), vr.errorsJsonObject()}}));
+                return;
+            }
         }
     } else {
         if (c->req()->xhr()) {
