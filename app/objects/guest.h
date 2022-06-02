@@ -41,6 +41,7 @@ class Guest
     Q_PROPERTY(uint children READ children CONSTANT)
     Q_PROPERTY(uint childrenAccepted READ childrenAccepted CONSTANT)
     Q_PROPERTY(Guest::Status status READ status CONSTANT)
+    Q_PROPERTY(Guest::Status composedStatus READ composedStatus CONSTANT)
     Q_PROPERTY(Guest::Notifications notifications READ notifications CONSTANT)
     Q_PROPERTY(QString note READ note CONSTANT)
     Q_PROPERTY(QString comment READ comment CONSTANT)
@@ -126,6 +127,8 @@ public:
     uint childrenAccepted() const;
 
     Guest::Status status() const;
+
+    Guest::Status composedStatus() const;
 
     Guest::Notifications notifications() const;
 

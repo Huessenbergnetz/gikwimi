@@ -196,6 +196,23 @@ Guest::Status Guest::status() const
     return d ? d->status : Guest::InvalidStatus;
 }
 
+Guest::Status Guest::composedStatus() const
+{
+    if (d) {
+        if (d->status != Guest::DefaultStaus) {
+            return d->status;
+        } else {
+            if (group().event().participation() == Event::Refusal) {
+                return Guest::Agreed;
+            } else {
+                return Guest::Canceled;
+            }
+        }
+    } else {
+        return Guest::InvalidStatus;
+    }
+}
+
 Guest::Notifications Guest::notifications() const
 {
     return d ? d->notifications : Guest::NotNotified;
