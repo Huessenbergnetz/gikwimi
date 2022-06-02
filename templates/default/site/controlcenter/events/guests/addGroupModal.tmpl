@@ -1,0 +1,44 @@
+{% extends "inc/modal.tmpl" %}
+{% block label %}{% i18n "Add new group" %}{% endblock %}
+
+{% block content %}
+<form id="addGroupForm" action="/controlcenter/events/{{ eventId }}/guestgroups/add">
+    {% c_csrf_token %}
+
+    {% with "newGroupName" as inputId %}
+    {% with "name" as inputName %}
+    {% with 1 as inputRequired %}
+    {% with _("Name") as inputLabel %}
+    {% include "inc/textInputWithLabel.tmpl" %}
+    {% endwith %}
+    {% endwith %}
+    {% endwith %}
+    {% endwith %}
+
+    {% with "newGroupSlug" as inputId %}
+    {% with "slug" as inputName %}
+    {% with _("Slug") as inputLabel %}
+    {% include "inc/textInputWithLabel.tmpl" %}
+    {% endwith %}
+    {% endwith %}
+    {% endwith %}
+
+    <div>
+        <label for="newGroupSalutation" class="form-label">{{ _("Salutation") }}</label>
+        <select id="newGroupSalutation" name="salutation" class="form-select" aria-describedby="newGroupSalutationHelp newGroupSalutationFeedback">
+        {% for opt in salutation_options %}
+            {% if opt.value != "0" %}
+            <option value="{{ opt.value }}"{% if opt.selected %} selected="selected"{% endif %}>{{ opt.name }}</option>
+            {% endif %}
+        {% endfor %}
+        </select>
+        <div id="newGroupSalutationFeedback" class="invalid-feedback"></div>
+        <div id="newGroupSalutationHelp" class="form-text"></div>
+    </div>
+</form>
+{% endblock %}
+
+{% block footer %}
+<button type="button" class="btn btn-secondary text-capitalize" data-bs-dismiss="modal">{{ _("cancel") }}</button>
+<button id="createGroupButton" form="addGroupForm" type="submit" class="btn btn-primary text-capitalize"><span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span><i class="bi bi-plus-circle-dotted"></i> {{ _("create group") }}</button>
+{% endblock %}

@@ -86,53 +86,11 @@
 </div>
 
 <!-- start add group modal -->
-<div class="modal fade" id="addGroupModal" tabindex="-1" aria-labelledby="addGroupModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="addGroupModalLabel">{% i18n "Add new group" %}</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="close"></button>
-            </div>
-
-            <div class="modal-body">
-                <form id="addGroupForm" action="/controlcenter/events/{{ event.id }}/guestgroups/add">
-                    {% c_csrf_token %}
-                    <div>
-                        <label for="newGroupName" class="form-label">{{ _("Name") }}</label>
-                        <input type="text" class="form-control" id="newGroupName" name="name" aria-describedby="newGroupNameHelp newGroupNameFeedback" required="required">
-                        <div id="newGroupNameFeedback" class="invalid-feedback"></div>
-                        <div id="newGroupNameHelp" class="form-text"></div>
-                    </div>
-
-                    <div>
-                        <label for="newGroupSlug" class="form-label">{{ _("Slug") }}</label>
-                        <input type="text" class="form-control" id="newGroupSlug" name="slug" aria-describedby="newGroupSlugHelp newGroupSlugFeedback" pattern="[a-zA-Z0-9_\-]*">
-                        <div id="newGroupSlugFeedback" class="invalid-feedback"></div>
-                        <div id="newGroupSlugHelp" class="form-text"></div>
-                    </div>
-
-                    <div>
-                        <label for="newGroupSalutation" class="form-label">{{ _("Salutation") }}</label>
-                        <select id="newGroupSalutation" name="salutation" class="form-select" aria-describedby="newGroupSalutationHelp newGroupSalutationFeedback">
-                        {% for opt in salutation_options %}
-                            {% if opt.value != "0" %}
-                            <option value="{{ opt.value }}"{% if opt.selected %} selected="selected"{% endif %}>{{ opt.name }}</option>
-                            {% endif %}
-                        {% endfor %}
-                        </select>
-                        <div id="newGroupSalutationFeedback" class="invalid-feedback"></div>
-                        <div id="newGroupSalutationHelp" class="form-text"></div>
-                    </div>
-                </form>
-            </div>
-
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary text-capitalize" data-bs-dismiss="modal">{{ _("cancel") }}</button>
-                <button id="createGroupButton" form="addGroupForm" type="submit" class="btn btn-primary text-capitalize"><span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span><i class="bi bi-plus-circle-dotted"></i> {{ _("create group") }}</button>
-            </div>
-        </div>
-    </div>
-</div>
+{% with "addGroup" as modalId %}
+{% with event.id as eventId %}
+{% include "controlcenter/events/guests/addGroupModal.tmpl" %}
+{% endwith %}
+{% endwith %}
 <!-- end add group modal -->
 
 <!-- start add guest modal -->
