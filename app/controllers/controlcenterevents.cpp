@@ -21,6 +21,9 @@
 #include <Cutelyst/Plugins/Utils/validatorrequiredif.h>
 #include <Cutelyst/Plugins/StatusMessage>
 
+#include <QJsonObject>
+#include <QJsonValue>
+
 #include <limits>
 
 ControlCenterEvents::ControlCenterEvents(QObject *parent)
@@ -231,7 +234,8 @@ void ControlCenterEvents::editGuest(Context *c, const QString &id)
             }
         } else {
             c->res()->setStatus(400);
-            c->detach(c->getAction(QStringLiteral("error")));
+            c->res()->setJsonObjectBody(QJsonObject({{QStringLiteral("fielderrors"), vr.errorsJsonObject()}}));
+            return;
         }
     } else {
         if (c->req()->xhr()) {
@@ -326,7 +330,7 @@ void ControlCenterEvents::addGuestGroup(Context *c)
                                new ValidatorRequired(QStringLiteral("name")),
                                new ValidatorAlphaDash(QStringLiteral("slug"), true),
                                new ValidatorRequired(QStringLiteral("salutation")),
-                               new ValidatorIn(QStringLiteral("salutation"), GuestGroup::salutationValues(false)),
+                               new ValidatorIn(QStringLiteral("salutation"), GuestGroup::salutationValues(false), Qt::CaseSensitive, ValidatorMessages(QT_TRANSLATE_NOOP("ControlCenterEvents", "Salutation"), QT_TRANSLATE_NOOP("ControlCenterEvents", "Please select a valid salutatuion form."))),
                                new ValidatorBetween(QStringLiteral("salutation"), QMetaType::Int, -127, 127)
                            });
 
@@ -342,6 +346,12 @@ void ControlCenterEvents::addGuestGroup(Context *c)
                 return;
             } else {
                 e.toStash(c, true);
+                return;
+            }
+        } else {
+            if (req->xhr()) {
+                c->res()->setStatus(400);
+                c->res()->setJsonObjectBody(QJsonObject({{QStringLiteral("fielderrors"), vr.errorsJsonObject()}}));
                 return;
             }
         }

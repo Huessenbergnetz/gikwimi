@@ -67,10 +67,13 @@ void Root::error(Context *c)
     }
 
     if (c->req()->xhr()) {
-        c->res()->setJsonObjectBody({
-                                        {QStringLiteral("error_title"), QJsonValue(error_title)},
-                                        {QStringLiteral("error_text"), QJsonValue(error_text)}
-                                    });
+        QJsonObject error({
+                              {QStringLiteral("error"), QJsonObject({
+                                   {QStringLiteral("title"), QJsonValue(error_title)},
+                                   {QStringLiteral("text"), QJsonValue(error_text)}
+                               })}
+                          });
+        c->res()->setJsonObjectBody(error);
     } else {
         const QString siteTitle = QString::number(c->res()->status()) + QStringLiteral(" – ") + error_title;
         c->stash({
