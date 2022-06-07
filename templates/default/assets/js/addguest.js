@@ -157,9 +157,6 @@ GikDefTmpl.addGuest.init = function() {
         GikDefTmpl.addGuest.form = document.forms['addGuestForm'];
         GikDefTmpl.addGuest.form.addEventListener('submit', (e) => { e.preventDefault(); GikDefTmpl.addGuest.exec(); });
 
-        GikDefTmpl.addGuest.button = document.getElementById('addGuestButton');
-        GikDefTmpl.addGuest.button.addEventListener('click', GikDefTmpl.addGuest.exec);
-
         const addressbooks = document.getElementById('addGuestFromAddressbook');
         addressbooks.addEventListener('change', function(e) {
             GikDefTmpl.addGuest.loadContacts(e.target.value);
