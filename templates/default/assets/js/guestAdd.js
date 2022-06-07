@@ -34,7 +34,12 @@ GikDefTmpl.Guest.Add.resetForm = function() {
     ec.dispatchEvent(e);
 }
 
-GikDefTmpl.Guest.Add.exec = function() {
+GikDefTmpl.Guest.Add.exec = function(event) {
+    const button = event.submitter;
+    GikDefTmpl.switchButton(button);
+
+    GikDefTmpl.resetFormFieldErrors(GikDefTmpl.Guest.Add.form);
+
     const fd = new FormData(GikDefTmpl.Guest.Add.form);
     const actionPath = GikDefTmpl.Guest.Add.form.action;
     const hdrs = GikDefTmpl.newXhrHeaders();
@@ -44,7 +49,13 @@ GikDefTmpl.Guest.Add.exec = function() {
               headers: hdrs,
               body: fd
           })
-    .then(response => response.json())
+    .then(response => {
+              if (response.ok) {
+                  return response.json();
+              } else {
+                  return Promise.reject(response);
+              }
+          })
     .then(data => {
               const template = document.getElementById('guest-row-template');
               const clone = template.content.cloneNode(true);
@@ -88,10 +99,26 @@ GikDefTmpl.Guest.Add.exec = function() {
               const section = document.getElementById('group_' + data.group.id).getElementsByTagName('tbody')[0].appendChild(clone);
 
               GikDefTmpl.Guest.Add.resetForm();
+              GikDefTmpl.Guest.Add.modal.hide();
           })
-    .catch(console.error);
-
-    GikDefTmpl.Guest.Add.modal.hide();
+    .catch(error => {
+               if (error instanceof Response) {
+                   error.json().then(json => {
+                                         if (json.error) {
+                                             GikDefTmpl.Guest.Add.modal.hide();
+                                             GikDefTmpl.showError(json.error.title, json.error.text);
+                                         } else if (json.fielderrors) {
+                                             GikDefTmpl.setFormFieldErrors(GikDefTmpl.Guest.Add.form, json.fielderrors);
+                                         }
+                                     });
+               } else {
+                   GikDefTmpl.Guest.Add.modal.hide();
+                   GikDefTmpl.showError(error.name, error.message);
+               }
+           })
+    .finally(() => {
+                 GikDefTmpl.switchButton(button);
+             });
 }
 
 GikDefTmpl.Guest.Add.loadContacts = function(addressbookId) {
@@ -102,7 +129,13 @@ GikDefTmpl.Guest.Add.loadContacts = function(addressbookId) {
     fetch('/controlcenter/addressbooks/' + addressbookId + '/contacts', {
               headers: hdrs
           })
-    .then(response => response.json())
+    .then(response => {
+              if (response.ok) {
+                  return response.json();
+              } else {
+                  return Promise.reject(response);
+              }
+          })
     .then(data => {
               const contacts = document.getElementById('selectGuest');
 
@@ -124,7 +157,19 @@ GikDefTmpl.Guest.Add.loadContacts = function(addressbookId) {
 
               addressbooks.disabled = false;
           })
-    .catch(console.error);
+    .catch(error => {
+               if (error instanceof Response) {
+                   error.json().then(json => {
+                                         if (json.error) {
+                                             GikDefTmpl.Guest.Add.modal.hide();
+                                             GikDefTmpl.showError(json.error.title, json.error.text);
+                                         }
+                                     });
+               } else {
+                   GikDefTmpl.Guest.Add.modal.hide();
+                   GikDefTmpl.showError(error.name, error.message);
+               }
+           });
 }
 
 GikDefTmpl.Guest.Add.loadData = function(e) {
@@ -135,9 +180,15 @@ GikDefTmpl.Guest.Add.loadData = function(e) {
         fetch('/controlcenter/addressbooks', {
                   headers: hdrs
               })
-        .then(response => response.json())
+        .then(response => {
+                  if (response.ok) {
+                      return response.json();
+                  } else {
+                      return Promise.reject(response);
+                  }
+              })
         .then(data => {
-                  const addressbooks = document.getElementById('addGuestFromAddressbook');
+                  const addressbooks = GikDefTmpl.Guest.Add.form.elements.namedItem('addressbook');
                   for (const book of data) {
                       const opt = document.createElement('option');
                       opt.value = book.id;
@@ -147,7 +198,19 @@ GikDefTmpl.Guest.Add.loadData = function(e) {
                   GikDefTmpl.Guest.Add.loadContacts(addressbooks.value);
                   GikDefTmpl.Guest.Add.addressBooksLoaded = true;
               })
-        .catch(console.error);
+        .catch(error => {
+                   if (error instanceof Response) {
+                       error.json().then(json => {
+                                             if (json.error) {
+                                                 GikDefTmpl.Guest.Add.modal.hide();
+                                                 GikDefTmpl.showError(json.error.title, json.error.text);
+                                             }
+                                         });
+                   } else {
+                       GikDefTmpl.Guest.Add.modal.hide();
+                       GikDefTmpl.showError(error.name, error.message);
+                   }
+               });
     }
 }
 
@@ -158,12 +221,10 @@ GikDefTmpl.Guest.Add.init = function() {
         agm.addEventListener('show.bs.modal', GikDefTmpl.Guest.Add.loadData);
 
         GikDefTmpl.Guest.Add.form = document.forms['addGuestForm'];
-        GikDefTmpl.Guest.Add.form.addEventListener('submit', (e) => { e.preventDefault(); GikDefTmpl.Guest.Add.exec(); });
+        GikDefTmpl.Guest.Add.form.addEventListener('submit', (e) => { e.preventDefault(); GikDefTmpl.Guest.Add.exec(e); });
 
-        const addressbooks = document.getElementById('addGuestFromAddressbook');
-        addressbooks.addEventListener('change', function(e) {
-            GikDefTmpl.Guest.Add.loadContacts(e.target.value);
-        })
+        const addressbooks = GikDefTmpl.Guest.Add.form.elements.namedItem('addressbook');
+        addressbooks.addEventListener('change', (e) => { GikDefTmpl.Guest.Add.loadContacts(e.target.value); });
     }
 }
 
