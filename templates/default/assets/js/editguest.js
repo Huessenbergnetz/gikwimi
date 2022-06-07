@@ -20,7 +20,7 @@ GikDefTmpl.editGuest.loadData = function(event) {
     GikDefTmpl.switchButton(button);
     const guestId = button.value;
     const hdrs = GikDefTmpl.newXhrHeaders();
-    const actionPath = GikDefTmpl.editGuest.form.attributes.getNamedItem('action').value + guestId;
+    const actionPath = GikDefTmpl.editGuest.form.action + guestId;
     document.getElementById('editGuestId').value = guestId;
 
     fetch(actionPath, {
@@ -80,8 +80,8 @@ GikDefTmpl.editGuest.loadData = function(event) {
             });
 }
 
-GikDefTmpl.editGuest.exec = function() {
-    const button = document.getElementById('editGuestSubmitButton');
+GikDefTmpl.editGuest.exec = function(event) {
+    const button = event.submitter;
     GikDefTmpl.switchButton(button);
 
     GikDefTmpl.resetFormFieldErrors(GikDefTmpl.editGuest.form);
@@ -160,7 +160,7 @@ GikDefTmpl.editGuest.init = function() {
         }
 
         GikDefTmpl.editGuest.form = document.forms['editGuestForm'];
-        GikDefTmpl.editGuest.form.addEventListener('submit', (e) => { e.preventDefault(); GikDefTmpl.editGuest.exec(); });
+        GikDefTmpl.editGuest.form.addEventListener('submit', (e) => { e.preventDefault(); GikDefTmpl.editGuest.exec(e); });
     }
 }
 

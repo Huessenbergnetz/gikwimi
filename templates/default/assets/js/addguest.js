@@ -96,6 +96,7 @@ GikDefTmpl.addGuest.loadContacts = function(addressbookId) {
     const addressbooks = document.getElementById('addGuestFromAddressbook');
     addressbooks.disabled = true;
     const hdrs = GikDefTmpl.newXhrHeaders();
+
     fetch('/controlcenter/addressbooks/' + addressbookId + '/contacts', {
               headers: hdrs
           })

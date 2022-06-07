@@ -13,8 +13,8 @@ GikDefTmpl.addGroup.form = null;
 
 GikDefTmpl.addGroup.button = null;
 
-GikDefTmpl.addGroup.exec = function() {
-    const submitButton = document.getElementById('createGroupButton');
+GikDefTmpl.addGroup.exec = function(event) {
+    const submitButton = event.submitter;
     GikDefTmpl.switchButton(submitButton);
 
     GikDefTmpl.resetFormFieldErrors(GikDefTmpl.addGroup.form);
@@ -79,7 +79,7 @@ GikDefTmpl.addGroup.init = function() {
         GikDefTmpl.addGroup.modal = bootstrap.Modal.getOrCreateInstance(agm);
 
         GikDefTmpl.addGroup.form = document.forms['addGroupForm'];
-        GikDefTmpl.addGroup.form.addEventListener('submit', (e) => { e.preventDefault(); GikDefTmpl.addGroup.exec(); });
+        GikDefTmpl.addGroup.form.addEventListener('submit', (e) => { e.preventDefault(); GikDefTmpl.addGroup.exec(e); });
     }
 }
 
