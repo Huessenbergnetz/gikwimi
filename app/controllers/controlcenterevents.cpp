@@ -103,10 +103,6 @@ void ControlCenterEvents::guests(Context *c)
     guestsTableHeaders.insert(QStringLiteral("address"), c->translate("ControlCenterEvents", "address"));
     //: table header
     guestsTableHeaders.insert(QStringLiteral("notified"), c->translate("ControlCenterEvents", "notified"));
-    //: table data description, number of adult guests
-    guestsTableHeaders.insert(QStringLiteral("adults"), c->translate("ControlCenterEvents", "adults"));
-    //: table data description, number of child guests
-    guestsTableHeaders.insert(QStringLiteral("children"), c->translate("ControlCenterEvents", "children"));
 
     const std::vector<OptionItem> salutationOptions = GuestGroup::salutationOptionList(c);
     const std::vector<OptionItem> guestTypeOptions = Guest::typeOptionList(c);

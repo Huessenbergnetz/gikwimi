@@ -53,8 +53,8 @@
                 <td><i class="bi {% if guest.status == guest.Canceled %}bi-x-circle text-warning{% elif guest.status == guest.Agreed %}bi-check-circle text-success{% else %}bi-dash-circle text-secondary{% endif %}"></i></td>
 
                 <td>
-                    <span class="text-capitalize">{{ guests_table_headers.adults }}</span>:&nbsp;<span>{{ guest.adultsAccepted }}</span>/<span>{{ guest.adults }}</span><br>
-                    <span class="text-capitalize">{{ guests_table_headers.children }}</span>:&nbsp;<span>{{ guest.childrenAccepted }}</span>/<span>{{ guest.children }}</span>
+                    <span title="{{ _("Adults") }}"><i class="bi bi-people-fill"></i></span>&nbsp;<span>{{ guest.adultsAccepted }}</span>/<span>{{ guest.adults }}</span><br>
+                    <span title="{{ _("Children") }}"><i class="bi bi-diagram-3-fill"></i></span>&nbsp;<span>{{ guest.childrenAccepted }}</span>/<span>{{ guest.children }}</span>
                 </td>
 
                 <td class="d-none d-sm-table-cell">
@@ -154,8 +154,8 @@
         <td></td>
         <td><i></i></td>
         <td>
-            <span class="text-capitalize">{{ guests_table_headers.adults }}</span>:&nbsp;<span></span>/<span></span><br>
-            <span class="text-capitalize">{{ guests_table_headers.children }}</span>:&nbsp;<span></span>/<span></span>
+            <span title="{{ _("Adults") }}"><i class="bi bi-people-fill"></i></span>&nbsp;<span></span>/<span></span><br>
+            <span title="{{ _("Children") }}"><i class="bi bi-diagram-3-fill"></i></span>&nbsp;<span></span>/<span></span>
         </td>
         <td class="d-none d-sm-table-cell"></td>
         <td></td>
