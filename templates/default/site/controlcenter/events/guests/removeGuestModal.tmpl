@@ -1,0 +1,16 @@
+{% extends "inc/modal.tmpl" %}
+{% block label %}{% i18n "Remove guest" %} <span id="removeGuestName"></span>{% endblock %}
+
+{% block content %}
+<p id="removeGuestQuestion"></p>
+<form id="removeGuestForm" action="">
+    {% c_csrf_token %}
+
+    <input type="hidden" id="removeGuestEventId" value="{{ eventId }}">
+</form>
+{% endblock %}
+
+{% block footer %}
+<button type="button" class="btn btn-secondary text-capitalize" data-bs-dismiss="modal">{{ _("cancel") }}</button>
+<button type="submit" form="removeGuestForm" class="btn btn-danger text-capitalize"><span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span><i class="bi bi-person-dash"></i> {{ _("Remove guest") }}</button>
+{% endblock %}

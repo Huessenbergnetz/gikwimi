@@ -250,8 +250,50 @@ void ControlCenterEvents::editGuest(Context *c, const QString &id)
 
     c->stash({
                  {QStringLiteral("guest"), QVariant::fromValue<Guest>(guest)},
-                 {QStringLiteral("site_subtitle"), c->translate("ControlCenterEvents", "Edit guests")},
+                 {QStringLiteral("site_subtitle"), c->translate("ControlCenterEvents", "Edit guest")},
                  {QStringLiteral("template"), QStringLiteral("controlcenter/events/guests/edit.tmpl")}
+             });
+}
+
+void ControlCenterEvents::removeGuest(Context *c, const QString &id)
+{
+    bool ok = false;
+    const dbid_t guestId = Utils::strToDbid(id, &ok, c->translate("ControlCenterEvents", "Invalid guest database ID."), c);
+
+    if (!ok) {
+        return;
+    }
+
+    Error e;
+    Guest guest = Guest::get(c, &e, guestId);
+
+    if (!guest.isValid()) {
+        e.toStash(c, true);
+        return;
+    }
+
+    if (c->req()->isPost()) {
+        if (guest.remove(c, &e)) {
+            if (!c->req()->xhr()) {
+                const Event event = Event::fromStash(c);
+                c->res()->redirect(c->uriForAction(QStringLiteral("/controlcenter/events/guests"), QStringList(QString::number(event.id())), QStringList(), StatusMessage::statusQuery(c, c->translate("ControlCenterEvents", "The guest “%1” has been successfully removed from the invitation group “%2”.").arg(guest.contact().addressee().formattedName(), guest.group().name()))));
+                return;
+            }
+        } else {
+            e.toStash(c, true);
+            return;
+        }
+    }
+
+    if (c->req()->xhr()) {
+        c->res()->setJsonObjectBody(guest.toJson());
+        return;
+    }
+
+    c->stash({
+                 {QStringLiteral("guest"), QVariant::fromValue<Guest>(guest)},
+                 {QStringLiteral("site_subtitle"), c->translate("ControlCenterEvents", "Remove guest")},
+                 {QStringLiteral("template"), QStringLiteral("controlcenter/events/guests/remove.tmpl")}
              });
 }
 

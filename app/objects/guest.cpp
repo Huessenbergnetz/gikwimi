@@ -539,6 +539,20 @@ bool Guest::update(Cutelyst::Context *c, Error *e, const QVariantHash &p)
     }
 }
 
+bool Guest::remove(Cutelyst::Context *c, Error *e)
+{
+    QSqlQuery q = CPreparedSqlQueryThread(QStringLiteral("DELETE FROM guests WHERE id = :id"));
+    q.bindValue(QStringLiteral(":id"), d->id);
+
+    if (Q_LIKELY(q.exec())) {
+        return true;
+    } else {
+        if (c && e) *e = Error(q.lastError(), c->translate("Guest", "Failed to delete guest from the database."));
+        qCCritical(GIK_CORE) << "Failed to delete guets ID" << id() << "from the database:" << q.lastError().text();
+        return false;
+    }
+}
+
 QString Guest::generateUid(int length)
 {
     QString uid;

@@ -36,7 +36,7 @@
                         <button type="button" class="btn btn-outline-secondary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false"><span class="visually-hidden">{{ _("Toggle dropdown") }}</span></button>
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item invite-guest-btn" href="/i/{{ guest.uid }}" target="_blank"><i class="bi bi-box-arrow-up-right"></i> {{ _("Show invitation page") }}</a></li>
-                            <li><a class="dropdown-item text-danger delete-guest-btn" href="#" data-value="{{ guest.id }}"><i class="bi bi-person-dash"></i> {{ _("Delete guest") }}</a>
+                            <li><a class="dropdown-item text-danger delete-guest-btn" href="#" data-value="{{ guest.id }}"><i class="bi bi-person-dash"></i> {{ _("Remove guest") }}</a>
                         </ul>
                     </div>
                 </td>
@@ -112,6 +112,14 @@
 {% endwith %}
 <!-- end edit guest modal -->
 
+<!-- start remove guest modal -->
+{% with "removeGuest" as modalId %}
+{% with event.id as eventId %}
+{% include "controlcenter/events/guests/removeGuestModal.tmpl" %}
+{% endwith %}
+{% endwith %}
+<!-- end remove guest modal -->
+
 <!-- start group template -->
 <template id="group-template">
     <section>
@@ -147,7 +155,7 @@
                 <button type="button" class="btn btn-outline-secondary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false"><span class="visually-hidden">{{ _("Toggle dropdown") }}</span></button>
                 <ul class="dropdown-menu">
                     <li><a class="dropdown-item invite-guest-btn" href="" target="_blank"><i class="bi bi-box-arrow-up-right"></i> {{ _("Show invitation page") }}</a></li>
-                    <li><a class="dropdown-item text-danger delete-guest-btn" href="#" data-value=""><i class="bi bi-person-dash"></i> {{ _("Delete guest") }}</a>
+                    <li><a class="dropdown-item text-danger delete-guest-btn" href="#" data-value=""><i class="bi bi-person-dash"></i> {{ _("Remove guest") }}</a>
                 </ul>
             </div>
         </td>

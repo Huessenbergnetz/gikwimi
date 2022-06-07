@@ -10,5 +10,6 @@ target_sources(defaulttemplate
         guestAdd.js
         guestEdit.js
         guestInvite.js
+        guestRemove.js
         licenseheader.js
 )

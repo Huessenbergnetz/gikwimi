@@ -176,6 +176,8 @@ public:
 
     bool update(Cutelyst::Context *c, Error *e, const QVariantHash &p);
 
+    bool remove(Cutelyst::Context *c, Error *e);
+
     static QString generateUid(int length = 8);
 
     static Guest::Status statusStringToEnum(const QString &str);

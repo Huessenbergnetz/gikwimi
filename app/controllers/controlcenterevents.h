@@ -42,6 +42,9 @@ public:
     C_ATTR(editGuest, :Chained("base") :PathPart("guests/edit") :Args(1))
     void editGuest(Context *c, const QString &id);
 
+    C_ATTR(removeGuest, :Chained("base") :PathPart("guests/remove") :Args(1))
+    void removeGuest(Context *c, const QString &id);
+
     C_ATTR(inviteGuest, :Chained("base") :PathPart("guests/invite") :Args(2))
     void inviteGuest(Context *c, const QString &id, const QString &notificationValue);
 

@@ -20,6 +20,7 @@ mix.scripts([
     'assets/js/general.js',
     'assets/js/guest.js',
     'assets/js/guestEdit.js',
+    'assets/js/guestRemove.js',
     'assets/js/guestAdd.js',
     'assets/js/guestInvite.js',
     'assets/js/group.js',
