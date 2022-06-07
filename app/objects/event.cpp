@@ -529,7 +529,7 @@ Event Event::get(Cutelyst::Context *c, Error *e, dbid_t eventId)
             QSqlQuery q2 = CPreparedSqlQueryThreadFO(QStringLiteral("SELECT SUM(g.adults), SUM(g.adults_accepted), SUM(g.children), SUM(g.children_accepted) FROM guests g JOIN guestgroups gg ON g.group_id = gg.id WHERE gg.event_id = :event_id"));
             q2.bindValue(QStringLiteral(":event_id"), eventId);
 
-            uint adults, adultsAccepted, children, childrenAccepted;
+            uint adults = 0, adultsAccepted = 0, children = 0, childrenAccepted = 0;
             if (q2.exec() && q2.next()) {
                 adults              = q2.value(0).toUInt();
                 adultsAccepted      = q2.value(1).toUInt();

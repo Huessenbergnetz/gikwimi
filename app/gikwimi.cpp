@@ -208,7 +208,7 @@ bool Gikwimi::initDb()
             }
 
         } else {
-            qCCritical(GIK_CORE) << "Can not establsih database connection: failed to obtain database object";
+            qCCritical(GIK_CORE) << "Can not establish database connection: failed to obtain database object";
             return false;
         }
     } else {

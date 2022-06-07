@@ -173,8 +173,8 @@ int ContactImportCommand::exec(QCommandLineParser *parser)
         return inputError(qtTrId("gikctl-contact-import-err-ab-not-found").arg(addressBookId));
     }
 
-    const QString abName = q.value(0).toString();
-    const QString username = q.value(1).toString();
+//    const QString abName = q.value(0).toString();
+//    const QString username = q.value(1).toString();
     const QDateTime now = QDateTime::currentDateTimeUtc();
 
     if (strategy == Strategy::Replace || strategy == Strategy::Add) {

@@ -177,7 +177,7 @@ void Command::showOptions(QTextStream *out, const QList<QCommandLineOption> &opt
             }
         }
         if (shortName.isEmpty()) {
-            shortName = QLatin1String("    ");
+            shortName = QStringLiteral("    ");
         } else {
             shortName.append(QLatin1String(", ")).prepend(QLatin1Char('-'));
         }

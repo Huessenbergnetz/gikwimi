@@ -115,7 +115,7 @@ void Controller::showHelp() const
             }
         }
         if (shortName.isEmpty()) {
-            shortName = QLatin1String("    ");
+            shortName = QStringLiteral("    ");
         } else {
             shortName.append(QLatin1String(", ")).prepend(QLatin1Char('-'));
         }

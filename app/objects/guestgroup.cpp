@@ -349,6 +349,7 @@ QStringList GuestGroup::salutationValues(bool withDefault)
     const QMetaObject mo = GuestGroup::staticMetaObject;
     const QMetaEnum   me = mo.enumerator(mo.indexOfEnumerator("Salutation"));
     const int startIndex = withDefault ? 1 : 2;
+    list.reserve(me.keyCount());
     for (int i = startIndex; i < me.keyCount(); ++i) {
         list << QString::number(me.value(i));
     }
@@ -363,6 +364,7 @@ QStringList GuestGroup::salutationKeys(bool withDefault)
     const QMetaObject mo = GuestGroup::staticMetaObject;
     const QMetaEnum   me = mo.enumerator(mo.indexOfEnumerator("Salutation"));
     const int startIndex = withDefault ? 1 : 2;
+    list.reserve(me.keyCount());
     for (int i = startIndex; i < me.keyCount(); ++i) {
         QString k = QString::fromLatin1(me.key(i));
         k.remove(QLatin1String("Salutation"));
@@ -462,7 +464,7 @@ GuestGroup GuestGroup::get(Cutelyst::Context *c, Error *e, dbid_t id)
             QSqlQuery q2 = CPreparedSqlQueryThreadFO(QStringLiteral("SELECT SUM(g.adults), SUM(g.adults_accepted), SUM(g.children), SUM(g.children_accepted) FROM guests g WHERE g.group_id = :id"));
             q2.bindValue(QStringLiteral(":id"), id);
 
-            uint adults, adultsAccepted, children, childrenAccepted;
+            uint adults = 0, adultsAccepted = 0, children = 0, childrenAccepted = 0;
             if (q2.exec() && q2.next()) {
                 adults              = q2.value(0).toUInt();
                 adultsAccepted      = q2.value(1).toUInt();
