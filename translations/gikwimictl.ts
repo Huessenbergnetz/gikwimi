@@ -644,5 +644,20 @@
         <extracomment>CLI option value name</extracomment>
         <translation type="unfinished"></translation>
     </message>
+    <message id="gikctl-opt-event-add-salutation-desc">
+        <source>Salutation used for guests in the default group. Can be changed later. Available forms of salutation: %1. Default value: %2</source>
+        <extracomment>CLI option description</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message id="gikctl-opt-event-add-salutation-value">
+        <source>salutation</source>
+        <extracomment>CLI option value name</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message id="gikctl-event-add-err-invalid-salutation">
+        <source>Can not add a new event with invalid default group salutation form “%1”. Currently supported forms are: %2</source>
+        <extracomment>CLI error message</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 </TS>
