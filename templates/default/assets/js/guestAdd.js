@@ -5,18 +5,20 @@
 
 var GikDefTmpl = GikDefTmpl || {};
 
-GikDefTmpl.addGuest = GikDefTmpl.addGuest || {};
+GikDefTmpl.Guest = GikDefTmpl.Guest || {};
 
-GikDefTmpl.addGuest.modal = null;
+GikDefTmpl.Guest.Add = GikDefTmpl.Guest.Add || {};
 
-GikDefTmpl.addGuest.form = null;
+GikDefTmpl.Guest.Add.modal = null;
 
-GikDefTmpl.addGuest.button = null;
+GikDefTmpl.Guest.Add.form = null;
 
-GikDefTmpl.addGuest.addressBooksLoaded = false;
+GikDefTmpl.Guest.Add.button = null;
 
-GikDefTmpl.addGuest.resetForm = function() {
-    const els = GikDefTmpl.addGuest.form.elements;
+GikDefTmpl.Guest.Add.addressBooksLoaded = false;
+
+GikDefTmpl.Guest.Add.resetForm = function() {
+    const els = GikDefTmpl.Guest.Add.form.elements;
 
     els.namedItem('partnerGivenName').value = '';
     els.namedItem('partnerFamilyName').value = '';
@@ -32,9 +34,9 @@ GikDefTmpl.addGuest.resetForm = function() {
     ec.dispatchEvent(e);
 }
 
-GikDefTmpl.addGuest.exec = function() {
-    const fd = new FormData(GikDefTmpl.addGuest.form);
-    const actionPath = GikDefTmpl.addGuest.form.action;
+GikDefTmpl.Guest.Add.exec = function() {
+    const fd = new FormData(GikDefTmpl.Guest.Add.form);
+    const actionPath = GikDefTmpl.Guest.Add.form.action;
     const hdrs = GikDefTmpl.newXhrHeaders();
 
     fetch(actionPath, {
@@ -48,7 +50,7 @@ GikDefTmpl.addGuest.exec = function() {
               const clone = template.content.cloneNode(true);
 
               const tr = clone.querySelector('tr');
-              tr.id = data.id;
+              tr.id = 'guest-' + data.id;
 
               const tds = tr.getElementsByTagName('td');
               const buttonTd    = tds[0];
@@ -60,7 +62,7 @@ GikDefTmpl.addGuest.exec = function() {
 
               const editGuestBtn = buttonTd.getElementsByClassName('edit-guest-btn')[0];
               editGuestBtn.value = data.id;
-              editGuestBtn.addEventListener('click', GikDefTmpl.editGuest.loadData);
+              editGuestBtn.addEventListener('click', GikDefTmpl.Guest.Edit.loadData);
               buttonTd.getElementsByClassName('invite-guest-btn')[0].href = '/i/' + data.uid;
               buttonTd.getElementsByClassName('delete-guest-btn')[0].dataset.value = data.id;
 
@@ -71,7 +73,7 @@ GikDefTmpl.addGuest.exec = function() {
               }
 
               const statusIcon = statusTd.getElementsByTagName('i')[0];
-              GikDefTmpl.setGuestStatusIcon(statusIcon, data.status);
+              GikDefTmpl.Guest.setStatusIcon(statusIcon, data.status);
 
               const countSpans = countTd.getElementsByTagName('span');
               countSpans[1].textContent = data.adultsAccepted;
@@ -85,14 +87,14 @@ GikDefTmpl.addGuest.exec = function() {
 
               const section = document.getElementById('group_' + data.group.id).getElementsByTagName('tbody')[0].appendChild(clone);
 
-              GikDefTmpl.addGuest.resetForm();
+              GikDefTmpl.Guest.Add.resetForm();
           })
     .catch(console.error);
 
-    GikDefTmpl.addGuest.modal.hide();
+    GikDefTmpl.Guest.Add.modal.hide();
 }
 
-GikDefTmpl.addGuest.loadContacts = function(addressbookId) {
+GikDefTmpl.Guest.Add.loadContacts = function(addressbookId) {
     const addressbooks = document.getElementById('addGuestFromAddressbook');
     addressbooks.disabled = true;
     const hdrs = GikDefTmpl.newXhrHeaders();
@@ -125,10 +127,10 @@ GikDefTmpl.addGuest.loadContacts = function(addressbookId) {
     .catch(console.error);
 }
 
-GikDefTmpl.addGuest.loadData = function(e) {
+GikDefTmpl.Guest.Add.loadData = function(e) {
     document.getElementById('addGuestGuestGroupId').value = e.relatedTarget.value;
 
-    if (!GikDefTmpl.addGuest.addressBooksLoaded) {
+    if (!GikDefTmpl.Guest.Add.addressBooksLoaded) {
         const hdrs = GikDefTmpl.newXhrHeaders();
         fetch('/controlcenter/addressbooks', {
                   headers: hdrs
@@ -142,27 +144,27 @@ GikDefTmpl.addGuest.loadData = function(e) {
                       opt.textContent = book.name;
                       addressbooks.appendChild(opt);
                   }
-                  GikDefTmpl.addGuest.loadContacts(addressbooks.value);
-                  GikDefTmpl.addGuest.addressBooksLoaded = true;
+                  GikDefTmpl.Guest.Add.loadContacts(addressbooks.value);
+                  GikDefTmpl.Guest.Add.addressBooksLoaded = true;
               })
         .catch(console.error);
     }
 }
 
-GikDefTmpl.addGuest.init = function() {
+GikDefTmpl.Guest.Add.init = function() {
     const agm = document.getElementById('addGuestModal');
     if (agm) {
-        GikDefTmpl.addGuest.modal = bootstrap.Modal.getOrCreateInstance(agm);
-        agm.addEventListener('show.bs.modal', GikDefTmpl.addGuest.loadData);
+        GikDefTmpl.Guest.Add.modal = bootstrap.Modal.getOrCreateInstance(agm);
+        agm.addEventListener('show.bs.modal', GikDefTmpl.Guest.Add.loadData);
 
-        GikDefTmpl.addGuest.form = document.forms['addGuestForm'];
-        GikDefTmpl.addGuest.form.addEventListener('submit', (e) => { e.preventDefault(); GikDefTmpl.addGuest.exec(); });
+        GikDefTmpl.Guest.Add.form = document.forms['addGuestForm'];
+        GikDefTmpl.Guest.Add.form.addEventListener('submit', (e) => { e.preventDefault(); GikDefTmpl.Guest.Add.exec(); });
 
         const addressbooks = document.getElementById('addGuestFromAddressbook');
         addressbooks.addEventListener('change', function(e) {
-            GikDefTmpl.addGuest.loadContacts(e.target.value);
+            GikDefTmpl.Guest.Add.loadContacts(e.target.value);
         })
     }
 }
 
-GikDefTmpl.addGuest.init();
+GikDefTmpl.Guest.Add.init();

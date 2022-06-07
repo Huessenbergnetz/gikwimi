@@ -5,22 +5,24 @@
 
 var GikDefTmpl = GikDefTmpl || {};
 
-GikDefTmpl.addGroup = GikDefTmpl.addGroup || {};
+GikDefTmpl.Group = GikDefTmpl.Group || {};
 
-GikDefTmpl.addGroup.modal = null;
+GikDefTmpl.Group.Add = GikDefTmpl.Group.Add || {};
 
-GikDefTmpl.addGroup.form = null;
+GikDefTmpl.Group.Add.modal = null;
 
-GikDefTmpl.addGroup.button = null;
+GikDefTmpl.Group.Add.form = null;
 
-GikDefTmpl.addGroup.exec = function(event) {
+GikDefTmpl.Group.Add.button = null;
+
+GikDefTmpl.Group.Add.exec = function(event) {
     const submitButton = event.submitter;
     GikDefTmpl.switchButton(submitButton);
 
-    GikDefTmpl.resetFormFieldErrors(GikDefTmpl.addGroup.form);
+    GikDefTmpl.resetFormFieldErrors(GikDefTmpl.Group.Add.form);
 
-    let fd = new FormData(GikDefTmpl.addGroup.form);
-    const actionPath = GikDefTmpl.addGroup.form.action;
+    let fd = new FormData(GikDefTmpl.Group.Add.form);
+    const actionPath = GikDefTmpl.Group.Add.form.action;
     const hdrs = GikDefTmpl.newXhrHeaders();
 
     fetch(actionPath, {
@@ -50,21 +52,21 @@ GikDefTmpl.addGroup.exec = function(event) {
 
               document.getElementById('guestgroups').appendChild(clone);
 
-              GikDefTmpl.addGroup.form.reset();
-              GikDefTmpl.addGroup.modal.hide();
+              GikDefTmpl.Group.Add.form.reset();
+              GikDefTmpl.Group.Add.modal.hide();
           })
     .catch(error => {
                if (error instanceof Response) {
                    error.json().then(json => {
                                          if (json.error) {
-                                             GikDefTmpl.addGroup.modal.hide();
+                                             GikDefTmpl.Group.Add.modal.hide();
                                              GikDefTmpl.showError(json.error.title, json.error.text);
                                          } else if (json.fielderrors) {
-                                             GikDefTmpl.setFormFieldErrors(GikDefTmpl.addGroup.form, json.fielderrors);
+                                             GikDefTmpl.setFormFieldErrors(GikDefTmpl.Group.Add.form, json.fielderrors);
                                          }
                                      });
                } else {
-                   GikDefTmpl.addGroup.modal.hide();
+                   GikDefTmpl.Group.Add.modal.hide();
                    GikDefTmpl.showError(error.name, error.message);
                }
            })
@@ -73,14 +75,14 @@ GikDefTmpl.addGroup.exec = function(event) {
              });
 }
 
-GikDefTmpl.addGroup.init = function() {
+GikDefTmpl.Group.Add.init = function() {
     const agm = document.getElementById('addGroupModal');
     if (agm) {
-        GikDefTmpl.addGroup.modal = bootstrap.Modal.getOrCreateInstance(agm);
+        GikDefTmpl.Group.Add.modal = bootstrap.Modal.getOrCreateInstance(agm);
 
-        GikDefTmpl.addGroup.form = document.forms['addGroupForm'];
-        GikDefTmpl.addGroup.form.addEventListener('submit', (e) => { e.preventDefault(); GikDefTmpl.addGroup.exec(e); });
+        GikDefTmpl.Group.Add.form = document.forms['addGroupForm'];
+        GikDefTmpl.Group.Add.form.addEventListener('submit', (e) => { e.preventDefault(); GikDefTmpl.Group.Add.exec(e); });
     }
 }
 
-GikDefTmpl.addGroup.init();
+GikDefTmpl.Group.Add.init();

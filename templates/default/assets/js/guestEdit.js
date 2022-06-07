@@ -5,22 +5,24 @@
 
 var GikDefTmpl = GikDefTmpl || {};
 
-GikDefTmpl.editGuest = GikDefTmpl.editGuest || {};
+GikDefTmpl.Guest = GikDefTmpl.Guest || {};
 
-GikDefTmpl.editGuest.modal = null;
+GikDefTmpl.Guest.Edit = GikDefTmpl.Guest.Edit || {};
 
-GikDefTmpl.editGuest.form = null;
+GikDefTmpl.Guest.Edit.modal = null;
 
-GikDefTmpl.editGuest.button = null;
+GikDefTmpl.Guest.Edit.form = null;
 
-GikDefTmpl.editGuest.buttons = null;
+GikDefTmpl.Guest.Edit.button = null;
 
-GikDefTmpl.editGuest.loadData = function(event) {
+GikDefTmpl.Guest.Edit.buttons = null;
+
+GikDefTmpl.Guest.Edit.loadData = function(event) {
     const button = event.target;
     GikDefTmpl.switchButton(button);
     const guestId = button.value;
     const hdrs = GikDefTmpl.newXhrHeaders();
-    const actionPath = GikDefTmpl.editGuest.form.action + guestId;
+    const actionPath = GikDefTmpl.Guest.Edit.form.action + guestId;
     document.getElementById('editGuestId').value = guestId;
 
     fetch(actionPath, {
@@ -38,7 +40,7 @@ GikDefTmpl.editGuest.loadData = function(event) {
               document.getElementById('editGuestName').textContent = data.contact.addressee.realName;
               document.getElementById('editGuestStatus_' + data.status).checked = true;
 
-              const els = GikDefTmpl.editGuest.form.elements;
+              const els = GikDefTmpl.Guest.Edit.form.elements;
 
               els.namedItem('type').value = data.type;
               els.namedItem('salutation').value = data.salutation;
@@ -63,8 +65,8 @@ GikDefTmpl.editGuest.loadData = function(event) {
               ac.value = data.childrenAccepted;
               ac.dispatchEvent(e);
 
-              GikDefTmpl.resetFormFieldErrors(GikDefTmpl.editGuest.form);
-              GikDefTmpl.editGuest.modal.show();
+              GikDefTmpl.resetFormFieldErrors(GikDefTmpl.Guest.Edit.form);
+              GikDefTmpl.Guest.Edit.modal.show();
           })
     .catch(error => {
                if (error instanceof Response) {
@@ -80,15 +82,15 @@ GikDefTmpl.editGuest.loadData = function(event) {
             });
 }
 
-GikDefTmpl.editGuest.exec = function(event) {
+GikDefTmpl.Guest.Edit.exec = function(event) {
     const button = event.submitter;
     GikDefTmpl.switchButton(button);
 
-    GikDefTmpl.resetFormFieldErrors(GikDefTmpl.editGuest.form);
+    GikDefTmpl.resetFormFieldErrors(GikDefTmpl.Guest.Edit.form);
 
-    const formData = new FormData(GikDefTmpl.editGuest.form);
+    const formData = new FormData(GikDefTmpl.Guest.Edit.form);
     const guestId = document.getElementById('editGuestId').value;
-    const actionPath = GikDefTmpl.editGuest.form.action + guestId;
+    const actionPath = GikDefTmpl.Guest.Edit.form.action + guestId;
     const hdrs = GikDefTmpl.newXhrHeaders();
 
     fetch(actionPath, {
@@ -118,7 +120,7 @@ GikDefTmpl.editGuest.exec = function(event) {
               }
 
               const statusIcon = statusTd.getElementsByTagName('i')[0];
-              GikDefTmpl.setGuestStatusIcon(statusIcon, guest.status);
+              GikDefTmpl.Guest.setStatusIcon(statusIcon, guest.status);
 
               const countSpans = countTd.getElementsByTagName('span');
               countSpans[1].textContent = guest.adultsAccepted;
@@ -126,20 +128,20 @@ GikDefTmpl.editGuest.exec = function(event) {
               countSpans[4].textContent = guest.childrenAccepted;
               countSpans[5].textContent = guest.children;
 
-              GikDefTmpl.editGuest.modal.hide();
+              GikDefTmpl.Guest.Edit.modal.hide();
           })
     .catch(error => {
                if (error instanceof Response) {
                    error.json().then(json => {
                                          if (json.error) {
-                                             GikDefTmpl.editGuest.modal.hide();
+                                             GikDefTmpl.Guest.Edit.modal.hide();
                                              GikDefTmpl.showError(json.error.title, json.error.text);
                                          } else if (json.fielderrors) {
-                                             GikDefTmpl.setFormFieldErrors(GikDefTmpl.editGuest.form, json.fielderrors);
+                                             GikDefTmpl.setFormFieldErrors(GikDefTmpl.Guest.Edit.form, json.fielderrors);
                                          }
                                      });
                } else {
-                   GikDefTmpl.editGuest.modal.hide();
+                   GikDefTmpl.Guest.Edit.modal.hide();
                    GikDefTmpl.showError(error.name, error.message);
                }
            })
@@ -148,20 +150,20 @@ GikDefTmpl.editGuest.exec = function(event) {
              });
 }
 
-GikDefTmpl.editGuest.init = function() {
+GikDefTmpl.Guest.Edit.init = function() {
     const egm = document.getElementById('editGuestModal');
     if (egm) {
-        GikDefTmpl.editGuest.modal = bootstrap.Modal.getOrCreateInstance(egm);
+        GikDefTmpl.Guest.Edit.modal = bootstrap.Modal.getOrCreateInstance(egm);
 
-        GikDefTmpl.editGuest.buttons = document.getElementsByClassName('edit-guest-btn');
-        for (let i = 0; i < GikDefTmpl.editGuest.buttons.length; ++i) {
-            const btn = GikDefTmpl.editGuest.buttons.item(i);
-            btn.addEventListener('click', GikDefTmpl.editGuest.loadData);
+        GikDefTmpl.Guest.Edit.buttons = document.getElementsByClassName('edit-guest-btn');
+        for (let i = 0; i < GikDefTmpl.Guest.Edit.buttons.length; ++i) {
+            const btn = GikDefTmpl.Guest.Edit.buttons.item(i);
+            btn.addEventListener('click', GikDefTmpl.Guest.Edit.loadData);
         }
 
-        GikDefTmpl.editGuest.form = document.forms['editGuestForm'];
-        GikDefTmpl.editGuest.form.addEventListener('submit', (e) => { e.preventDefault(); GikDefTmpl.editGuest.exec(e); });
+        GikDefTmpl.Guest.Edit.form = document.forms['editGuestForm'];
+        GikDefTmpl.Guest.Edit.form.addEventListener('submit', (e) => { e.preventDefault(); GikDefTmpl.Guest.Edit.exec(e); });
     }
 }
 
-GikDefTmpl.editGuest.init();
+GikDefTmpl.Guest.Edit.init();

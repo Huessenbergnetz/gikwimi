@@ -68,16 +68,6 @@ GikDefTmpl.switchButton = function(button) {
     }
 }
 
-GikDefTmpl.setGuestStatusIcon = function(icon, status) {
-    if (status === 1) { // Agreed
-        icon.className = 'bi bi-check-circle text-success';
-    } else if (status === 2) { // Canceled
-        icon.className = 'bi bi-x-circle text-warning';
-    } else { // DefaultStatus
-        icon.className = 'bi bi-dash-circle text-secondary';
-    }
-}
-
 GikDefTmpl.setFormFieldErrors = function(form, errors) {
     for (const field in errors) {
         if (errors.hasOwnProperty(field)) {

@@ -18,10 +18,12 @@ mix.scripts([
     'node_modules/@popperjs/core/dist/umd/popper.js',
     'node_modules/bootstrap/dist/js/bootstrap.js',
     'assets/js/general.js',
-    'assets/js/editguest.js',
-    'assets/js/addguest.js',
-    'assets/js/addgroup.js',
-    'assets/js/inviteguest.js'
+    'assets/js/guest.js',
+    'assets/js/guestEdit.js',
+    'assets/js/guestAdd.js',
+    'assets/js/guestInvite.js',
+    'assets/js/group.js',
+    'assets/js/groupAdd.js'
 ], 'static/js/scripts.js');
 
 mix.copy('node_modules/bootstrap-icons/font/fonts', 'static/fonts');

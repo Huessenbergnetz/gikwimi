@@ -3,10 +3,12 @@
 
 target_sources(defaulttemplate
     PRIVATE
-        addgroup.js
-        addguest.js
-        editguest.js
         general.js
-        inviteguest.js
+        group.js
+        groupAdd.js
+        guest.js
+        guestAdd.js
+        guestEdit.js
+        guestInvite.js
         licenseheader.js
 )
