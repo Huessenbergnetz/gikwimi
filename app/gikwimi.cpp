@@ -35,6 +35,7 @@
 #include <Cutelyst/Plugins/Memcached/Memcached>
 #include <Cutelyst/Plugins/MemcachedSessionStore/MemcachedSessionStore>
 #include <Cutelyst/Plugins/CSRFProtection/CSRFProtection>
+#include <Cutelyst/Plugins/Utils/LangSelect>
 
 #include <cutelee/engine.h>
 
@@ -66,6 +67,13 @@ Gikwimi::~Gikwimi()
 
 bool Gikwimi::init()
 {
+    const auto supportedLocales = loadTranslationsFromDir(QStringLiteral("gikwimiapp"), QStringLiteral(GIKWIMI_TRANSLATIONSDIR), QStringLiteral("_"));
+    qCInfo(GIK_CORE) << "Loaded locales:" << supportedLocales;
+
+    qCDebug(GIK_CORE) << "Registering meta types";
+    qRegisterMetaType<dbid_t>("dbid_t");
+    qRegisterMetaType<KContacts::Picture>("KContacts::Picture");
+
     if (!isInitialized) {
         GikwimiConfig::load(engine()->config(QStringLiteral(GIKWIMI_CONF_GIK)),
                             engine()->config(QStringLiteral(GIKWIMI_CONF_MAIL)));
@@ -81,10 +89,6 @@ bool Gikwimi::init()
 
         isInitialized = true;
     }
-
-    qCDebug(GIK_CORE) << "Registering meta types";
-    qRegisterMetaType<dbid_t>("dbid_t");
-    qRegisterMetaType<KContacts::Picture>("KContacts::Picture");
 
     qCDebug(GIK_CORE) << "Registering Cutelee view";
     auto view = new CuteleeView(this);
@@ -122,6 +126,11 @@ bool Gikwimi::init()
             sess->setStorage(new MemcachedSessionStore(this, this));
         }
     }
+
+    auto lsp = new LangSelect(this, LangSelect::Session);
+    lsp->setFallbackLocale(QLocale(QLocale::English));
+    lsp->setSupportedLocales(supportedLocales);
+    lsp->setSessionKey(QStringLiteral("lang"));
 
     auto csrf = new CSRFProtection(this);
     csrf->setDefaultDetachTo(QStringLiteral("/csrfDenied"));

@@ -17,3 +17,20 @@ install(FILES ${CMD_QM_FILES}
         DESTINATION ${GIKWIMI_TRANSLATIONSDIR}
         COMPONENT runtime
 )
+
+set(APP_TS_FILES gikwimiapp_en.ts
+                 gikwimiapp_de.ts
+)
+
+qt5_add_translation(APP_QM_FILES ${APP_TS_FILES})
+
+add_custom_target(gikwimiapptranslations ALL
+                  DEPENDS ${APP_QM_FILES}
+                  COMMENT "Compiles gikwimi app translation messages"
+                  SOURCES ${APP_TS_FILES}
+)
+
+install(FILES ${APP_QM_FILES}
+        DESTINATION ${GIKWIMI_TRANSLATIONSDIR}
+        COMPONENT runtime
+)

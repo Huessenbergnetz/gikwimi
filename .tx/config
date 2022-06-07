@@ -8,3 +8,8 @@ source_file = translations/gikwimictl.ts
 source_lang = en
 type = QT
 
+[gikwimi.app]
+file_filter = translations/gikwimiapp_<lang>.ts
+source_file = translations/gikwimiapp_en.ts
+source_lang = en
+type = QT
