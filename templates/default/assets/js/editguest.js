@@ -17,12 +17,13 @@ GikDefTmpl.editGuest.buttons = null;
 
 GikDefTmpl.editGuest.loadData = function(event) {
     const button = event.target;
-    button.setAttribute('disabled', 'disabled');
-    const span = button.getElementsByTagName('span')[0];
-    span.classList.remove('d-none');
-    span.classList.add('d-inline-block');
-    const icon = button.getElementsByTagName('i')[0];
-    icon.classList.add('d-none');
+    GikDefTmpl.switchButton(button);
+//    button.setAttribute('disabled', 'disabled');
+//    const span = button.getElementsByTagName('span')[0];
+//    span.classList.remove('d-none');
+//    span.classList.add('d-inline-block');
+//    const icon = button.getElementsByTagName('i')[0];
+//    icon.classList.add('d-none');
     const guestId = button.value;
     const hdrs = GikDefTmpl.newXhrHeaders();
     const actionPath = GikDefTmpl.editGuest.form.attributes.getNamedItem('action').value + guestId;
@@ -80,21 +81,13 @@ GikDefTmpl.editGuest.loadData = function(event) {
                }
            })
     .finally(() => {
-                 span.classList.remove('d-inline-block');
-                 span.classList.add('d-none');
-                 icon.classList.remove('d-none');
-                 button.removeAttribute('disabled');
+                 GikDefTmpl.switchButton(button);
             });
 }
 
 GikDefTmpl.editGuest.exec = function() {
     const button = document.getElementById('editGuestSubmitButton');
-    button.disabled = true;
-    const spinner = button.getElementsByTagName('span')[0];
-    spinner.classList.remove('d-none');
-    spinner.classList.add('d-inline-block');
-    const icon = button.getElementsByTagName('i')[0];
-    icon.classList.add('d-none');
+    GikDefTmpl.switchButton(button);
 
     for (let i = 0; i < GikDefTmpl.editGuest.form.elements.length; ++i) {
             GikDefTmpl.editGuest.form.elements[i].classList.remove('is-invalid');
@@ -132,13 +125,7 @@ GikDefTmpl.editGuest.exec = function() {
               }
 
               const statusIcon = statusTd.getElementsByTagName('i')[0];
-              if (guest.status === 1) { // Agreed
-                  statusIcon.className = 'bi bi-check-circle text-success';
-              } else if (guest.status === 2) { // Canceled
-                  statusIcon.className = 'bi bi-x-circle text-warning';
-              } else { // DefaultStatus
-                  statusIcon.className = 'bi bi-dash-circle text-secondary';
-              }
+              GikDefTmpl.setGuestStatusIcon(statusIcon, guest.status);
 
               const countSpans = countTd.getElementsByTagName('span');
               countSpans[1].textContent = guest.adultsAccepted;
@@ -173,10 +160,7 @@ GikDefTmpl.editGuest.exec = function() {
                }
            })
     .finally(() => {
-                 spinner.classList.remove('d-inline-block');
-                 spinner.classList.add('d-none');
-                 icon.classList.remove('d-none');
-                 button.disabled = false;
+                 GikDefTmpl.switchButton(button);
              });
 }
 

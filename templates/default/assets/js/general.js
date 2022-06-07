@@ -50,4 +50,32 @@ GikDefTmpl.composeAddress = function(address) {
     return addressHtml;
 }
 
+GikDefTmpl.switchButton = function(button) {
+    if (button.disabled) {
+        button.disabled = false;
+        const spinner = button.getElementsByTagName('span')[0];
+        spinner.classList.remove('d-inline-block');
+        spinner.classList.add('d-none');
+        const icon = button.getElementsByTagName('i')[0];
+        icon.classList.remove('d-none');
+    } else {
+        button.disabled = true;
+        const spinner = button.getElementsByTagName('span')[0];
+        spinner.classList.remove('d-none');
+        spinner.classList.add('d-inline-block');
+        const icon = button.getElementsByTagName('i')[0];
+        icon.classList.add('d-none');
+    }
+}
+
+GikDefTmpl.setGuestStatusIcon = function(icon, status) {
+    if (status === 1) { // Agreed
+        icon.className = 'bi bi-check-circle text-success';
+    } else if (status === 2) { // Canceled
+        icon.className = 'bi bi-x-circle text-warning';
+    } else { // DefaultStatus
+        icon.className = 'bi bi-dash-circle text-secondary';
+    }
+}
+
 GikDefTmpl.updateRangeWithLabel();

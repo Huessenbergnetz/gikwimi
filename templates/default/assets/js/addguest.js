@@ -71,13 +71,7 @@ GikDefTmpl.addGuest.exec = function() {
               }
 
               const statusIcon = statusTd.getElementsByTagName('i')[0];
-              if (data.status === 1) { // Agreed
-                  statusIcon.className = 'bi bi-check-circle text-success';
-              } else if (data.status === 2) { // Canceled
-                  statusIcon.className = 'bi bi-x-circle text-warning';
-              } else { // DefaultStatus
-                  statusIcon.className = 'bi bi-dash-circle text-secondary';
-              }
+              GikDefTmpl.setGuestStatusIcon(statusIcon, data.status);
 
               const countSpans = countTd.getElementsByTagName('span');
               countSpans[1].textContent = data.adultsAccepted;
