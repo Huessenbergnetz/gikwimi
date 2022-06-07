@@ -1,0 +1,70 @@
+{% extends "inc/modal.tmpl" %}
+{% block label %}{% i18n "Add guest" %}{% endblock %}
+
+{% block content %}
+<form id="addGuestForm" action="/controlcenter/events/{{ eventId }}/guests/add">
+    {% c_csrf_token %}
+    <input id="addGuestGuestGroupId" type="hidden" name="group">
+
+    <div>
+        <label for="addGuestFromAddressbook" class="form-label">{{ _("Addressbook") }}</label>
+        <select id="addGuestFromAddressbook" name="addressbook" class="form-select" aria-describedby="addGuestFromAddressbookHelp"></select>
+        <div id="addGuestFromAddressbookHelp" class="form-text"></div>
+    </div>
+
+    <div>
+        <label for="selectGuest" class="form-label">{{ _("Guest") }}</label>
+        <select id="selectGuest" name="contact" class="form-select" aria-describedby="selectGuestHelp"></select>
+        <div id="selectGuestHelp" class="form-text"></div>
+    </div>
+
+    <div>
+        <label for="newGuestType" class="form-label">{{ _("Type") }}</label>
+        <select id="newGuestType" name="type" class="form-select" aria-describedby="newGuestTypeHelp">
+        {% for opt in guesttype_options %}
+            <option value="{{ opt.value }}">{{ opt.name }}</option>
+        {% endfor %}
+        </select>
+        <div id="newGuestTypeHelp" class="form-text"></div>
+    </div>
+
+    <div>
+        <label for="newGuestSalutation" class="form-label">{{ _("Salutation") }}</label>
+        <select id="newGuestSalutation" name="salutation" class="form-select" aria-describedby="newGuestSalutationHelp">
+        {% for opt in salutation_options %}
+            <option value="{{ opt.value }}"{% if opt.value == "0" %} selected="selected"{% endif %}>{{ opt.name }}</option>
+        {% endfor %}
+        </select>
+        <div id="newGuestSalutationHelp" class="form-text"></div>
+    </div>
+
+    <div>
+        <label for="guestPartnerGivenName" class="form-label">{{ _("Partner given name") }}</label>
+        <input type="text" class="form-control" id="guestPartnerGivenName" name="partnerGivenName" aria-describedby="guestPartnerGivenNameHelp">
+        <div id="guestPartnerGivenNameHelp" class="form-text"></div>
+    </div>
+
+    <div>
+        <label for="guestPartnerFamilyName" class="form-label">{{ _("Partner family name") }}</label>
+        <input type="text" class="form-control" id="guestPartnerFamilyName" name="partnerFamilyName" aria-describedby="guestPartnerFamilyNameHelp">
+        <div id="guestPartnerFamilyNameHelp" class="form-text"></div>
+    </div>
+
+    <div class="range-with-label">
+        <label for="expectedAdultsRange" class="form-label">{{ _("Expected adults:") }} <span id="expectedAdultsValue">1</span></label>
+        <input type="range" class="form-range" id="expectedAdultsRange" min="0" max="10" value="1" name="expectedAdults" aria-describedby="expectedAdultsRangeHelp">
+        <div id="expectedAdultsRangeHelp"></div>
+    </div>
+
+    <div class="range-with-label">
+        <label for="expectedChildrenRange" class="form-label">{{ _("Expected children:") }} <span id="expectedChildrenValue">0</span></label>
+        <input type="range" class="form-range" id="expectedChildrenRange" min="0" max="10" value="0" name="expectedChildren" aria-describedby="expectedChrildrenRangeHelp">
+        <div id="expectedChildrenRangeHelp"></div>
+    </div>
+</form>
+{% endblock %}
+
+{% block footer %}
+<button type="button" class="btn btn-secondary text-capitalize" data-bs-dismiss="modal">{{ _("cancel") }}</button>
+<button id="addGuestButton" type="submit" form="addGuestForm" class="btn btn-primary text-capitalize">{{ _("add guest") }}</button>
+{% endblock %}

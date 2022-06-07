@@ -4,6 +4,7 @@
 set(CONTROLCENTER_EVENTS_GUESTS_FILES
     add.tmpl
     addGroupModal.tmpl
+    addGuestModal.tmpl
     addtogroup.tmpl
     edit.tmpl
     editGuestModal.tmpl
