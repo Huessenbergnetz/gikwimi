@@ -8,33 +8,37 @@
 
     <div>
         <label for="addGuestFromAddressbook" class="form-label">{{ _("Addressbook") }}</label>
-        <select id="addGuestFromAddressbook" name="addressbook" class="form-select" aria-describedby="addGuestFromAddressbookHelp"></select>
+        <select id="addGuestFromAddressbook" name="addressbook" class="form-select" aria-describedby="addGuestFromAddressbookFeedback addGuestFromAddressbookHelp"></select>
+        <div id="addGuestFromAddressbookFeedback" class="invalid-feedback"></div>
         <div id="addGuestFromAddressbookHelp" class="form-text"></div>
     </div>
 
     <div>
         <label for="selectGuest" class="form-label">{{ _("Guest") }}</label>
-        <select id="selectGuest" name="contact" class="form-select" aria-describedby="selectGuestHelp"></select>
+        <select id="selectGuest" name="contact" class="form-select" aria-describedby="selectGuestFeedback selectGuestHelp"></select>
+        <div id="selectGuestFeedback" class="invalid-feedback"></div>
         <div id="selectGuestHelp" class="form-text"></div>
     </div>
 
     <div>
         <label for="newGuestType" class="form-label">{{ _("Type") }}</label>
-        <select id="newGuestType" name="type" class="form-select" aria-describedby="newGuestTypeHelp">
+        <select id="newGuestType" name="type" class="form-select" aria-describedby="newGuestTypeFeedback newGuestTypeHelp">
         {% for opt in guesttype_options %}
             <option value="{{ opt.value }}">{{ opt.name }}</option>
         {% endfor %}
         </select>
+        <div id="newGuestTypeFeedback" class="invalid-feedback"></div>
         <div id="newGuestTypeHelp" class="form-text"></div>
     </div>
 
     <div>
         <label for="newGuestSalutation" class="form-label">{{ _("Salutation") }}</label>
-        <select id="newGuestSalutation" name="salutation" class="form-select" aria-describedby="newGuestSalutationHelp">
+        <select id="newGuestSalutation" name="salutation" class="form-select" aria-describedby="newGuestSalutationFeedback newGuestSalutationHelp">
         {% for opt in salutation_options %}
             <option value="{{ opt.value }}"{% if opt.value == "0" %} selected="selected"{% endif %}>{{ opt.name }}</option>
         {% endfor %}
         </select>
+        <div id="newGuestSalutationFeedback" class="invalid-feedback"></div>
         <div id="newGuestSalutationHelp" class="form-text"></div>
     </div>
 
@@ -78,5 +82,5 @@
 
 {% block footer %}
 <button type="button" class="btn btn-secondary text-capitalize" data-bs-dismiss="modal">{{ _("cancel") }}</button>
-<button id="addGuestButton" type="submit" form="addGuestForm" class="btn btn-primary text-capitalize">{{ _("add guest") }}</button>
+<button type="submit" form="addGuestForm" class="btn btn-primary text-capitalize"><span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span><i class="bi bi-person-plus"></i> {{ _("add guest") }}</button>
 {% endblock %}
