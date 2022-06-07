@@ -44,23 +44,41 @@
         <div id="guestPartnerGivenNameHelp" class="form-text"></div>
     </div>
 
-    <div>
-        <label for="guestPartnerFamilyName" class="form-label">{{ _("Partner family name") }}</label>
-        <input type="text" class="form-control" id="guestPartnerFamilyName" name="partnerFamilyName" aria-describedby="guestPartnerFamilyNameHelp">
-        <div id="guestPartnerFamilyNameHelp" class="form-text"></div>
-    </div>
+    {% with "addGuestPartnerGivenName" as inputId %}
+    {% with "partnerGivenName" as inputName %}
+    {% with _("Partner given name") as inputLabel %}
+    {% include "inc/textInputWithLabel.tmpl" %}
+    {% endwith %}
+    {% endwith %}
+    {% endwith %}
 
-    <div class="range-with-label">
-        <label for="expectedAdultsRange" class="form-label">{{ _("Expected adults:") }} <span id="expectedAdultsValue">1</span></label>
-        <input type="range" class="form-range" id="expectedAdultsRange" min="0" max="10" value="1" name="expectedAdults" aria-describedby="expectedAdultsRangeHelp">
-        <div id="expectedAdultsRangeHelp"></div>
-    </div>
+    {% with "addGuestPartnerFamilyName" as inputId %}
+    {% with "partnerFamilyName" as inputName %}
+    {% with _("Partner family name") as inputLabel %}
+    {% include "inc/textInputWithLabel.tmpl" %}
+    {% endwith %}
+    {% endwith %}
+    {% endwith %}
 
-    <div class="range-with-label">
-        <label for="expectedChildrenRange" class="form-label">{{ _("Expected children:") }} <span id="expectedChildrenValue">0</span></label>
-        <input type="range" class="form-range" id="expectedChildrenRange" min="0" max="10" value="0" name="expectedChildren" aria-describedby="expectedChrildrenRangeHelp">
-        <div id="expectedChildrenRangeHelp"></div>
-    </div>
+    {% with "addGuestExpectedAdults" as inputId %}
+    {% with "expectedAdults" as inputName %}
+    {% with _("Expected adults:") as inputLabel %}
+    {% with "1" as inputValue %}
+    {% include "inc/rangeInputWithLabel.tmpl" %}
+    {% endwith %}
+    {% endwith %}
+    {% endwith %}
+    {% endwith %}
+
+    {% with "addGuestExpectedChildren" as inputId %}
+    {% with "expectedChildren" as inputName %}
+    {% with _("Expected children:") as inputLabel %}
+    {% with "0" as inputValue %}
+    {% include "inc/rangeInputWithLabel.tmpl" %}
+    {% endwith %}
+    {% endwith %}
+    {% endwith %}
+    {% endwith %}
 </form>
 {% endblock %}
 
