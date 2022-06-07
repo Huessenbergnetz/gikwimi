@@ -82,6 +82,8 @@ void Invitation::index(Context *c, const QString &uid)
         }
     }
 
+    c->res()->setHeader(QStringLiteral("X-Robots-Tag"), QStringLiteral("none"));
+
     c->stash({   {QStringLiteral("consent"), static_cast<int>(consent)},
                  {QStringLiteral("site_title"), event.title()},
                  {QStringLiteral("no_wrapper"), true},

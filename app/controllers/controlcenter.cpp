@@ -37,6 +37,8 @@ bool ControlCenter::Auto(Context *c)
         return false;
     }
 
+    c->res()->setHeader(QStringLiteral("X-Robots-Tag"), QStringLiteral("none"));
+
     buildMenu(c);
 
     return true;

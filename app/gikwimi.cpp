@@ -143,6 +143,12 @@ bool Gikwimi::init()
     auto userStore = new UserAuthStoreSql;
     auth->addRealm(userStore, userCred, QStringLiteral("users"));
 
+    defaultHeaders().setHeader(QStringLiteral("X-Frame-Options"), QStringLiteral("DENY"));
+    defaultHeaders().setHeader(QStringLiteral("X-Content-Type-Options"), QStringLiteral("nosniff"));
+    defaultHeaders().setHeader(QStringLiteral("X-XSS-Protection"), QStringLiteral("1; mode=block"));
+    defaultHeaders().setHeader(QStringLiteral("Referrer-Policy"), QStringLiteral("origin-when-cross-origin"));
+    defaultHeaders().setHeader(QStringLiteral("Content-Security-Policy"), QStringLiteral("default-src 'none'; script-src 'self'; style-src 'self'; font-src 'self'; img-src 'self' data:; connect-src 'self'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; block-all-mixed-content"));
+
     return true;
 }
 

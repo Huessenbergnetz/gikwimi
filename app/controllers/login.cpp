@@ -43,6 +43,8 @@ void Login::index(Context *c)
         }
     }
 
+    c->res()->setHeader(QStringLiteral("X-Robots-Tag"), QStringLiteral("none"));
+
     c->stash({
                  {QStringLiteral("no_wrapper"), true},
                  {QStringLiteral("template"), QStringLiteral("login.tmpl")},
