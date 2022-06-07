@@ -63,6 +63,7 @@ GikDefTmpl.editGuest.loadData = function(event) {
               ac.value = data.childrenAccepted;
               ac.dispatchEvent(e);
 
+              GikDefTmpl.resetFormFieldErrors(GikDefTmpl.editGuest.form);
               GikDefTmpl.editGuest.modal.show();
           })
     .catch(error => {
@@ -83,9 +84,7 @@ GikDefTmpl.editGuest.exec = function() {
     const button = document.getElementById('editGuestSubmitButton');
     GikDefTmpl.switchButton(button);
 
-    for (let i = 0; i < GikDefTmpl.editGuest.form.elements.length; ++i) {
-            GikDefTmpl.editGuest.form.elements[i].classList.remove('is-invalid');
-        }
+    GikDefTmpl.resetFormFieldErrors(GikDefTmpl.editGuest.form);
 
     const formData = new FormData(GikDefTmpl.editGuest.form);
     const guestId = document.getElementById('editGuestId').value;
@@ -136,16 +135,7 @@ GikDefTmpl.editGuest.exec = function() {
                                              GikDefTmpl.editGuest.modal.hide();
                                              GikDefTmpl.showError(json.error.title, json.error.text);
                                          } else if (json.fielderrors) {
-                                             const fe = json.fielderrors;
-                                             const els = GikDefTmpl.editGuest.form.elements;
-                                             for (const field in fe) {
-                                                 if (fe.hasOwnProperty(field)) {
-                                                     const el = els.namedItem(field);
-                                                     const fb = el.nextElementSibling;
-                                                     fb.innerHTML = fe[field].join('<br>');
-                                                     el.classList.add('is-invalid');
-                                                 }
-                                             }
+                                             GikDefTmpl.setFormFieldErrors(GikDefTmpl.editGuest.form, json.fielderrors);
                                          }
                                      });
                } else {

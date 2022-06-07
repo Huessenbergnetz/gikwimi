@@ -17,9 +17,7 @@ GikDefTmpl.addGroup.exec = function() {
     const submitButton = document.getElementById('createGroupButton');
     GikDefTmpl.switchButton(submitButton);
 
-    for (let i = 0; i < GikDefTmpl.addGroup.form.elements.length; ++i) {
-        GikDefTmpl.addGroup.form.elements[i].classList.remove('is-invalid');
-    }
+    GikDefTmpl.resetFormFieldErrors(GikDefTmpl.addGroup.form);
 
     let fd = new FormData(GikDefTmpl.addGroup.form);
     const actionPath = GikDefTmpl.addGroup.form.action;
@@ -62,16 +60,7 @@ GikDefTmpl.addGroup.exec = function() {
                                              GikDefTmpl.addGroup.modal.hide();
                                              GikDefTmpl.showError(json.error.title, json.error.text);
                                          } else if (json.fielderrors) {
-                                             const fe = json.fielderrors;
-                                             const els = GikDefTmpl.addGroup.form.elements;
-                                             for (const field in fe) {
-                                                 if (fe.hasOwnProperty(field)) {
-                                                     const el = els.namedItem(field)
-                                                     const fb = el.nextElementSibling;
-                                                     fb.innerHTML = fe[field].join('<br>');
-                                                     el.classList.add('is-invalid');
-                                                 }
-                                             }
+                                             GikDefTmpl.setFormFieldErrors(GikDefTmpl.addGroup.form, json.fielderrors);
                                          }
                                      });
                } else {
