@@ -15,12 +15,7 @@ GikDefTmpl.addGroup.button = null;
 
 GikDefTmpl.addGroup.exec = function() {
     const submitButton = document.getElementById('createGroupButton');
-    submitButton.disabled = true;
-    const spinner = submitButton.getElementsByTagName('span')[0];
-    spinner.classList.remove('d-none');
-    spinner.classList.add('d-inline-block');
-    const icon = submitButton.getElementsByTagName('i')[0];
-    icon.classList.add('d-none');
+    GikDefTmpl.switchButton(submitButton);
 
     for (let i = 0; i < GikDefTmpl.addGroup.form.elements.length; ++i) {
         GikDefTmpl.addGroup.form.elements[i].classList.remove('is-invalid');
@@ -85,10 +80,7 @@ GikDefTmpl.addGroup.exec = function() {
                }
            })
     .finally(() => {
-                 spinner.classList.remove('d-inline-block');
-                 spinner.classList.add('d-none');
-                 icon.classList.remove('d-none');
-                 submitButton.disabled = false;
+                 GikDefTmpl.switchButton(submitButton);
              });
 }
 

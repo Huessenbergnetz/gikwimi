@@ -18,12 +18,6 @@ GikDefTmpl.editGuest.buttons = null;
 GikDefTmpl.editGuest.loadData = function(event) {
     const button = event.target;
     GikDefTmpl.switchButton(button);
-//    button.setAttribute('disabled', 'disabled');
-//    const span = button.getElementsByTagName('span')[0];
-//    span.classList.remove('d-none');
-//    span.classList.add('d-inline-block');
-//    const icon = button.getElementsByTagName('i')[0];
-//    icon.classList.add('d-none');
     const guestId = button.value;
     const hdrs = GikDefTmpl.newXhrHeaders();
     const actionPath = GikDefTmpl.editGuest.form.attributes.getNamedItem('action').value + guestId;
