@@ -324,8 +324,12 @@ void ControlCenterEvents::inviteGuest(Context *c, const QString &id, const QStri
 
     if (c->req()->isPost()) {
         if (guest.markAsInvited(c, &e, notification)) {
-            const Event event = Event::fromStash(c);
-            c->res()->redirect(c->uriForAction(QStringLiteral("/controlcenter/events/guests"), QStringList(QString::number(event.id())), QStringList()));
+            if (c->req()->xhr()) {
+                c->res()->setJsonObjectBody(guest.toJson());
+            } else {
+                const Event event = Event::fromStash(c);
+                c->res()->redirect(c->uriForAction(QStringLiteral("/controlcenter/events/guests"), QStringList(QString::number(event.id())), QStringList()));
+            }
         } else {
             e.toStash(c, true);
         }
@@ -340,6 +344,14 @@ void ControlCenterEvents::inviteGuest(Context *c, const QString &id, const QStri
     }
 
     const QString invitationSubject = (notification == Guest::Email || notification == Guest::Postal) ? guest.invitationSubject(c, &e, notification) : QString();
+
+    if (c->req()->xhr()) {
+        c->res()->setJsonObjectBody(QJsonObject({
+                                                    {QStringLiteral("subject"), invitationSubject},
+                                                    {QStringLiteral("text"), invitationText}
+                                                }));
+        return;
+    }
 
     c->stash({
                  {QStringLiteral("guest"), QVariant::fromValue<Guest>(guest)},

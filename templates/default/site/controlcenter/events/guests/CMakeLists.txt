@@ -10,6 +10,7 @@ set(CONTROLCENTER_EVENTS_GUESTS_FILES
     editGuestModal.tmpl
     index.tmpl
     invite.tmpl
+    inviteGuestModal.tmpl
     remove.tmpl
     removeGuestModal.tmpl
 )

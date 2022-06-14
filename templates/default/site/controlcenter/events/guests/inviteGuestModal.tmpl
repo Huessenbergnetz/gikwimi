@@ -1,0 +1,21 @@
+{% extends "inc/modal.tmpl" %}
+{% block label %}{% i18n "Invite guest" %} <span id="inviteGuestName"></span>{% endblock %}
+
+
+{% block content %}
+<div id="inviteGuestSubject" class="input-group mb-3">
+    <input id="inviteGuestSubjectInput" type="text" class="form-control" placeholder="{{ _("Subject") }}" arial-label="{{ _("Subject for an invitation") }}" readonly>
+    <button id="inviteGuestSubjectCopy" class="btn btn-outline-dark" type="button" title="{{ _("copy to clipboard") }}"><i class="bi bi-clipboard"></i></button>
+</div>
+
+<textarea id="inviteGuestText" class="form-control" rows="10" readonly></textarea>
+{% endblock %}
+
+{% block footer %}
+<form id="inviteGuestForm" method="post">
+    {% c_csrf_token %}
+    <button type="button" class="btn btn-secondary d-none d-sm-inline-block text-capitalize" data-bs-dismiss="modal">{{ _("cancel") }}</button>
+    <button type="button" class="btn btn-outline-dark text-capitalize" id="inviteGuestTextCopy"><i class="bi bi-clipboard"></i> {{ _("copy to clipboard") }}</button>
+    <button type="submit" class="btn btn-primary text-capitalize">{{ _("mark as invited") }}</button>
+</form>
+{% endblock %}

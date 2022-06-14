@@ -91,8 +91,19 @@ void Root::csrfDenied(Context *c)
 {
     qCDebug(GIK_CORE) << "Entering Root::csrfDenied()";
 
-    c->response()->setBody(QStringLiteral("CSRF check failed"));
-    c->response()->setContentType(QStringLiteral("text/html; charset=utf-8"));
+    if (c->req()->xhr()) {
+        QJsonObject error({
+                              {QStringLiteral("error"), QJsonObject({
+                                   {QStringLiteral("title"), c->translate("Root", "Access denied")},
+                                   {QStringLiteral("text"), c->translate("Root", "CSRF check failed.")}
+                               })}
+                          });
+        c->res()->setJsonObjectBody(error);
+    } else {
+        c->response()->setBody(QStringLiteral("CSRF check failed"));
+        c->response()->setContentType(QStringLiteral("text/html; charset=utf-8"));
+    }
+
     c->detach();
 }
 

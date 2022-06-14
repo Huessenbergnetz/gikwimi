@@ -69,11 +69,15 @@
 
                 <td>
                     <div class="btn-group btn-group-sm">
-                        <a href="/controlcenter/events/{{ event.id }}/guests/invite/{{ guest.id }}/{{ guest.Email.value }}" class="btn{% if guest.notifiedByEmail %} btn-outline-success{% else %} btn-outline-secondary{% endif %}" title="{{ _("Email") }}"><i class="bi bi-envelope-fill"></i></a>
-                        <a href="/controlcenter/events/{{ event.id }}/guests/invite/{{ guest.id }}/{{ guest.SMS.value }}" class="btn{% if guest.notifiedBySMS %} btn-outline-success{% else %} btn-outline-secondary{% endif %}" title="{{ _("SMS") }}"><i class="bi bi-chat-left-text-fill"></i></a>
-                        <a href="/controlcenter/events/{{ event.id }}/guests/invite/{{ guest.id }}/{{ guest.Messenger.value }}" class="btn{% if guest.notifiedByMessenger %} btn-outline-success{% else %} btn-outline-secondary{% endif %}" title="{{ _("Messenger") }}"><i class="bi bi-messenger"></i></a>
-                        <a href="/controlcenter/events/{{ event.id }}/guests/invite/{{ guest.id }}/{{ guest.Postal.value }}" class="btn{% if guest.notifiedByPostal %} btn-outline-success{% else %} btn-outline-secondary{% endif %}" title="{{ _("Postal") }}"><i class="bi bi-mailbox2"></i></a>
-                        <a href="/controlcenter/events/{{ event.id }}/guests/invite/{{ guest.id }}/{{ guest.Phone.value }}" class="btn{% if guest.notifiedByPhone %} btn-outline-success{% else %} btn-outline-secondary{% endif %}" title="{{ _("Phone") }}"><i class="bi bi-telephone-fill"></i></a>
+                        <button type="button" class="invite-guest-btn btn {% if guest.notifiedByEmail %}btn-outline-success{% else %}btn-outline-secondary{% endif %}" title="{{ _("Email") }}" data-action="/controlcenter/events/{{ event.id }}/guests/invite/{{ guest.id }}/{{ guest.Email.value }}" data-event="{{ event.id }}" data-guest="{{ guest.id }}" data-method="{{ guest.Email.value }}"><i class="bi bi-envelope-fill"></i></button>
+
+                        <button type="button" class="invite-guest-btn btn {% if guest.notifiedBySMS %}btn-outline-success{% else %}btn-outline-secondary{% endif %}" title="{{ _("SMS") }}" data-event="{{ event.id }}" data-guest="{{ guest.id }}" data-method="{{ guest.SMS.value }}"><i class="bi bi-chat-left-text-fill"></i></button>
+
+                        <button type="button" class="invite-guest-btn btn {% if guest.notifiedByMessenger %}btn-outline-success{% else %}btn-outline-secondary{% endif %}" title="{{ _("Messenger") }}" data-event="{{ event.id }}" data-guest="{{ guest.id }}" data-method="{{ guest.Messenger.value }}"><i class="bi bi-messenger"></i></button>
+
+                        <button type="button" class="invite-guest-btn btn {% if guest.notifiedByPostal %}btn-outline-success{% else %}btn-outline-secondary{% endif %}" title="{{ _("Postal") }}" data-event="{{ event.id }}" data-guest="{{ guest.id }}" data-method="{{ guest.Postal.value }}"><i class="bi bi-mailbox2"></i></button>
+
+                        <button type="button" class="invite-guest-btn btn {% if guest.notifiedByPhone %}btn-outline-success{% else %}btn-outline-secondary{% endif %}" title="{{ _("Phone") }}" data-event="{{ event.id }}" data-guest="{{ guest.id }}" data-method="{{ guest.Phone.value }}"><i class="bi bi-telephone-fill"></i></button>
                     </div>
                 </td>
 
@@ -119,6 +123,12 @@
 {% endwith %}
 {% endwith %}
 <!-- end remove guest modal -->
+
+<!-- start invite guest modal -->
+{% with "inviteGuest" as modalId %}
+{% include "controlcenter/events/guests/inviteGuestModal.tmpl" %}
+{% endwith %}
+<!-- end invite guest modal -->
 
 <!-- start group template -->
 <template id="group-template">
