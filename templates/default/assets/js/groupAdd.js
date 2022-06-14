@@ -42,7 +42,7 @@ GikDefTmpl.Group.Add.exec = function(event) {
               const clone = template.content.cloneNode(true);
 
               const section = clone.querySelector('section');
-              section.id = 'group_' + group.id;
+              section.id = 'group-' + group.id;
 
               const header = clone.querySelector('h2');
               header.textContent = group.name;

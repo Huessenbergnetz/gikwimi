@@ -1,91 +1,118 @@
 <div class="d-flex">
     <h1>{{ site_subtitle }} <small class="text-muted">{{ site_title }}</small></h1>
-    <div class="text-muted align-self-center"><span class="badge bg-secondary"><span id="event_{{ event.id }}_total_accepted">{{ event.totalAccepted }}</span>/<span id="event_{{ event.id }}_total_invited">{{ event.totalInvited }}</span></span></div>
     <div class="ms-auto">
         <button type="button" class="btn btn-outline-secondary text-capitalize" data-bs-toggle="modal" data-bs-target="#addGroupModal" aria-label="{{ _("add group") }}"><i class="bi bi-plus-circle-dotted"></i><span class="d-none d-md-inline"> {{ _("add group") }}</span></button>
+    </div>
+</div>
+{% i18nc_var "Date and time format for the event start time" "ddd,'&nbsp;'MMM'&nbsp;'d,'&nbsp;'yyyy'&nbsp;at&nbsp;'h:mma" as dateTimeFormat %}
+<div class="text-secondary">
+    <div class="d-inline-block me-2">
+        <i class="bi bi-person-lines-fill" title="{{ _("total accepted/invited") }}"></i>&nbsp;<span id="total_accepted">{{ event.totalAccepted }}</span>/<span id="total_invited">{{ event.totalInvited }}</span>
+    </div>
+    <div class="d-inline-block me-2">
+        <i class="bi bi-people-fill" title="{{ _("adults accepted/invited") }}"></i>&nbsp;<span id="adults_accepted">{{ event.adultsAccepted }}</span>/<span id="adults_invited">{{ event.adultsInvited }}</span>
+    </div>
+    <div class="d-inline-block me-2">
+        <i class="bi bi-diagram-3-fill" title="{{ _("children accepted/invited") }}"></i>&nbsp;<span id="children_accepted">{{ event.childrenAccepted }}</span>/<span id="children_invited">{{ event.childrenInvited }}</span>
+    </div>
+    <div class="d-inline-block">
+        <i class="bi bi-calendar-event" title="{{ _("event start time") }}"></i>&nbsp;{{ event.start|time:dateTimeFormat|safe }}
     </div>
 </div>
 
 <div id="guestgroups">
 {% for group in groups %}
-<section id="group_{{ group.id }}" class="guestgroup">
+<section id="group-{{ group.id }}" class="guestgroup mt-5">
     <div class="d-flex">
-        <h2>{{ group.name }} <span class="badge bg-secondary"><span class="total_accepted">{{ group.totalAccepted }}</span>/<span class="total_invited">{{ group.totalInvited }}</span></span></h2>
+        <h2>{{ group.name }}</h2>
         <div class="ms-auto">
             <button type="button" class="btn btn-outline-secondary text-capitalize add-guest-to-group-btn" data-bs-toggle="modal" data-bs-target="#addGuestModal" value="{{ group.id }}"><i class="bi bi-person-plus"></i><span class="d-none d-md-inline"> {{ _("add guest") }}</span></button>
         </div>
     </div>
     {% with group.guests as guests %}
-    <table class="table">
-        <thead>
-            <tr>
-                <th scope="col"></th>
-                <th scope="col" class="text-capitalize">{{ guests_table_headers.name }}</th>
-                <th scope="col" class="text-capitalize">{{ guests_table_headers.status }}</th>
-                <th scope="col" class="text-capitalize">{{ guests_table_headers.guests }}</th>
-                <th scope="col" class="text-capitalize d-none d-sm-table-cell">{{ guests_table_headers.address }}</th>
-                <th scope="col" class="text-capitalize">{{ guests_table_headers.notified}}</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for guest in guests %}
-            <tr id="guest-{{ guest.id }}">
-                <td>
-                    <div class="btn-group btn-group-sm" role="group">
-                        <button type="button" class="btn btn-outline-primary edit-guest-btn" title="{{ _("Edit guest") }}" value="{{ guest.id }}"><span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span><i class="bi bi-pencil-square"></i></button>
-                        <button type="button" class="btn btn-outline-secondary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false"><span class="visually-hidden">{{ _("Toggle dropdown") }}</span></button>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item invite-guest-btn" href="/i/{{ guest.uid }}" target="_blank"><i class="bi bi-box-arrow-up-right"></i> {{ _("Show invitation page") }}</a></li>
-                            <li><a class="dropdown-item text-danger delete-guest-btn" href="#" data-value="{{ guest.id }}"><i class="bi bi-person-dash"></i> {{ _("Remove guest") }}</a>
-                        </ul>
-                    </div>
-                </td>
+    <div class="table-responsive">
+        <table class="table caption-top">
+            <caption>
+                <div class="d-inline-block me-2">
+                    <i class="bi bi-person-lines-fill" title="{{ _("total accepted/invited") }}"></i>&nbsp;<span class="total_accepted">{{ group.totalAccepted }}</span>/<span class="total_invited">{{ group.totalInvited }}</span>
+                </div>
+                <div class="d-inline-block me-2">
+                    <i class="bi bi-people-fill" title="{{ _("adults accepted/invited") }}"></i>&nbsp;<span class="adults_accepted">{{ group.adultsAccepted }}</span>/<span class="adults_invited">{{ group.adultsInvited }}</span>
+                </div>
+                <div class="d-inline-block">
+                    <i class="bi bi-diagram-3-fill" title="{{ _("children accepted/invited") }}"></i>&nbsp;<span class="children_accepted">{{ group.childrenAccepted }}</span>/<span class="children_invited">{{ group.childrenInvited }}</span>
+                </div>
+            </caption>
+            <thead class="table-light">
+                <tr>
+                    <th scope="col"></th>
+                    <th scope="col" class="text-capitalize">{{ guests_table_headers.name }}</th>
+                    <th scope="col" class="text-capitalize"><span class="d-none d-sm-inline">{{ guests_table_headers.status }}</span></th>
+                    <th scope="col" class="text-capitalize">{{ guests_table_headers.guests }}</th>
+                    <th scope="col" class="text-capitalize d-none d-sm-table-cell">{{ guests_table_headers.address }}</th>
+                    <th scope="col" class="text-capitalize">{{ guests_table_headers.notified}}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for guest in guests %}
+                <tr id="guest-{{ guest.id }}">
+                    <td>
+                        <div class="btn-group btn-group-sm" role="group">
+                            <button type="button" class="btn btn-outline-primary edit-guest-btn" title="{{ _("Edit guest") }}" value="{{ guest.id }}"><span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span><i class="bi bi-pencil-square"></i></button>
+                            <button type="button" class="btn btn-outline-secondary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false"><span class="visually-hidden">{{ _("Toggle dropdown") }}</span></button>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item invite-guest-btn" href="/i/{{ guest.uid }}" target="_blank"><i class="bi bi-box-arrow-up-right"></i> {{ _("Show invitation page") }}</a></li>
+                                <li><a class="dropdown-item text-danger delete-guest-btn" href="#" data-value="{{ guest.id }}"><i class="bi bi-person-dash"></i> {{ _("Remove guest") }}</a>
+                            </ul>
+                        </div>
+                    </td>
 
-                {% with guest.contact.addressee as addressee %}
-                <td>
-                {% if guest.contact.addressee.familyName == guest.partnerFamilyName %}
-                {% i18nc "A couple’s name like Alice and Bob Miller" "%1 and %2 %3" addressee.givenName guest.partnerGivenName addressee.familyName %}
-                {% else %}
-                {{ addressee.givenName }} {{ addressee.familyName }}{% if guest.partnerGivenName %}<br>{{ guest.partnerGivenName }} {{ guest.partnerFamilyName }}{% endif %}
-                {% endif %}
-                </td>
+                    {% with guest.contact.addressee as addressee %}
+                    <td>
+                    {% if guest.contact.addressee.familyName == guest.partnerFamilyName %}
+                    {% i18nc "A couple’s name like Alice and Bob Miller" "%1 and %2 %3" addressee.givenName guest.partnerGivenName addressee.familyName %}
+                    {% else %}
+                    {{ addressee.givenName }} {{ addressee.familyName }}{% if guest.partnerGivenName %}<br>{{ guest.partnerGivenName }} {{ guest.partnerFamilyName }}{% endif %}
+                    {% endif %}
+                    </td>
 
-                <td><i class="bi {% if guest.status == guest.Canceled %}bi-x-circle text-warning{% elif guest.status == guest.Agreed %}bi-check-circle text-success{% else %}bi-dash-circle text-secondary{% endif %}"></i></td>
+                    <td><i class="bi {% if guest.status == guest.Canceled %}bi-x-circle text-warning{% elif guest.status == guest.Agreed %}bi-check-circle text-success{% else %}bi-dash-circle text-secondary{% endif %}"></i></td>
 
-                <td>
-                    <span title="{{ _("Adults") }}"><i class="bi bi-people-fill"></i></span>&nbsp;<span>{{ guest.adultsAccepted }}</span>/<span>{{ guest.adults }}</span><br>
-                    <span title="{{ _("Children") }}"><i class="bi bi-diagram-3-fill"></i></span>&nbsp;<span>{{ guest.childrenAccepted }}</span>/<span>{{ guest.children }}</span>
-                </td>
+                    <td>
+                        <span title="{{ _("Adults") }}"><i class="bi bi-people-fill"></i></span>&nbsp;<span>{{ guest.adultsAccepted }}</span>/<span>{{ guest.adults }}</span><br>
+                        <span title="{{ _("Children") }}"><i class="bi bi-diagram-3-fill"></i></span>&nbsp;<span>{{ guest.childrenAccepted }}</span>/<span>{{ guest.children }}</span>
+                    </td>
 
-                <td class="d-none d-sm-table-cell">
-                {% if addressee.addresses.size %}
-                    {% with addressee.addresses.0 as address %}
-                    {% if address.street %}{{ address.street }}<br>{% endif %}
-                    {% if address.postalCode %}{{ address.postalCode }} {% endif %}{% if address.locality %}{{ address.locality }}{% endif %}{% if address.postalCode or address.locality %}<br>{% endif %}
-                    {{ address.region }}{% if address.region and address.country %}, {% endif %}{{ address.country }}
+                    <td class="d-none d-sm-table-cell">
+                    {% if addressee.addresses.size %}
+                        {% with addressee.addresses.0 as address %}
+                        {% if address.street %}{{ address.street }}<br>{% endif %}
+                        {% if address.postalCode %}{{ address.postalCode }} {% endif %}{% if address.locality %}{{ address.locality }}{% endif %}{% if address.postalCode or address.locality %}<br>{% endif %}
+                        {{ address.region }}{% if address.region and address.country %}, {% endif %}{{ address.country }}
+                        {% endwith %}
+                    {% endif %}
+                    </td>
+
+                    <td>
+                        <div class="btn-group btn-group-sm">
+                            <button type="button" class="invite-guest-btn btn {% if guest.notifiedByEmail %}btn-outline-success{% else %}btn-outline-secondary{% endif %}" title="{{ _("Email") }}" data-event="{{ event.id }}" data-guest="{{ guest.id }}" data-method="{{ guest.Email.value }}"><i class="bi bi-envelope-fill"></i></button>
+
+                            <button type="button" class="invite-guest-btn btn {% if guest.notifiedBySMS %}btn-outline-success{% else %}btn-outline-secondary{% endif %}" title="{{ _("SMS") }}" data-event="{{ event.id }}" data-guest="{{ guest.id }}" data-method="{{ guest.SMS.value }}"><i class="bi bi-chat-left-text-fill"></i></button>
+
+                            <button type="button" class="invite-guest-btn btn {% if guest.notifiedByMessenger %}btn-outline-success{% else %}btn-outline-secondary{% endif %}" title="{{ _("Messenger") }}" data-event="{{ event.id }}" data-guest="{{ guest.id }}" data-method="{{ guest.Messenger.value }}"><i class="bi bi-messenger"></i></button>
+
+                            <button type="button" class="invite-guest-btn btn {% if guest.notifiedByPostal %}btn-outline-success{% else %}btn-outline-secondary{% endif %}" title="{{ _("Postal") }}" data-event="{{ event.id }}" data-guest="{{ guest.id }}" data-method="{{ guest.Postal.value }}"><i class="bi bi-mailbox2"></i></button>
+
+                            <button type="button" class="invite-guest-btn btn {% if guest.notifiedByPhone %}btn-outline-success{% else %}btn-outline-secondary{% endif %}" title="{{ _("Phone") }}" data-event="{{ event.id }}" data-guest="{{ guest.id }}" data-method="{{ guest.Phone.value }}"><i class="bi bi-telephone-fill"></i></button>
+                        </div>
+                    </td>
+
                     {% endwith %}
-                {% endif %}
-                </td>
-
-                <td>
-                    <div class="btn-group btn-group-sm">
-                        <button type="button" class="invite-guest-btn btn {% if guest.notifiedByEmail %}btn-outline-success{% else %}btn-outline-secondary{% endif %}" title="{{ _("Email") }}" data-event="{{ event.id }}" data-guest="{{ guest.id }}" data-method="{{ guest.Email.value }}"><i class="bi bi-envelope-fill"></i></button>
-
-                        <button type="button" class="invite-guest-btn btn {% if guest.notifiedBySMS %}btn-outline-success{% else %}btn-outline-secondary{% endif %}" title="{{ _("SMS") }}" data-event="{{ event.id }}" data-guest="{{ guest.id }}" data-method="{{ guest.SMS.value }}"><i class="bi bi-chat-left-text-fill"></i></button>
-
-                        <button type="button" class="invite-guest-btn btn {% if guest.notifiedByMessenger %}btn-outline-success{% else %}btn-outline-secondary{% endif %}" title="{{ _("Messenger") }}" data-event="{{ event.id }}" data-guest="{{ guest.id }}" data-method="{{ guest.Messenger.value }}"><i class="bi bi-messenger"></i></button>
-
-                        <button type="button" class="invite-guest-btn btn {% if guest.notifiedByPostal %}btn-outline-success{% else %}btn-outline-secondary{% endif %}" title="{{ _("Postal") }}" data-event="{{ event.id }}" data-guest="{{ guest.id }}" data-method="{{ guest.Postal.value }}"><i class="bi bi-mailbox2"></i></button>
-
-                        <button type="button" class="invite-guest-btn btn {% if guest.notifiedByPhone %}btn-outline-success{% else %}btn-outline-secondary{% endif %}" title="{{ _("Phone") }}" data-event="{{ event.id }}" data-guest="{{ guest.id }}" data-method="{{ guest.Phone.value }}"><i class="bi bi-telephone-fill"></i></button>
-                    </div>
-                </td>
-
-                {% endwith %}
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 </section>
 {% endwith %}
 {% empty %}
@@ -132,27 +159,40 @@
 
 <!-- start group template -->
 <template id="group-template">
-    <section>
+    <section class="guestgroup mt-5">
         <div class="d-flex">
             <h2></h2>
             <div class="ms-auto">
                 <button type="button" class="btn btn-outline-secondary text-capitalize add-guest-to-group-btn" data-bs-toggle="modal" data-bs-target="#addGuestModal"><i class="bi bi-person-plus"></i><span class="d-none d-md-inline"> {{ _("add guest") }}</span></button>
             </div>
         </div>
-        <table class="table">
-            <thead>
-                <tr>
-                    <th scope="col"></th>
-                    <th scope="col" class="text-capitalize">{{ guests_table_headers.name }}</th>
-                    <th scope="col" class="text-capitalize">{{ guests_table_headers.status }}</th>
-                    <th scope="col" class="text-capitalize">{{ guests_table_headers.guests }}</th>
-                    <th scope="col" class="text-capitalize d-none d-sm-table-cell">{{ guests_table_headers.address }}</th>
-                    <th scope="col" class="text-capitalize">{{ guests_table_headers.notified}}</th>
-                </tr>
-            </thead>
-            <tbody>
-            </tbody>
-        </table>
+        <div class="table-responsive">
+            <table class="table caption-top">
+                <caption>
+                    <div class="d-inline-block me-2">
+                        <i class="bi bi-person-lines-fill" title="{{ _("total accepted/invited") }}"></i>&nbsp;<span class="total_accepted">0</span>/<span class="total_invited">0</span>
+                    </div>
+                    <div class="d-inline-block me-2">
+                        <i class="bi bi-people-fill" title="{{ _("adults accepted/invited") }}"></i>&nbsp;<span class="adults_accepted">0</span>/<span class="adults_invited">0</span>
+                    </div>
+                    <div class="d-inline-block">
+                        <i class="bi bi-diagram-3-fill" title="{{ _("children accepted/invited") }}"></i>&nbsp;<span class="children_accepted">0</span>/<span class="children_invited">0</span>
+                    </div>
+                </caption>
+                <thead>
+                    <tr>
+                        <th scope="col"></th>
+                        <th scope="col" class="text-capitalize">{{ guests_table_headers.name }}</th>
+                        <th scope="col" class="text-capitalize"><span class="d-none d-sm-inline">{{ guests_table_headers.status }}</span></th>
+                        <th scope="col" class="text-capitalize">{{ guests_table_headers.guests }}</th>
+                        <th scope="col" class="text-capitalize d-none d-sm-table-cell">{{ guests_table_headers.address }}</th>
+                        <th scope="col" class="text-capitalize">{{ guests_table_headers.notified}}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
     </section>
 </template>
 <!-- end group template -->
@@ -178,15 +218,15 @@
         <td class="d-none d-sm-table-cell"></td>
         <td>
             <div class="btn-group btn-group-sm">
-                <button type="button" class="invite-guest-btn btn {% if guest.notifiedByEmail %}btn-outline-success{% else %}btn-outline-secondary{% endif %}" title="{{ _("Email") }}" data-event="{{ event.id }}" data-guest="" data-method="1"><i class="bi bi-envelope-fill"></i></button>
+                <button type="button" class="invite-guest-btn btn btn-outline-secondary" title="{{ _("Email") }}" data-event="{{ event.id }}" data-guest="" data-method="1"><i class="bi bi-envelope-fill"></i></button>
 
-                <button type="button" class="invite-guest-btn btn {% if guest.notifiedBySMS %}btn-outline-success{% else %}btn-outline-secondary{% endif %}" title="{{ _("SMS") }}" data-event="{{ event.id }}" data-guest="" data-method="2"><i class="bi bi-chat-left-text-fill"></i></button>
+                <button type="button" class="invite-guest-btn btn btn-outline-secondary" title="{{ _("SMS") }}" data-event="{{ event.id }}" data-guest="" data-method="2"><i class="bi bi-chat-left-text-fill"></i></button>
 
-                <button type="button" class="invite-guest-btn btn {% if guest.notifiedByMessenger %}btn-outline-success{% else %}btn-outline-secondary{% endif %}" title="{{ _("Messenger") }}" data-event="{{ event.id }}" data-guest="" data-method="4"><i class="bi bi-messenger"></i></button>
+                <button type="button" class="invite-guest-btn btn btn-outline-secondary" title="{{ _("Messenger") }}" data-event="{{ event.id }}" data-guest="" data-method="4"><i class="bi bi-messenger"></i></button>
 
-                <button type="button" class="invite-guest-btn btn {% if guest.notifiedByPostal %}btn-outline-success{% else %}btn-outline-secondary{% endif %}" title="{{ _("Postal") }}" data-event="{{ event.id }}" data-guest="" data-method="8"><i class="bi bi-mailbox2"></i></button>
+                <button type="button" class="invite-guest-btn btn btn-outline-secondary" title="{{ _("Postal") }}" data-event="{{ event.id }}" data-guest="" data-method="8"><i class="bi bi-mailbox2"></i></button>
 
-                <button type="button" class="invite-guest-btn btn {% if guest.notifiedByPhone %}btn-outline-success{% else %}btn-outline-secondary{% endif %}" title="{{ _("Phone") }}" data-event="{{ event.id }}" data-guest="" data-method="16"><i class="bi bi-telephone-fill"></i></button>
+                <button type="button" class="invite-guest-btn btn btn-outline-secondary" title="{{ _("Phone") }}" data-event="{{ event.id }}" data-guest="" data-method="16"><i class="bi bi-telephone-fill"></i></button>
             </div>
         </td>
     </tr>

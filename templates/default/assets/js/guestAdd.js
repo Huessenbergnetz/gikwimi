@@ -105,7 +105,7 @@ GikDefTmpl.Guest.Add.exec = function(event) {
                   inviteBtn.addEventListener('click', GikDefTmpl.Guest.Invite.loadData);
               }
 
-              const section = document.getElementById('group_' + data.group.id).getElementsByTagName('tbody')[0].appendChild(clone);
+              const section = document.getElementById('group-' + data.group.id).getElementsByTagName('tbody')[0].appendChild(clone);
 
               GikDefTmpl.Guest.Add.resetForm();
               GikDefTmpl.Guest.Add.modal.hide();
