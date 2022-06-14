@@ -21,9 +21,9 @@
 #define MEMC_CONFIG_STORAGE_DURATION 7200
 
 #if defined(QT_DEBUG)
-Q_LOGGING_CATEGORY(GIK_CORE, "gikwimi.config")
+Q_LOGGING_CATEGORY(GIK_CONFIG, "gikwimi.config")
 #else
-Q_LOGGING_CATEGORY(GIK_CORE, "gikwimi.config", QtInfoMsg)
+Q_LOGGING_CATEGORY(GIK_CONFIG, "gikwimi.config", QtInfoMsg)
 #endif
 
 struct ConfigValues {

@@ -11,9 +11,9 @@
 #include <Cutelyst/Plugins/Session/Session>
 
 #if defined(QT_DEBUG)
-Q_LOGGING_CATEGORY(GIK_CORE, "gikwimi.auth")
+Q_LOGGING_CATEGORY(GIK_AUTH, "gikwimi.auth")
 #else
-Q_LOGGING_CATEGORY(GIK_CORE, "gikwimi.auth", QtInfoMsg)
+Q_LOGGING_CATEGORY(GIK_AUTH, "gikwimi.auth", QtInfoMsg)
 #endif
 
 Login::Login(QObject *parent)
