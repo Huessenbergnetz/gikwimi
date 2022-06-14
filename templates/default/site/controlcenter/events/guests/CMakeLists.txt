@@ -11,6 +11,7 @@ set(CONTROLCENTER_EVENTS_GUESTS_FILES
     index.tmpl
     invite.tmpl
     remove.tmpl
+    removeGuestModal.tmpl
 )
 
 target_sources(defaulttemplate
