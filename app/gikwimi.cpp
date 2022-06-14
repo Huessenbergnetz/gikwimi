@@ -46,7 +46,11 @@
 #include <QSqlDatabase>
 #include <QSqlError>
 
+#if defined(QT_DEBUG)
 Q_LOGGING_CATEGORY(GIK_CORE, "gikwimi.core")
+#else
+Q_LOGGING_CATEGORY(GIK_CORE, "gikwimi.core", QtInfoMsg)
+#endif
 
 using namespace Cutelyst;
 

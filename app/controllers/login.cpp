@@ -10,7 +10,11 @@
 #include <Cutelyst/Plugins/Authentication/authenticationuser.h>
 #include <Cutelyst/Plugins/Session/Session>
 
-Q_LOGGING_CATEGORY(GIK_AUTH, "gikwimi.auth")
+#if defined(QT_DEBUG)
+Q_LOGGING_CATEGORY(GIK_CORE, "gikwimi.auth")
+#else
+Q_LOGGING_CATEGORY(GIK_CORE, "gikwimi.auth", QtInfoMsg)
+#endif
 
 Login::Login(QObject *parent)
     : Controller{parent}

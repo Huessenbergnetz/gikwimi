@@ -20,7 +20,11 @@
 #define MEMC_CONFIG_GROUP_KEY "options"
 #define MEMC_CONFIG_STORAGE_DURATION 7200
 
-Q_LOGGING_CATEGORY(GIK_CONFIG, "gikwimi.config")
+#if defined(QT_DEBUG)
+Q_LOGGING_CATEGORY(GIK_CORE, "gikwimi.config")
+#else
+Q_LOGGING_CATEGORY(GIK_CORE, "gikwimi.config", QtInfoMsg)
+#endif
 
 struct ConfigValues {
     mutable QReadWriteLock lock{QReadWriteLock::Recursive};
