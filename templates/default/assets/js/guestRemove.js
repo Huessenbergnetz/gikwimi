@@ -71,6 +71,7 @@ GikDefTmpl.Guest.Remove.exec = function(event) {
     .then(guest => {
               const tr = document.getElementById('guest-' + guest.id);
               tr.remove();
+              GikDefTmpl.Guest.updateCount(guest.group.id, guest.adultsAccepted * -1, guest.adults * -1, guest.childrenAccepted * -1, guest.children * -1);
               GikDefTmpl.Guest.Remove.modal.hide();
           })
     .catch(error => {
