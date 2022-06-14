@@ -75,7 +75,9 @@ GikDefTmpl.Guest.Add.exec = function(event) {
               editGuestBtn.value = data.id;
               editGuestBtn.addEventListener('click', GikDefTmpl.Guest.Edit.loadData);
               buttonTd.getElementsByClassName('invite-guest-btn')[0].href = '/i/' + data.uid;
-              buttonTd.getElementsByClassName('delete-guest-btn')[0].dataset.value = data.id;
+              const rmGuestBtn = buttonTd.getElementsByClassName('delete-guest-btn').item(0);
+              rmGuestBtn.dataset.value = data.id;
+              rmGuestBtn.addEventListener('click', (e) => {e.preventDefault(); GikDefTmpl.Guest.Remove.loadData(e)});
 
               if (data.contact.addressee.familyName === data.partnerFamilyName) {
                   nameTd.textContent = data.contact.addressee.givenName + ' and ' + data.partnerGivenName + ' ' + data.contact.addressee.familyName;
