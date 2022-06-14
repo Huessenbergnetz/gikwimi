@@ -96,6 +96,13 @@ GikDefTmpl.Guest.Add.exec = function(event) {
                   addressTd.innerHTML = GikDefTmpl.composeAddress(data.contact.addressee.addresses[0]);
               }
 
+              const inviteButtons = inviteTd.getElementsByTagName('button');
+              for (let i = 0; i < inviteButtons.length; ++i) {
+                  const inviteBtn = inviteButtons.item(i);
+                  inviteBtn.dataset.guest = data.id;
+                  inviteBtn.addEventListener('click', GikDefTmpl.Guest.Invite.loadData);
+              }
+
               const section = document.getElementById('group_' + data.group.id).getElementsByTagName('tbody')[0].appendChild(clone);
 
               GikDefTmpl.Guest.Add.resetForm();
