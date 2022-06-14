@@ -85,4 +85,11 @@ GikDefTmpl.resetFormFieldErrors = function(form) {
     }
 }
 
+GikDefTmpl.sumCount = function(element, valueToAdd) {
+    const v1 = parseInt(element.textContent);
+    const v2 = parseInt(valueToAdd);
+    const v3 = v1 + v2;
+    element.textContent = v3;
+}
+
 GikDefTmpl.updateRangeWithLabel();

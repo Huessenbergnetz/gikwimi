@@ -16,3 +16,31 @@ GikDefTmpl.Guest.setStatusIcon = function(icon, status) {
         icon.className = 'bi bi-dash-circle text-secondary';
     }
 }
+
+GikDefTmpl.Guest.updateCount = function(groupId, adultsAccepted, adultsInvited, childrenAccepted, childrenInvited) {
+    GikDefTmpl.sumCount(document.getElementById('total_accepted'), adultsAccepted + childrenAccepted);
+
+    GikDefTmpl.sumCount(document.getElementById('total_invited'), adultsInvited + childrenInvited);
+
+    GikDefTmpl.sumCount(document.getElementById('adults_accepted'), adultsAccepted);
+
+    GikDefTmpl.sumCount(document.getElementById('adults_invited'), adultsInvited);
+
+    GikDefTmpl.sumCount(document.getElementById('children_accepted'), childrenAccepted);
+
+    GikDefTmpl.sumCount(document.getElementById('children_invited'), childrenInvited);
+
+    const section = document.getElementById('group-' + groupId);
+
+    GikDefTmpl.sumCount(section.getElementsByClassName('total_accepted')[0], adultsAccepted + childrenAccepted);
+
+    GikDefTmpl.sumCount(section.getElementsByClassName('total_invited')[0], adultsInvited + childrenInvited);
+
+    GikDefTmpl.sumCount(section.getElementsByClassName('adults_accepted')[0], adultsAccepted);
+
+    GikDefTmpl.sumCount(section.getElementsByClassName('adults_invited')[0], adultsInvited);
+
+    GikDefTmpl.sumCount(section.getElementsByClassName('children_accepted')[0], childrenAccepted);
+
+    GikDefTmpl.sumCount(section.getElementsByClassName('children_invited')[0], childrenInvited);
+}
