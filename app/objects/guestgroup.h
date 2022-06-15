@@ -113,6 +113,8 @@ public:
 
     QJsonObject toJson() const;
 
+    bool remove(Cutelyst::Context *c, Error *e);
+
     bool toStash(Cutelyst::Context *c) const;
 
     static bool toStash(Cutelyst::Context *c, dbid_t groupId);

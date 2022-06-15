@@ -249,6 +249,20 @@ QJsonObject GuestGroup::toJson() const
     return o;
 }
 
+bool GuestGroup::remove(Cutelyst::Context *c, Error *e)
+{
+    QSqlQuery q = CPreparedSqlQueryThread(QStringLiteral("DELETE FROM guestgroups WHERE id = :id"));
+    q.bindValue(QStringLiteral(":id"), d->id);
+
+    if (Q_LIKELY(q.exec())) {
+        return true;
+    } else {
+        if (c && e) *e = Error(q.lastError(), c->translate("GuestGroup", "Failed to delete guest group from the database."));
+        qCCritical(GIK_CORE) << "Failed to delete guest group ID" << d->id << "from the database:" << q.lastError().text();
+        return false;
+    }
+}
+
 bool GuestGroup::toStash(Cutelyst::Context *c) const
 {
     Q_ASSERT_X(c, "guestgroup to stash", "invalid context pointer");
