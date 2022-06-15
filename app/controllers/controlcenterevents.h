@@ -54,8 +54,11 @@ public:
     C_ATTR(addGuestGroup, :Chained("base") :PathPart("guestgroups/add") :Args(0))
     void addGuestGroup(Context *c);
 
-    C_ATTR(editGuestGroups, :Chained("base") :PathPart("guestgroups/edit") :Args(1))
-    void editGuestGroups(Context *c, const QString &id);
+    C_ATTR(editGuestGroup, :Chained("base") :PathPart("guestgroups/edit") :Args(1))
+    void editGuestGroup(Context *c, const QString &id);
+
+    C_ATTR(removeGuestGroup, :Chained("base") :PathPart("guestgroups/remove") :Args(1))
+    void removeGuestGroup(Context *c, const QString &id);
 
     C_ATTR(templates, :Chained("base") :PathPart("templates") :Args(0))
     void templates(Context *c);

@@ -420,10 +420,69 @@ void ControlCenterEvents::addGuestGroup(Context *c)
              });
 }
 
-void ControlCenterEvents::editGuestGroups(Context *c, const QString &id)
+void ControlCenterEvents::editGuestGroup(Context *c, const QString &id)
 {
     c->stash({
                  {QStringLiteral("template"), QStringLiteral("controlcenter/events/guestgroups/edit.tmpl")}
+             });
+}
+
+void ControlCenterEvents::removeGuestGroup(Context *c, const QString &id)
+{
+    bool ok = false;
+    const dbid_t groupId = Utils::strToDbid(id, &ok, c->translate("ControlCenterEvents", "Invalid guest group database ID."), c);
+
+    if (!ok) {
+        return;
+    }
+
+    Error e;
+    GuestGroup group = GuestGroup::get(c, &e, groupId);
+
+    if (!group.isValid()) {
+        e.toStash(c, true);
+        return;
+    }
+
+    if (c->req()->isPost()) {
+        c->setStash(QStringLiteral("_groupName"), QStringList({group.name()}));
+        static Validator v({
+                               new ValidatorRequired(QStringLiteral("name")),
+                               new ValidatorIn(QStringLiteral("name"), QStringLiteral("_groupName"))
+                           });
+        const ValidatorResult vr = v.validate(c, Validator::FillStashOnError|Validator::BodyParamsOnly);
+        if (vr) {
+            if (group.remove(c, &e)) {
+                if (c->req()->xhr()) {
+                    c->res()->setJsonObjectBody(group.toJson());
+                    return;
+                } else {
+                    const auto event = Event::fromStash(c);
+                    c->res()->redirect(c->uriForAction(QStringLiteral("/controlcenter/events/guestGroups"), QStringList(QString::number(event.id())), QStringList(), StatusMessage::statusQuery(c, c->translate("ControlCenterEvents", "Successfully deleted guest group “%1” (ID: %2).").arg(group.name(), QString::number(group.id())))));
+                    return;
+                }
+            } else {
+                e.toStash(c, true);
+                return;
+            }
+        } else {
+            if (c->req()->xhr()) {
+                c->res()->setStatus(400);
+                c->res()->setJsonObjectBody(QJsonObject({{QStringLiteral("fielderrors"), vr.errorsJsonObject()}}));
+                return;
+            }
+        }
+    }
+
+    if (c->req()->xhr()) {
+        c->res()->setJsonObjectBody(group.toJson());
+        return;
+    }
+
+    group.toStash(c);
+
+    c->stash({
+                 {QStringLiteral("template"), QStringLiteral("controlcenter/events/guestgroups/remove.tmpl")}
              });
 }
 
