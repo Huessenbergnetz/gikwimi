@@ -1,9 +1,10 @@
 <div class="d-flex">
-    <h1>{{ site_subtitle }} <small class="text-muted">{{ site_title }}</small></h1>
+    <h1 class="h2">{{ site_subtitle }} <span class="small text-muted">{{ site_title }}</span></h1>
     <div class="ms-auto">
         <button type="button" class="btn btn-outline-secondary text-capitalize" data-bs-toggle="modal" data-bs-target="#addGroupModal" aria-label="{{ _("add group") }}"><i class="bi bi-plus-circle-dotted"></i><span class="d-none d-md-inline"> {{ _("add group") }}</span></button>
     </div>
 </div>
+<hr>
 {% i18nc_var "Date and time format for the event start time" "ddd,'&nbsp;'MMM'&nbsp;'d,'&nbsp;'yyyy'&nbsp;at&nbsp;'h:mma" as dateTimeFormat %}
 <div class="text-secondary">
     <div class="d-inline-block me-2">
@@ -25,7 +26,8 @@
 <section id="group-{{ group.id }}" class="guestgroup mt-5">
     <div class="d-flex">
         <h2>{{ group.name }}</h2>
-        <div class="ms-auto">
+        <div class="btn-group ms-auto" role="button">
+            <button type="button" class="btn btn-outline-danger text-capitalize remove-group-btn" value="{{ group.id }}"><span class="spinner-border spinner-border-sm d-none pe-none" role="status" aria-hidden="true"></span><i class="bi bi-dash-circle-dotted"></i><span class="d-none d-md-inline"> {{ _("remove group") }}</span></button>
             <button type="button" class="btn btn-outline-secondary text-capitalize add-guest-to-group-btn" data-bs-toggle="modal" data-bs-target="#addGuestModal" value="{{ group.id }}"><i class="bi bi-person-plus"></i><span class="d-none d-md-inline"> {{ _("add guest") }}</span></button>
         </div>
     </div>
@@ -156,6 +158,14 @@
 {% include "controlcenter/events/guests/inviteGuestModal.tmpl" %}
 {% endwith %}
 <!-- end invite guest modal -->
+
+<!-- start remove group modal -->
+{% with "removeGroup" as modalId %}
+{% with event.id as eventId %}
+{% include "controlcenter/events/guests/removeGroupModal.tmpl" %}
+{% endwith %}
+{% endwith %}
+<!-- end remove group modal -->
 
 <!-- start group template -->
 <template id="group-template">
