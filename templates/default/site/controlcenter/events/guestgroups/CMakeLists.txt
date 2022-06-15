@@ -5,6 +5,7 @@ set(CONTROLCENTER_EVENTS_GUESTGROUPS_FILES
     add.tmpl
     edit.tmpl
     index.tmpl
+    remove.tmpl
 )
 
 target_sources(defaulttemplate

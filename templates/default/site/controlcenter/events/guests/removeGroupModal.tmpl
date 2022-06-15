@@ -1,0 +1,16 @@
+{% extends "inc/modal.tmpl" %}
+{% block label %}{% i18n "Remove group" %} <span id="removeGroupName"></span>{% endblock %}
+
+{% block content %}
+<p id="removeGroupHint1"></p>
+<p id="removeGroupHint2"></p>
+<form id="removeGroupForm" action="/controlcenter/events/{{ eventId }}/guestgroups/remove/">
+    {% c_csrf_token %}
+    <input type="hidden" id="removeGroupId">
+    <input type="text" name="name" class="form-control" placeholder="{{ _("group name") }}" aria-label="{{ _("Repeat the name of the group to confirm your deletion request") }}" autocomplete="off" required>
+</form>
+{% endblock %}
+
+{% block footer %}
+<button type="submit" form="removeGroupForm" class="btn btn-danger"><span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span><i class="bi bi-dash-circle-dotted"></i> {{ _("I understand the consequences, delete this group") }}</button>
+{% endblock %}

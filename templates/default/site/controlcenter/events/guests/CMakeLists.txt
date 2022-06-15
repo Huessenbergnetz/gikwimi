@@ -13,6 +13,7 @@ set(CONTROLCENTER_EVENTS_GUESTS_FILES
     inviteGuestModal.tmpl
     remove.tmpl
     removeGuestModal.tmpl
+    removeGroupModal.tmpl
 )
 
 target_sources(defaulttemplate

@@ -6,6 +6,7 @@ target_sources(defaulttemplate
         general.js
         group.js
         groupAdd.js
+        groupRemove.js
         guest.js
         guestAdd.js
         guestEdit.js

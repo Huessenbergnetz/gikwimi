@@ -24,6 +24,7 @@ mix.scripts([
     'assets/js/guestInvite.js',
     'assets/js/guestAdd.js',
     'assets/js/group.js',
+    'assets/js/groupRemove.js',
     'assets/js/groupAdd.js'
 ], 'static/js/scripts.js');
 
