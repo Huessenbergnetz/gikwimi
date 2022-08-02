@@ -1,24 +1,34 @@
 /*!
  * This CSS file includes the following third party components:
- * Bootstrap v5.1.3 (http://getbootstrap.com) by Twitter Inc. and The Bootstrap Authors,
+ * Bootstrap v5.2.0 (http://getbootstrap.com) by Twitter Inc. and The Bootstrap Authors,
  * released under MIT license (https://github.com/twbs/bootstrap/blob/v5.1.3/LICENSE).
  * Bootstrap Icons v1.8.1 (https://icons.getbootstrap.com/) by The Bootstrap Authors,
  * released under MIT license (https://github.com/twbs/icons/blob/v1.8.1/LICENSE.md).
  */
 
-// Configuration
+// Bootstrap functions
 @import "node_modules/bootstrap/scss/functions";
-@import "node_modules/bootstrap/scss/variables";
-@import "node_modules/bootstrap/scss/mixins";
-@import "node_modules/bootstrap/scss/utilities";
 
-// Layout & components
+// Bootstrap variable overrides
+
+// Bootstrap variables
+@import "node_modules/bootstrap/scss/variables";
+
+// Bootstrap required parts
+@import "node_modules/bootstrap/scss/maps";
+@import "node_modules/bootstrap/scss/mixins";
 @import "node_modules/bootstrap/scss/root";
+
+// Bootstrap optional parts
+@import "node_modules/bootstrap/scss/utilities";
 @import "node_modules/bootstrap/scss/reboot";
 @import "node_modules/bootstrap/scss/type";
 @import "node_modules/bootstrap/scss/images";
 @import "node_modules/bootstrap/scss/containers";
 @import "node_modules/bootstrap/scss/grid";
+@import "node_modules/bootstrap/scss/helpers";
+
+// Bootstrap components
 @import "node_modules/bootstrap/scss/tables";
 @import "node_modules/bootstrap/scss/forms";
 @import "node_modules/bootstrap/scss/buttons";
@@ -45,10 +55,7 @@
 @import "node_modules/bootstrap/scss/offcanvas";
 @import "node_modules/bootstrap/scss/placeholders";
 
-// Helpers
-@import "node_modules/bootstrap/scss/helpers";
-
-// Utilities
+// Bootstrap utilities API
 @import "node_modules/bootstrap/scss/utilities/api";
 
 // Bootstrap icons
