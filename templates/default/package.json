@@ -12,7 +12,7 @@
   "devDependencies": {
     "@popperjs/core": "2.11.5",
     "bootstrap": "5.2.0",
-    "bootstrap-icons": "1.8.1",
+    "bootstrap-icons": "1.9.1",
     "laravel-mix": "^6.0.43",
     "sass": "^1.50.1",
     "sass-loader": "^12.6.0"
