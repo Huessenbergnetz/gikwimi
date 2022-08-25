@@ -181,6 +181,11 @@ bool Gikwimi::initDb()
         qCDebug(GIK_CORE, "DB User: %s", qUtf8Printable(dbuser));
         qCDebug(GIK_CORE, "DB Host: %s", qUtf8Printable(dbhost));
         qCDebug(GIK_CORE, "DB Port: %i", dbport);
+        QString pw = dbpass;
+        for (int i = 0; i < pw.size(); ++i) {
+            pw[i] = QLatin1Char('*');
+        }
+        qCDebug(GIK_CORE, "DB Password: %s", qUtf8Printable(pw));
     } else {
         qCDebug(GIK_CORE) << "Establishing database connection";
     }
