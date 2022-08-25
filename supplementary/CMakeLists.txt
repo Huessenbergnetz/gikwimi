@@ -5,6 +5,8 @@ add_custom_target(supplementary
     SOURCES
         conf.ini.in
         gikwimi.service.in
+        gikwimi-restart.service
+        gikwimi-restart.timer
 )
 
 configure_file(conf.ini.in conf.ini)
@@ -16,5 +18,9 @@ install(FILES ${CMAKE_CURRENT_BINARY_DIR}/conf.ini
 )
 
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/gikwimi.service
+        DESTINATION ${SYSTEMD_UNIT_DIR}
+)
+
+install(FILES gikwimi-restart.service gikwimi-restart.timer
         DESTINATION ${SYSTEMD_UNIT_DIR}
 )
