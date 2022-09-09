@@ -1,0 +1,42 @@
+# vim: ft=apparmor
+
+abi <abi/3.0>,
+
+include <tunables/global>
+
+profile gikwimi flags=(attach_disconnected, complain) {
+    include <abstractions/base>
+    include <abstractions/qt5>
+    include <abstractions/openssl>
+    include <abstractions/consoles>
+    include <abstractions/nameservice>
+
+    # configuration file
+    @CMAKE_INSTALL_FULL_SYSCONFDIR@/gikwimi.ini r,
+
+    # icu files
+    /usr/share/icu/[0-9]*.[0-9]*/*.dat r,
+
+    # qt files
+    /usr/share/qt5/qtlogging.ini r,
+
+    # cutelyst files
+    /usr/share/cutelyst3/** r,
+
+    # gikwimi files
+    /usr/share/gikwimi/** r,
+
+    # other stuff
+    /etc/machine-id r,
+    /usr/share/mime/mime.cache r,
+    /usr/share/mime/types r,
+
+    # runtime directory
+    owner @{run}/gikwimi/** rwlk,
+
+    # temporary files
+    owner /tmp/** rwlk,
+
+    # Site-specific additions and overrides. See local/README for details.
+    include if exists <local/gikwimi>
+}

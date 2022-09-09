@@ -7,6 +7,9 @@ add_custom_target(supplementary
         gikwimi.service.in
         gikwimi-restart.service
         gikwimi-restart.timer
+        gikwimi-apparmor-systemd.conf
+        gikwimi-apparmor.in
+        gikwimi-apparmor-local
 )
 
 configure_file(conf.ini.in conf.ini)
@@ -24,3 +27,24 @@ install(FILES ${CMAKE_CURRENT_BINARY_DIR}/gikwimi.service
 install(FILES gikwimi-restart.service gikwimi-restart.timer
         DESTINATION ${SYSTEMD_UNIT_DIR}
 )
+
+if (INSTALL_APPARMOR)
+
+    configure_file(gikwimi-apparmor.in apparmor)
+
+    install(FILES gikwimi-apparmor-systemd.conf
+            DESTINATION ${SYSTEMD_UNIT_DIR}/gikwimi.service.d
+            RENAME apparmor.conf
+    )
+
+    install(FILES ${CMAKE_CURRENT_BINARY_DIR}/apparmor
+            DESTINATION ${CMAKE_INSTALL_FULL_SYSCONFDIR}/apparmor.d
+            RENAME gikwimi
+    )
+
+    install(FILES gikwimi-apparmor-local
+            DESTINATION ${CMAKE_INSTALL_FULL_SYSCONFDIR}/apparmor.d/local
+            RENAME gikwimi
+    )
+
+endif (INSTALL_APPARMOR)

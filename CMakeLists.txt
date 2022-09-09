@@ -36,6 +36,8 @@ set(SYSTEMD_UNIT_DIR lib/systemd/system CACHE PATH "Systemd unit directory")
 set(GIKWIMI_USER "gikwimi" CACHE STRING "User under which the server will be running")
 set(GIKWIMI_GROUP "gikwimi" CACHE STRING "Group under which the server will be running")
 
+option(INSTALL_APPARMOR "Install AppArmor profile and systemd settings" ON)
+
 set(GIKWIMI_CONF_DB "database")
 set(GIKWIMI_CONF_DB_TYPE "type")
 set(GIKWIMI_CONF_DB_TYPE_DEFVAL "QMYSQL")
