@@ -114,7 +114,7 @@ QString Error::title(Cutelyst::Context *c) const
     case ConfigError:
         return c->translate("Error", "Configuration error");
     case ApplicationError:
-        return c->translate("Error", "Internet server error");
+        return c->translate("Error", "Internal server error");
     case AuthenticationError:
     case AuthorizationError:
         return c->translate("Error", "Access denied");
