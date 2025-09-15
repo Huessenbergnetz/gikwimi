@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: (C) 2022 Matthias Fehring / www.huessenbergnetz.de
+# SPDX-FileCopyrightText: (C) 2022, 2025 Matthias Fehring / www.huessenbergnetz.de
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 cmake_minimum_required(VERSION 3.20 FATAL_ERROR)
@@ -13,12 +13,14 @@ if (POLICY CMP0043)
   cmake_policy(SET CMP0043 NEW)
 endif()
 
-find_package(Qt5 COMPONENTS Core Network Sql LinguistTools REQUIRED)
-find_package(Cutelyst3Qt5 REQUIRED)
-find_package(Cutelee6Qt5 5.2.0 REQUIRED)
-find_package(FirfuoridaQt5 REQUIRED)
-find_package(KF5Contacts REQUIRED)
-find_package(SimpleMail2Qt5 REQUIRED)
+set(CUTELYST_VERSION_MAJOR 5)
+
+find_package(Qt6 6.5.0 COMPONENTS Core Network Sql LinguistTools REQUIRED)
+find_package(Cutelyst${CUTELYST_VERSION_MAJOR}Qt6 REQUIRED)
+find_package(Cutelee6Qt6 REQUIRED)
+find_package(FirfuoridaQt6 REQUIRED)
+find_package(KF6Contacts REQUIRED)
+find_package(SimpleMail3Qt6 REQUIRED)
 
 # Auto generate moc files
 set(CMAKE_AUTOMOC ON)
@@ -26,6 +28,10 @@ set(CMAKE_AUTOMOC ON)
 # As moc files are generated in the binary dir, tell CMake
 # to always look for includes there:
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
+
+set(CMAKE_CXX_STANDARD 23)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
 
 include(GNUInstallDirs)
 

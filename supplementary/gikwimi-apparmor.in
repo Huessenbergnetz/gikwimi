@@ -1,11 +1,14 @@
 # vim: ft=apparmor
 
+# SPDX-FileCopyrightText: (C) 2022, 2025 Matthias Fehring / www.huessenbergnetz.de
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
 abi <abi/3.0>,
 
 include <tunables/global>
 
 profile gikwimi flags=(attach_disconnected) {
-    include <abstractions/cutelyst3-qt5>
+    include <abstractions/cutelyst5-qt6>
 
     # configuration file
     @CMAKE_INSTALL_FULL_SYSCONFDIR@/gikwimi.ini r,

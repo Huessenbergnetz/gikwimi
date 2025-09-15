@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: (C) 2022 Matthias Fehring / www.huessenbergnetz.de
+ * SPDX-FileCopyrightText: (C) 2022, 2025 Matthias Fehring / www.huessenbergnetz.de
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
 
@@ -19,6 +19,8 @@
 #include <Cutelyst/Plugins/StatusMessage>
 
 #include <SimpleMail/SimpleMail>
+
+using namespace Qt::StringLiterals;
 
 Invitation::Invitation(QObject *parent)
     : Controller{parent}
@@ -61,7 +63,7 @@ void Invitation::index(Context *c, const QString &uid)
                                new ValidatorRequiredIf(QStringLiteral("children"), QStringLiteral("consent"), QStringList(QString::number(static_cast<int>(Guest::Agreed)))),
                                new ValidatorInteger(QStringLiteral("children"), QMetaType::UInt)
                            });
-        const ValidatorResult vr = v.validate(c, Validator::FillStashOnError|Validator::BodyParamsOnly);
+        const ValidatorResult vr = v.validate(c, Validator::BodyParamsOnly);
         if (vr) {
             QVariantHash values = vr.values();
             values.insert(QStringLiteral("comment"), c->req()->bodyParam(QStringLiteral("comment")));
@@ -82,7 +84,7 @@ void Invitation::index(Context *c, const QString &uid)
         }
     }
 
-    c->res()->setHeader(QStringLiteral("X-Robots-Tag"), QStringLiteral("none"));
+    c->res()->setHeader("X-Robots-Tag"_ba, "none"_ba);
 
     c->stash({   {QStringLiteral("consent"), static_cast<int>(consent)},
                  {QStringLiteral("site_title"), event.title()},
@@ -134,7 +136,7 @@ void Invitation::sendNotificationEmails(Context *c, const Guest &guest, const Ev
         text->setText(c->translate("Invitation", "Hello,\n\na guest of your event “%1” has unfortunately cancelled.\n\nGuest: %2\nAdults: %3\nChildren: %4\n\nComment\n%5\n\nAutomatically sent by Gikwimi on %6").arg(event.title(), guestString, QString::number(guest.adults()), QString::number(guest.children()), guest.comment(), c->uriFor(QStringLiteral("/")).toString()));
     }
 
-    message.addPart(text);
+    // message.addPart(text);
 
     SimpleMail::ServerReply *reply = server->sendMail(message);
     connect(reply, &SimpleMail::ServerReply::finished, [reply]() {

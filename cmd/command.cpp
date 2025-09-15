@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: (C) 2022 Matthias Fehring / www.huessenbergnetz.de
+ * SPDX-FileCopyrightText: (C) 2022, 2025 Matthias Fehring / www.huessenbergnetz.de
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
 
@@ -20,7 +20,7 @@ Command::~Command() = default;
 
 void Command::showHelp() const
 {
-    QTextStream out(stdout, QIODevice::WriteOnly);
+    QTextStream out(stdout, QIODeviceBase::WriteOnly);
 
     showUsage(&out);
 
@@ -101,7 +101,7 @@ void Command::showSubCommands(QTextStream *out) const
         *out << qtTrId("gikctl-help-header-commands") << '\n';
 
         const QList<Command*> coms = findChildren<Command *>(QString(), Qt::FindDirectChildrenOnly);
-        int maxCommandNameLength = 0;
+        qsizetype maxCommandNameLength = 0;
         for (const auto com : coms) {
             maxCommandNameLength = std::max(maxCommandNameLength, com->objectName().length());
         }
@@ -143,9 +143,9 @@ bool Command::checkShowHelp(QCommandLineParser *parser)
     }
 }
 
-int Command::getLongestOptionName(const QList<QCommandLineOption> &options) const
+qsizetype Command::getLongestOptionName(const QList<QCommandLineOption> &options) const
 {
-    int longest = 0;
+    qsizetype longest = 0;
 
     for (const QCommandLineOption &opt : options) {
         const QStringList names = opt.names();

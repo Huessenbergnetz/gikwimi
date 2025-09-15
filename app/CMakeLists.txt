@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: (C) 2022 Matthias Fehring / www.huessenbergnetz.de
+# SPDX-FileCopyrightText: (C) 2022, 2025 Matthias Fehring / www.huessenbergnetz.de
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 add_library(gikwimi SHARED)
@@ -21,9 +21,9 @@ add_subdirectory(controllers)
 add_subdirectory(objects)
 
 target_link_libraries(gikwimi
-    Qt5::Core
-    Qt5::Network
-    Qt5::Sql
+    Qt6::Core
+    Qt6::Network
+    Qt6::Sql
     Cutelyst::Core
     Cutelyst::Session
     Cutelyst::Authentication
@@ -38,15 +38,13 @@ target_link_libraries(gikwimi
     Cutelyst::MemcachedSessionStore
     Cutelyst::CSRFProtection
     Cutelee::Templates
-    KF5::Contacts
+    KF6::Contacts
     SimpleMail::Core
 )
 
-target_compile_features(gikwimi PUBLIC cxx_std_14)
-
-GNUInstallDirs_get_absolute_install_dir(GIKWIMI_FULL_APPDIR GIKWIMI_APPDIR)
-GNUInstallDirs_get_absolute_install_dir(GIKWIMI_FULL_TRANSLATIONSDIR GIKWIMI_TRANSLATIONSDIR)
-GNUInstallDirs_get_absolute_install_dir(GIKWIMI_FULL_TEMPLATESDIR GIKWIMI_TEMPLATESDIR)
+GNUInstallDirs_get_absolute_install_dir(GIKWIMI_FULL_APPDIR GIKWIMI_APPDIR DATADIR)
+GNUInstallDirs_get_absolute_install_dir(GIKWIMI_FULL_TRANSLATIONSDIR GIKWIMI_TRANSLATIONSDIR DATADIR)
+GNUInstallDirs_get_absolute_install_dir(GIKWIMI_FULL_TEMPLATESDIR GIKWIMI_TEMPLATESDIR DATADIR)
 
 target_compile_definitions(gikwimi
     PRIVATE

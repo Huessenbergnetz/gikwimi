@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: (C) 2022, 2025 Matthias Fehring / www.huessenbergnetz.de
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
 [Unit]
 Description=Web based invitation management
 Documentation=man:gikwimi(8) man:gikwimi.ini(5)
@@ -9,8 +12,8 @@ Before=httpd.service nginx.service lighttpd.service
 Type=notify
 Environment="QT_LOGGING_CONF=@CMAKE_INSTALL_FULL_SYSCONFDIR@/gikwimi.ini"
 PIDFile=${RUNTIME_DIRECTORY}/gikwimi.pid
-ExecStart=/usr/bin/cutelystd3-qt5 -M -a @CMAKE_INSTALL_FULL_LIBDIR@/cutelyst3-qt5-apps/libgikwimi.so --ini @CMAKE_INSTALL_FULL_SYSCONFDIR@/gikwimi.ini --pidfile ${RUNTIME_DIRECTORY}/gikwimi.pid --fastcgi-socket ${RUNTIME_DIRECTORY}/gikwimi.sock --socket-access ug
-ExecStop=/usr/bin/cutelystd3-qt5 --stop ${RUNTIME_DIRECTORY}/gikwimi.pid
+ExecStart=/usr/bin/cutelystd5-qt6 -M -a @CMAKE_INSTALL_FULL_LIBDIR@/cutelyst5-qt6-apps/libgikwimi.so --ini @CMAKE_INSTALL_FULL_SYSCONFDIR@/gikwimi.ini --pidfile ${RUNTIME_DIRECTORY}/gikwimi.pid --fastcgi-socket ${RUNTIME_DIRECTORY}/gikwimi.sock --socket-access ug
+ExecStop=/usr/bin/cutelystd5-qt6 --stop ${RUNTIME_DIRECTORY}/gikwimi.pid
 NotifyAccess=all
 RuntimeDirectory=gikwimi
 PrivateTmp=true

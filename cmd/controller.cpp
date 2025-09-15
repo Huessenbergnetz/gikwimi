@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: (C) 2022 Matthias Fehring / www.huessenbergnetz.de
+ * SPDX-FileCopyrightText: (C) 2022, 2025 Matthias Fehring / www.huessenbergnetz.de
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
 
@@ -14,6 +14,9 @@
 #include <QCommandLineParser>
 #include <QCoreApplication>
 #include <QTextStream>
+
+#include <algorithm>
+#include <utility>
 
 Controller::Controller(QObject *parent)
     : QObject{parent}
@@ -79,7 +82,7 @@ void Controller::showHelp() const
     const QStringList args = QCoreApplication::arguments();
     const QString exeName = args.first();
 
-    QTextStream out(stdout, QIODevice::WriteOnly);
+    QTextStream out(stdout, QIODeviceBase::WriteOnly);
 
     out << qtTrId("gikctl-help-usage") << ' ' << exeName << ' ';
     out << qtTrId("gikctl-help-usage-global-options") << ' ';
@@ -92,8 +95,8 @@ void Controller::showHelp() const
     out << '\n';
 
     out << qtTrId("gikctl-help-header-global-options") << '\n';
-    int longestOptionNameAndValue = 0;
-    for (const QCommandLineOption &opt : qAsConst(m_globalOptions)) {
+    qsizetype longestOptionNameAndValue = 0;
+    for (const QCommandLineOption &opt : std::as_const(m_globalOptions)) {
         const QStringList names = opt.names();
         QString longName;
         for (const QString &name : names) {
@@ -103,7 +106,7 @@ void Controller::showHelp() const
         }
         longestOptionNameAndValue = std::max(longestOptionNameAndValue, longName.length() + opt.valueName().length());
     }
-    for (const QCommandLineOption &opt : qAsConst(m_globalOptions)) {
+    for (const QCommandLineOption &opt : std::as_const(m_globalOptions)) {
         QString shortName;
         QString longName;
         const QStringList names = opt.names();
@@ -138,7 +141,7 @@ void Controller::showHelp() const
     out << qtTrId("gikctl-help-header-commands") << '\n';
 
     const QList<Command*> coms = findChildren<Command *>(QString(), Qt::FindDirectChildrenOnly);
-    int maxCommandNameLength = 0;
+    qsizetype maxCommandNameLength = 0;
     for (const auto com : coms) {
         maxCommandNameLength = std::max(maxCommandNameLength, com->objectName().length());
     }

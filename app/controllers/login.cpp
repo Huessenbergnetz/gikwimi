@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: (C) 2022 Matthias Fehring / www.huessenbergnetz.de
+ * SPDX-FileCopyrightText: (C) 2022, 2025 Matthias Fehring / www.huessenbergnetz.de
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
 
@@ -15,6 +15,8 @@ Q_LOGGING_CATEGORY(GIK_AUTH, "gikwimi.auth")
 #else
 Q_LOGGING_CATEGORY(GIK_AUTH, "gikwimi.auth", QtInfoMsg)
 #endif
+
+using namespace Qt::StringLiterals;
 
 Login::Login(QObject *parent)
     : Controller{parent}
@@ -47,7 +49,7 @@ void Login::index(Context *c)
         }
     }
 
-    c->res()->setHeader(QStringLiteral("X-Robots-Tag"), QStringLiteral("none"));
+    c->res()->setHeader("X-Robots-Tag"_ba, "none"_ba);
 
     c->stash({
                  {QStringLiteral("no_wrapper"), true},

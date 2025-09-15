@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: (C) 2022 Matthias Fehring / www.huessenbergnetz.de
+ * SPDX-FileCopyrightText: (C) 2022, 2025 Matthias Fehring / www.huessenbergnetz.de
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
 
@@ -141,7 +141,7 @@ void ControlCenterEvents::addGuest(Context *c)
                                new ValidatorIn(QStringLiteral("type"), Guest::typeValues()),
                                new ValidatorBetween(QStringLiteral("type"), QMetaType::Int, -127, 127)
                            });
-        const ValidatorResult vr = v.validate(c, Validator::FillStashOnError|Validator::BodyParamsOnly);
+        const ValidatorResult vr = v.validate(c, Validator::BodyParamsOnly);
         if (vr) {
             QVariantHash values = vr.values();
             values.insert(QStringLiteral("partnerGivenName"), req->bodyParam(QStringLiteral("partnerGivenName")));
@@ -219,7 +219,7 @@ void ControlCenterEvents::editGuest(Context *c, const QString &id)
                                new ValidatorRequired(QStringLiteral("agreedChildren")),
                                new ValidatorBetween(QStringLiteral("agreedChildren"), QMetaType::UInt, 0, 30),
                            });
-        const ValidatorResult vr = v.validate(c, Validator::FillStashOnError|Validator::BodyParamsOnly);
+        const ValidatorResult vr = v.validate(c, Validator::BodyParamsOnly);
         if (vr) {
             QVariantHash values = vr.values();
             values.insert(QStringLiteral("partnerGivenName"), c->req()->bodyParam(QStringLiteral("partnerGivenName")));
@@ -392,7 +392,7 @@ void ControlCenterEvents::addGuestGroup(Context *c)
                                new ValidatorBetween(QStringLiteral("salutation"), QMetaType::Int, -127, 127)
                            });
 
-        const ValidatorResult vr = v.validate(c, Validator::FillStashOnError|Validator::BodyParamsOnly);
+        const ValidatorResult vr = v.validate(c, Validator::BodyParamsOnly);
         if (vr) {
             Error e;
             const GuestGroup group = GuestGroup::create(c, &e, Event::fromStash(c), vr.values());
@@ -450,7 +450,7 @@ void ControlCenterEvents::removeGuestGroup(Context *c, const QString &id)
                                new ValidatorRequired(QStringLiteral("name")),
                                new ValidatorIn(QStringLiteral("name"), QStringLiteral("_groupName"))
                            });
-        const ValidatorResult vr = v.validate(c, Validator::FillStashOnError|Validator::BodyParamsOnly);
+        const ValidatorResult vr = v.validate(c, Validator::BodyParamsOnly);
         if (vr) {
             if (group.remove(c, &e)) {
                 if (c->req()->xhr()) {
@@ -534,7 +534,7 @@ void ControlCenterEvents::addTemplate(Context *c)
                                new ValidatorBetween(QStringLiteral("notification"), QMetaType::Int, -127, 127),
                                new ValidatorRequired(QStringLiteral("text"))
                            });
-        const ValidatorResult vr = v.validate(c, Validator::FillStashOnError|Validator::BodyParamsOnly);
+        const ValidatorResult vr = v.validate(c, Validator::BodyParamsOnly);
         if (vr) {
             const Event event = Event::fromStash(c);
             Error e;
@@ -600,7 +600,7 @@ void ControlCenterEvents::editTemplate(Context *c, const QString &id)
                                new ValidatorBetween(QStringLiteral("notification"), QMetaType::Int, -127, 127),
                                new ValidatorRequired(QStringLiteral("text"))
                            });
-        const ValidatorResult vr = v.validate(c, Validator::FillStashOnError|Validator::BodyParamsOnly);
+        const ValidatorResult vr = v.validate(c, Validator::BodyParamsOnly);
         if (vr) {
             if (templ.update(c, &e, vr.values())) {
 

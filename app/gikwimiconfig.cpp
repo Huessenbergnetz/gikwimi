@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: (C) 2022 Matthias Fehring / www.huessenbergnetz.de
+ * SPDX-FileCopyrightText: (C) 2022, 2025 Matthias Fehring / www.huessenbergnetz.de
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
 
@@ -169,9 +169,9 @@ T GikwimiConfig::getDbOption(const QString &option, const T &defVal)
     T retVal = defVal;
 
     if (cfg->useMemcached) {
-        Cutelyst::Memcached::MemcachedReturnType rt;
+        Cutelyst::Memcached::Memcached::ReturnType rt;
         T val = Cutelyst::Memcached::getByKey<T>(QStringLiteral(MEMC_CONFIG_GROUP_KEY), option, nullptr, &rt);
-        if (rt == Cutelyst::Memcached::Success) {
+        if (rt == Cutelyst::Memcached::ReturnType::Success) {
             return val;
         }
     }

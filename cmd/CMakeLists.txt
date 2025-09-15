@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: (C) 2022 Matthias Fehring / www.huessenbergnetz.de
+# SPDX-FileCopyrightText: (C) 2022, 2025 Matthias Fehring / www.huessenbergnetz.de
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 add_executable(gikwimictl)
@@ -18,24 +18,22 @@ target_sources(gikwimictl
         database.h
 )
 
-target_compile_features(gikwimictl PUBLIC cxx_std_14)
-
 add_subdirectory(dbmigrations)
 add_subdirectory(../common common)
 add_subdirectory(commands)
 
 target_link_libraries(gikwimictl
-    Qt5::Core
-    Qt5::Network
-    Qt5::Sql
+    Qt6::Core
+    Qt6::Network
+    Qt6::Sql
     Cutelyst::Authentication
     Cutelyst::Utils::Validator
-    KF5::Contacts
-    FirfuoridaQt5::Core
+    KF6::Contacts
+    FirfuoridaQt6::Core
     gikwimi
 )
 
-GNUInstallDirs_get_absolute_install_dir(GIKWIMI_FULL_TRANSLATIONSDIR GIKWIMI_TRANSLATIONSDIR)
+GNUInstallDirs_get_absolute_install_dir(GIKWIMI_FULL_TRANSLATIONSDIR GIKWIMI_TRANSLATIONSDIR TRANSLATIONSDIR)
 
 target_compile_definitions(gikwimictl
     PRIVATE

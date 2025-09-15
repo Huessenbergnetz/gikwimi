@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: (C) 2022 Matthias Fehring / www.huessenbergnetz.de
+ * SPDX-FileCopyrightText: (C) 2022, 2025 Matthias Fehring / www.huessenbergnetz.de
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
 
@@ -17,6 +17,7 @@
 #include <QJsonValue>
 
 using namespace Cutelyst;
+using namespace Qt::StringLiterals;
 
 Root::Root(QObject *parent) : Controller(parent)
 {
@@ -31,7 +32,7 @@ void Root::index(Context *c)
     QString body;
     body = QStringLiteral("Hello World!");
     c->response()->setBody(body);
-    c->response()->setContentType(QStringLiteral("text/html; charset=utf-8"));
+    c->response()->setContentType("text/html; charset=utf-8"_ba);
 }
 
 void Root::defaultPage(Context *c)
@@ -101,7 +102,7 @@ void Root::csrfDenied(Context *c)
         c->res()->setJsonObjectBody(error);
     } else {
         c->response()->setBody(QStringLiteral("CSRF check failed"));
-        c->response()->setContentType(QStringLiteral("text/html; charset=utf-8"));
+        c->response()->setContentType("text/html; charset=utf-8"_ba);
     }
 
     c->detach();

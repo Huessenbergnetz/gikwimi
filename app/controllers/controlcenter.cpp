@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: (C) 2022 Matthias Fehring / www.huessenbergnetz.de
+ * SPDX-FileCopyrightText: (C) 2022, 2025 Matthias Fehring / www.huessenbergnetz.de
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
 
@@ -9,6 +9,8 @@
 #include "objects/menuitem.h"
 
 #include <Cutelyst/Plugins/Authentication/authentication.h>
+
+using namespace Qt::StringLiterals;
 
 ControlCenter::ControlCenter(QObject *parent)
     : Controller{parent}
@@ -37,7 +39,7 @@ bool ControlCenter::Auto(Context *c)
         return false;
     }
 
-    c->res()->setHeader(QStringLiteral("X-Robots-Tag"), QStringLiteral("none"));
+    c->res()->setHeader("X-Robots-Tag"_ba, "none"_ba);
 
     buildMenu(c);
 

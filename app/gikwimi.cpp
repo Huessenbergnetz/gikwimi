@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: (C) 2022 Matthias Fehring / www.huessenbergnetz.de
+ * SPDX-FileCopyrightText: (C) 2022, 2025 Matthias Fehring / www.huessenbergnetz.de
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
 
@@ -24,7 +24,7 @@
 #include "objects/menuitem.h"
 
 #include <Cutelyst/Engine>
-#include <Cutelyst/Plugins/StaticSimple/StaticSimple>
+#include <Cutelyst/Plugins/StaticSimple>
 #include <Cutelyst/Plugins/View/Cutelee/cuteleeview.h>
 #include <Cutelyst/Plugins/Session/Session>
 #include <Cutelyst/Plugins/Authentication/authentication.h>
@@ -34,7 +34,7 @@
 #include <Cutelyst/Plugins/StatusMessage>
 #include <Cutelyst/Plugins/Memcached/Memcached>
 #include <Cutelyst/Plugins/MemcachedSessionStore/MemcachedSessionStore>
-#include <Cutelyst/Plugins/CSRFProtection/CSRFProtection>
+#include <Cutelyst/Plugins/CSRFProtection>
 #include <Cutelyst/Plugins/Utils/LangSelect>
 
 #include <cutelee/engine.h>
@@ -45,6 +45,7 @@
 #include <QMutexLocker>
 #include <QSqlDatabase>
 #include <QSqlError>
+#include <QSqlQuery>
 
 #if defined(QT_DEBUG)
 Q_LOGGING_CATEGORY(GIK_CORE, "gikwimi.core")
@@ -53,6 +54,7 @@ Q_LOGGING_CATEGORY(GIK_CORE, "gikwimi.core", QtInfoMsg)
 #endif
 
 using namespace Cutelyst;
+using namespace Qt::StringLiterals;
 
 static QMutex mutex; // clazy:exclude=non-pod-global-static
 
@@ -127,7 +129,7 @@ bool Gikwimi::init()
                                    {QStringLiteral("binary_protocol"), true}
                                });
         if (GikwimiConfig::useMemcachedSession()) {
-            sess->setStorage(new MemcachedSessionStore(this, this));
+            sess->setStorage(std::make_unique<MemcachedSessionStore>(this, sess));
         }
     }
 
@@ -142,16 +144,16 @@ bool Gikwimi::init()
     new StatusMessage(this);
 
     auto auth = new Authentication(this);
-    auto userCred = new CredentialPassword;
+    auto userCred = std::make_shared<CredentialPassword>();
     userCred->setPasswordType(CredentialPassword::Hashed);
-    auto userStore = new UserAuthStoreSql;
+    auto userStore = std::make_shared<UserAuthStoreSql>();
     auth->addRealm(userStore, userCred, QStringLiteral("users"));
 
-    defaultHeaders().setHeader(QStringLiteral("X-Frame-Options"), QStringLiteral("DENY"));
-    defaultHeaders().setHeader(QStringLiteral("X-Content-Type-Options"), QStringLiteral("nosniff"));
-    defaultHeaders().setHeader(QStringLiteral("X-XSS-Protection"), QStringLiteral("1; mode=block"));
-    defaultHeaders().setHeader(QStringLiteral("Referrer-Policy"), QStringLiteral("origin-when-cross-origin"));
-    defaultHeaders().setHeader(QStringLiteral("Content-Security-Policy"), QStringLiteral("default-src 'none'; script-src 'self'; style-src 'self'; font-src 'self'; img-src 'self' data:; connect-src 'self'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; block-all-mixed-content"));
+    defaultHeaders().setHeader("X-Frame-Options"_ba, "DENY"_ba);
+    defaultHeaders().setHeader("X-Content-Type-Options"_ba, "nosniff"_ba);
+    defaultHeaders().setHeader("X-XSS-Protection"_ba, "1; mode=block"_ba);
+    defaultHeaders().setHeader("Referrer-Policy"_ba, "origin-when-cross-origin"_ba);
+    defaultHeaders().setHeader("Content-Security-Policy"_ba, "default-src 'none'; script-src 'self'; style-src 'self'; font-src 'self'; img-src 'self' data:; connect-src 'self'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; block-all-mixed-content"_ba);
 
     return true;
 }
@@ -234,6 +236,13 @@ bool Gikwimi::initDb()
     if (Q_UNLIKELY(!db.open())) {
         qCCritical(GIK_CORE) << "Can not establish database connection:" << db.lastError().text();
         return false;
+    }
+
+    if (dbtype == "QMYSQL"_L1 || dbtype == "QMARIADB"_L1) {
+        QSqlQuery q(db);
+        if (Q_UNLIKELY(!q.exec(u"SET time_zone = '+00:00'"_s))) {
+
+        }
     }
 
     return true;

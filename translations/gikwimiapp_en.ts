@@ -291,6 +291,14 @@
         <source>Edit template</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Invalid guest group database ID.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Successfully deleted guest group “%1” (ID: %2).</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>ControlCenterSettings</name>
@@ -332,10 +340,6 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Internet server error</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Access denied</source>
         <translation type="unfinished"></translation>
     </message>
@@ -349,6 +353,10 @@
     </message>
     <message>
         <source>Unknown error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Internal server error</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -532,6 +540,10 @@
         <source>Failed to create new guest group “%1” in the database.</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Failed to delete guest group from the database.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>Invitation</name>
@@ -670,6 +682,10 @@ Automatically sent by Gikwimi on %6</source>
     </message>
     <message>
         <source>Sorry, but an unknown error occurd while processing your request.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>CSRF check failed.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
