@@ -33,8 +33,6 @@ target_link_libraries(gikwimictl
     gikwimi
 )
 
-GNUInstallDirs_get_absolute_install_dir(GIKWIMI_FULL_TRANSLATIONSDIR GIKWIMI_TRANSLATIONSDIR TRANSLATIONSDIR)
-
 target_compile_definitions(gikwimictl
     PRIVATE
         QT_NO_CAST_TO_ASCII
@@ -44,7 +42,7 @@ target_compile_definitions(gikwimictl
         QT_NO_CAST_FROM_BYTEARRAY
         QT_USE_QSTRINGBUILDER
         GIKWIMI_VERSION="${PROJECT_VERSION}"
-        GIKWIMI_CONFFILE="${CMAKE_INSTALL_FULL_SYSCONFDIR}/gikwimi.ini"
+        GIKWIMI_CONFFILE="${GIKWIMI_FULL_CONFFILE}"
         GIKWIMI_TRANSLATIONSDIR="${GIKWIMI_FULL_TRANSLATIONSDIR}"
 )
 

@@ -1,0 +1,6 @@
+#!/bin/bash
+
+# SPDX-FileCopyrightText: (C) 2025 Matthias Fehring <https://www.huessenbergnetz.de>
+# SPDX-License-Identifier: CC0-1.0
+
+QT_LOGGING_RULES="@GIKWIMI_TEST_LOG_RULES@" /usr/bin/cutelystd@CUTELYST_VERSION_MAJOR@-qt6 --ini @GIKWIMI_FULL_CONFFILE@ -a @CMAKE_CURRENT_BINARY_DIR@/app/libgikwimi.so -r -M --lazy -t 2 --h1 :3000

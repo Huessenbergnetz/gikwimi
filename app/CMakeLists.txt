@@ -42,10 +42,6 @@ target_link_libraries(gikwimi
     SimpleMail::Core
 )
 
-GNUInstallDirs_get_absolute_install_dir(GIKWIMI_FULL_APPDIR GIKWIMI_APPDIR DATADIR)
-GNUInstallDirs_get_absolute_install_dir(GIKWIMI_FULL_TRANSLATIONSDIR GIKWIMI_TRANSLATIONSDIR DATADIR)
-GNUInstallDirs_get_absolute_install_dir(GIKWIMI_FULL_TEMPLATESDIR GIKWIMI_TEMPLATESDIR DATADIR)
-
 target_compile_definitions(gikwimi
     PRIVATE
         QT_NO_CAST_TO_ASCII
