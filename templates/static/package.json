@@ -2,14 +2,12 @@
   "private": true,
   "scripts": {
     "dev": "npm run development",
-    "development": "npx mix",
-    "watch": "npx mix watch",
-    "watch-poll": "npx mix watch -- --watch-options-poll=1000",
-    "hot": "npx mix --hot",
+    "development": "NODE_ENV=development node ./esbuild.mjs",
     "prod": "npm run production",
-    "production": "npx mix --production"
+    "production": "NODE_ENV=production node ./esbuild.mjs"
   },
   "devDependencies": {
-    "laravel-mix": "^6.0.43"
+    "esbuild": "0.28.0",
+    "esbuild-sass-plugin": "3.7.0"
   }
 }

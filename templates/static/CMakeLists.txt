@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: (C) 2022 Matthias Fehring / www.huessenbergnetz.de
+# SPDX-FileCopyrightText: (C) 2022,2026 Matthias Fehring / www.huessenbergnetz.de
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 #find_program(NPX_EXECUTABLE npx)
@@ -17,8 +17,8 @@
 add_custom_target(gikwimistatic
     SOURCES
         package.json
-        webpack.mix.js
         favicon.ico
+        esbuild.mjs
 )
 
 add_subdirectory(assets)
