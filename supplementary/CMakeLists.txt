@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: (C) 2022 Matthias Fehring / www.huessenbergnetz.de
+# SPDX-FileCopyrightText: (C) 2022,2025 Matthias Fehring / www.huessenbergnetz.de
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 add_custom_target(supplementary
@@ -10,10 +10,12 @@ add_custom_target(supplementary
         gikwimi-apparmor-systemd.conf
         gikwimi-apparmor.in
         gikwimi-apparmor-local
+        ld.so.conf.in
 )
 
 configure_file(conf.ini.in conf.ini)
 configure_file(gikwimi.service.in gikwimi.service @ONLY)
+configure_file(ld.so.conf.in ld.so.conf)
 
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/conf.ini
         DESTINATION ${CMAKE_INSTALL_FULL_SYSCONFDIR}
@@ -22,6 +24,11 @@ install(FILES ${CMAKE_CURRENT_BINARY_DIR}/conf.ini
 
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/gikwimi.service
         DESTINATION ${SYSTEMD_UNIT_DIR}
+)
+
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/ld.so.conf
+        DESTINATION ${CMAKE_INSTALL_FULL_SYSCONFDIR}/ld.so.conf.d
+        RENAME gikwimi.conf
 )
 
 install(FILES gikwimi-restart.service gikwimi-restart.timer
