@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: (C) 2022 Matthias Fehring / www.huessenbergnetz.de
+# SPDX-FileCopyrightText: (C) 2022, 2025 Matthias Fehring / www.huessenbergnetz.de
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 target_sources(gikwimictl
@@ -29,4 +29,8 @@ target_sources(gikwimictl
         usercommand.h
         useraddcommand.cpp
         useraddcommand.h
+        guestcommand.cpp
+        guestcommand.h
+        guestexportcommand.cpp
+        guestexportcommand.h
 )
