@@ -53,7 +53,7 @@ target_compile_definitions(gikwimi
         GIKWIMI_VERSION="${PROJECT_VERSION}"
         GIKWIMI_TRANSLATIONSDIR="${GIKWIMI_FULL_TRANSLATIONSDIR}"
         GIKWIMI_TEMPLATESDIR="${GIKWIMI_FULL_TEMPLATESDIR}"
-        GIKWIMI_STATICSDIR="${GIKWIMI_FULL_APPDIR}/static"
+        GIKWIMI_STATICSDIR="${GIKWIMI_FULL_DATADIR}/static"
 )
 
 target_compile_options(gikwimi
@@ -67,4 +67,4 @@ target_compile_options(gikwimi
         -Winit-self
 )
 
-install(TARGETS gikwimi DESTINATION ${CMAKE_INSTALL_LIBDIR}/cutelyst${Cutelyst3Qt5_VERSION_MAJOR}-qt5-apps)
+install(TARGETS gikwimi DESTINATION ${CMAKE_INSTALL_LIBDIR}/cutelyst${CUTELYST_VERSION_MAJOR}-qt6-apps)

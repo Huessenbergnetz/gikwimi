@@ -35,9 +35,10 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 include(GNUInstallDirs)
 
-set(GIKWIMI_APPDIR ${CMAKE_INSTALL_DATADIR}/gikwimi CACHE PATH "Directory to install gikwimi data files into")
-set(GIKWIMI_TEMPLATESDIR ${GIKWIMI_APPDIR}/templates CACHE PATH "Directory to install gikwimi template files into")
-set(GIKWIMI_TRANSLATIONSDIR ${GIKWIMI_APPDIR}/translations CACHE PATH "Directory to install gikwimi translation files into")
+set(GIKWIMI_APPDIR ${CMAKE_INSTALL_LIBDIR}/cutelyst${CUTELYST_VERSION_MAJOR}-qt6-apps CACHE PATH "Directory to install gikwimi application file into")
+set(GIKWIMI_DATADIR ${CMAKE_INSTALL_DATADIR}/gikwimi CACHE PATH "Directory to install gikwimi data files into")
+set(GIKWIMI_TEMPLATESDIR ${GIKWIMI_DATADIR}/templates CACHE PATH "Directory to install gikwimi template files into")
+set(GIKWIMI_TRANSLATIONSDIR ${GIKWIMI_DATADIR}/translations CACHE PATH "Directory to install gikwimi translation files into")
 set(GIKWIMI_CONFFILE ${CMAKE_INSTALL_SYSCONFDIR}/gikwimi.ini CACHE FILEPATH "Path to the main configuration file")
 set(SYSTEMD_UNIT_DIR lib/systemd/system CACHE PATH "Systemd unit directory")
 set(GIKWIMI_USER "gikwimi" CACHE STRING "User under which the server will be running")
@@ -46,7 +47,8 @@ set(GIKWIMI_TEST_LOG_RULES "*.debug=false;asql.*.debug=true;cutelyst.*.debug=tru
 
 option(INSTALL_APPARMOR "Install AppArmor profile and systemd settings" ON)
 
-GNUInstallDirs_get_absolute_install_dir(GIKWIMI_FULL_APPDIR GIKWIMI_APPDIR DATADIR)
+GNUInstallDirs_get_absolute_install_dir(GIKWIMI_FULL_APPDIR GIKWIMI_APPDIR LIBDIR)
+GNUInstallDirs_get_absolute_install_dir(GIKWIMI_FULL_DATADIR GIKWIMI_DATADIR DATADIR)
 GNUInstallDirs_get_absolute_install_dir(GIKWIMI_FULL_TRANSLATIONSDIR GIKWIMI_TRANSLATIONSDIR DATADIR)
 GNUInstallDirs_get_absolute_install_dir(GIKWIMI_FULL_TEMPLATESDIR GIKWIMI_TEMPLATESDIR DATADIR)
 GNUInstallDirs_get_absolute_install_dir(GIKWIMI_FULL_CONFFILE GIKWIMI_CONFFILE SYSCONFDIR)
