@@ -7,6 +7,7 @@
 #include <QTranslator>
 #include <QLocale>
 #include <QCommandLineParser>
+#include <QDebug>
 
 #include "controller.h"
 
@@ -18,8 +19,12 @@ int main(int argc, char *argv[])
     app.setApplicationName(QStringLiteral("gikwimictl"));
     app.setApplicationVersion(QStringLiteral(GIKWIMI_VERSION));
 
-    const QLocale locale;
     {
+        if (QLocale::system().language() == QLocale::C) {
+            QLocale::setDefault(QLocale(QLocale::English));
+        }
+        const QLocale locale;
+        qDebug() << "UI langs:" << locale.uiLanguages();
         auto trans = new QTranslator(&app);
         if (Q_LIKELY(trans->load(locale, QStringLiteral("gikwimictl"), QStringLiteral("_"), QStringLiteral(GIKWIMI_TRANSLATIONSDIR)))) {
             if (Q_UNLIKELY(!QCoreApplication::installTranslator(trans))) {
