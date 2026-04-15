@@ -60,7 +60,7 @@ void Invitation::index(Context *c, const QString &uid)
                                new ValidatorBetween(QStringLiteral("consent"), QMetaType::Int, static_cast<int>(Guest::Agreed), static_cast<int>(Guest::Canceled)),
                                new ValidatorRequiredIf(QStringLiteral("adults"), QStringLiteral("consent"), QStringList(QString::number(static_cast<int>(Guest::Agreed)))),
                                new ValidatorInteger(QStringLiteral("adults"), QMetaType::UInt),
-                               new ValidatorRequiredIf(QStringLiteral("children"), QStringLiteral("consent"), QStringList(QString::number(static_cast<int>(Guest::Agreed)))),
+                               // new ValidatorRequiredIf(QStringLiteral("children"), QStringLiteral("consent"), QStringList(QString::number(static_cast<int>(Guest::Agreed)))),
                                new ValidatorInteger(QStringLiteral("children"), QMetaType::UInt)
                            });
         const ValidatorResult vr = v.validate(c, Validator::BodyParamsOnly);
@@ -71,9 +71,9 @@ void Invitation::index(Context *c, const QString &uid)
                 QString statusMessage = guest.adults() > 1 ? QStringLiteral("Vielen Dank für Eure Rückmeldung!") : QStringLiteral("Vielen Dank für Deine Rückmeldung!");
                 statusMessage += QChar(QChar::Space);
                 if (guest.status() == Guest::Agreed) {
-                    statusMessage += QStringLiteral("Schön dass wir uns am 25. Juni ab 11 Uhr in Eissen bei mir im Garten sehen. 🙂");
+                    statusMessage += QStringLiteral("Schön, dass wir uns am 27. Juni ab 15:30 Uhr in Eissen zu unserer Hochzeit sehen. 🙂");
                 } else {
-                    statusMessage += QStringLiteral("Schade, dass wir uns am 25. Juni nicht sehen. 🙁");
+                    statusMessage += QStringLiteral("Schade, dass wir uns am 27. Juni nicht sehen. 🙁");
                 }
                 c->setStash(QStringLiteral("status_msg"), statusMessage);
                 c->setStash(QStringLiteral("guest"), QVariant::fromValue<Guest>(guest));
@@ -129,21 +129,23 @@ void Invitation::sendNotificationEmails(Context *c, const Guest &guest, const Ev
     }
     message.setSubject(subject);
 
-    auto text = new SimpleMail::MimeText;
+    auto text = std::make_shared<SimpleMail::MimeText>();
+    // auto text = new SimpleMail::MimeText;
     if (guest.status() == Guest::Agreed) {
         text->setText(c->translate("Invitation", "Hello,\n\na guest of your event “%1” has accepted.\n\nGuest: %2\nAdults: %3\nChildren: %4\n\nComment:\n%5\n\nAutomatically sent by Gikwimi on %6").arg(event.title(), guestString, QString::number(guest.adultsAccepted()), QString::number(guest.childrenAccepted()), guest.comment(), c->uriFor(QStringLiteral("/")).toString()));
     } else {
         text->setText(c->translate("Invitation", "Hello,\n\na guest of your event “%1” has unfortunately cancelled.\n\nGuest: %2\nAdults: %3\nChildren: %4\n\nComment\n%5\n\nAutomatically sent by Gikwimi on %6").arg(event.title(), guestString, QString::number(guest.adults()), QString::number(guest.children()), guest.comment(), c->uriFor(QStringLiteral("/")).toString()));
     }
 
-    // message.addPart(text);
+    message.addPart(text);
 
     SimpleMail::ServerReply *reply = server->sendMail(message);
-    connect(reply, &SimpleMail::ServerReply::finished, [reply]() {
+    connect(reply, &SimpleMail::ServerReply::finished, [reply, server]() {
         if (reply->error()) {
             qCCritical(GIK_CORE) << "Failed to send notification email:" << reply->responseCode() << reply->responseText();
         }
         reply->deleteLater();
+        server->deleteLater();
     });
 }
 
